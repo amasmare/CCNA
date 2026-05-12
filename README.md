@@ -105,6 +105,5 @@ Each lab has its own accent color while sharing the same dark base theme:
 
 ## 👨‍💻 Author
 
-**م. عبدالله الأسمري** — Abdullah Alasmari  
-جامعة الملك عبدالعزيز · King Abdulaziz University  
+**م. عبدالله الأسمري** — Eng.Abdullah Alasmari  
 📧 aalasmari0350@stu.kau.edu.sa

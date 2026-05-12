@@ -1,21 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>المختبر 03 — الشبكات الافتراضية VLANs | CCNA 200-301</title>
 <style>
+#net-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.45}
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;--accent:#34d399;--accent2:#065f46;--text:#f1f5f9;--text2:#94a3b8;--border:#0f2a1e;--success:#10b981;--error:#ef4444;--radius:12px}
+:root{--bg:#f0f4f0;--surface:#ffffff;--surface2:#f0f7f3;--surface3:#e0ede6;--accent:#006633;--accent2:#00843d;--text:#1a2e22;--text2:#6b8577;--border:#c8ddd2;--success:#10b981;--error:#ef4444;--radius:12px}
 body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
 a{color:var(--accent);text-decoration:none}
-.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
-.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar{background:#006633;border-bottom:3px solid #c9a227;padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;color:#fff}
 .topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center}
 .topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
-.topbar-links a{color:var(--text2);transition:color .2s}
-.topbar-links a:hover{color:var(--accent)}
-.lab-header{background:linear-gradient(135deg,#022c22 0%,#065f46 50%,#34d399 100%);padding:32px 24px;text-align:center}
+.topbar-links a{color:rgba(255,255,255,.8);transition:color .2s}
+.topbar-links a:hover{color:#e8c13a}
+.lab-header{background:linear-gradient(135deg,#006633 0%,#00843d 60%,#004d28 100%);padding:32px 24px;text-align:center}
 .lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
 .lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
 .lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
@@ -35,16 +36,16 @@ a{color:var(--accent);text-decoration:none}
 .card h3{font-size:.95rem;margin-bottom:12px;color:var(--accent)}
 .subtitle{color:var(--text2);font-size:.88rem;margin-bottom:18px;line-height:1.7}
 .btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
-.btn-primary{background:var(--accent);color:#000}
+.btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover{background:var(--accent2);color:#fff}
 .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
 .btn-ghost:hover{border-color:var(--accent);color:var(--text)}
 .btn-sm{padding:5px 12px;font-size:.78rem}
 .alert{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.88rem;line-height:1.6}
-.alert-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#34d399}
-.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
-.alert-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
-.score-badge{display:inline-block;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
+.alert-success{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);color:#065f46}
+.alert-warn{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:#7a6010}
+.alert-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#7f1d1d}
+.score-badge{display:inline-block;background:rgba(0,102,51,.08);border:1px solid rgba(0,102,51,.25);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
 .score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
 .score-chip span{color:var(--accent);font-weight:700}
 table{width:100%;border-collapse:collapse;font-size:.88rem}
@@ -56,11 +57,11 @@ select:focus{outline:none;border-color:var(--accent)}
 .quiz-q p{font-weight:600;margin-bottom:12px;line-height:1.5}
 .quiz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;transition:all .2s;font-size:.88rem;text-align:right;width:100%;margin-bottom:8px;color:var(--text);display:block}
 .quiz-opt:hover{border-color:var(--accent)}
-.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399}
-.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.06);color:#f87171}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.12);color:#065f46}
+.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.1);color:#7f1d1d}
 .quiz-opt:disabled{cursor:default}
 .prog-wrap{background:var(--surface3);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
-.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#006633,#00843d);transition:width .4s}
 .cli-box{background:#020810;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:.82rem;color:#34d399;line-height:1.8;overflow-x:auto}
 .vlan-sim{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:16px 0}
 .vlan-box{border:2px solid;border-radius:10px;padding:12px;text-align:center}
@@ -73,15 +74,16 @@ select:focus{outline:none;border-color:var(--accent)}
 .vlan-30 .vlan-title{color:#f87171}
 .device-icon{font-size:1.4rem;margin-bottom:4px}
 .device-label{font-size:.72rem;color:var(--text2)}
-.correct-row td{background:rgba(16,185,129,.06)!important}
-.wrong-row td{background:rgba(239,68,68,.06)!important}
+.correct-row td{background:rgba(16,185,129,.1)!important}
+.wrong-row td{background:rgba(239,68,68,.08)!important}
 @media(max-width:600px){.vlan-sim{grid-template-columns:1fr 1fr}}
-footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
-footer p{color:var(--text2);font-size:.78rem;line-height:2}
-footer strong{color:#f59e0b}
+footer{background:#006633;border-top:none;padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:rgba(255,255,255,.8);font-size:.78rem;line-height:2}
+footer strong{color:#e8c13a}
 </style>
 </head>
 <body>
+<canvas id="net-canvas"></canvas>
 
 <div class="topbar">
   <div class="topbar-brand">
@@ -295,8 +297,8 @@ function checkPorts(){
     const row=document.getElementById('ptr-'+i);
     const st=document.getElementById('ptst-'+i);
     if(!sel){st.innerHTML='';return;}
-    if(sel===p.ans){correct++;row.className='correct-row';st.innerHTML='<span style="color:#34d399">✓</span>';}
-    else{row.className='wrong-row';st.innerHTML='<span style="color:#f87171">✗ '+p.ans+'</span>';}
+    if(sel===p.ans){correct++;row.className='correct-row';st.innerHTML='<span style="color:#065f46">✓</span>';}
+    else{row.className='wrong-row';st.innerHTML='<span style="color:#7f1d1d">✗ '+p.ans+'</span>';}
   });
   document.getElementById('port-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${PORTS.length}</div>`;
 }
@@ -429,5 +431,25 @@ function resetAll(){localStorage.removeItem('ccna_lab03');location.reload();}
 function saveScore(){if(quizAnswered>0){const pct=Math.round(quizScore/QUIZ.length*100);localStorage.setItem('ccna_lab03',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;}}
 (function(){const s=JSON.parse(localStorage.getItem('ccna_lab03')||'null');if(s)document.getElementById('stotal').textContent=s.score+'/'+s.total;})();
 </script>
-</body>
+<script id="net-canvas-script">
+(function(){
+  var canvas=document.getElementById('net-canvas');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var W,H,nodes=[];
+  var N=45,D=150;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',function(){resize();init();});
+  function Node(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.35;this.vy=(Math.random()-.5)*.35;this.r=Math.random()*2+1.5;this.gold=Math.random()<.12;}
+  function init(){nodes=[];for(var i=0;i<N;i++)nodes.push(new Node());}
+  init();
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<nodes.length;i++){var a=nodes[i];for(var j=i+1;j<nodes.length;j++){var b=nodes[j];var dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<D){ctx.beginPath();ctx.strokeStyle='rgba(0,150,80,'+(1-d/D)*.3+')';ctx.lineWidth=.7;ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}}
+    for(var i=0;i<nodes.length;i++){var n=nodes[i];ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle=n.gold?'rgba(201,162,39,.6)':'rgba(0,150,80,.45)';ctx.fill();n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;}
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script></body>
 </html>
