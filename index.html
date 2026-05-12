@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>مختبرات CCNA 200-301 التفاعلية</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[onclick]{cursor:pointer}
+input,select,textarea,button{font-size:16px;touch-action:manipulation}
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1a2236;--border:#1e3a5f;
+  --accent:#00bceb;--accent2:#7c3aed;--accent3:#10b981;--accent4:#f59e0b;--accent5:#ef4444;
+  --text:#e2e8f0;--muted:#64748b;
+}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-text-size-adjust:100%}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(0,188,235,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,188,235,0.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;z-index:0}
+.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:20px}
+.site-topbar{background:#04080f;border-bottom:1px solid #0f2040;padding:6px 24px;display:flex;align-items:center;justify-content:space-between;font-size:.72rem;color:#475569;flex-wrap:wrap;gap:6px}
+.site-topbar .author-tag{color:#f59e0b;font-weight:700}
+.site-header-bar{background:linear-gradient(135deg,#0a1628 0%,#0d2145 100%);border-bottom:3px solid #00bceb;padding:18px 30px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.site-logo-box{width:60px;height:60px;background:linear-gradient(135deg,#006fa6,#00bceb);border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;box-shadow:0 4px 20px rgba(0,188,235,.4)}
+.site-lab-info{flex:1;min-width:0}
+.site-lab-info h2{font-size:1.25rem;font-weight:800;color:#fff;margin:0 0 3px;line-height:1.3}
+.site-lab-info span{font-size:.75rem;color:#93c5fd;letter-spacing:.5px}
+.site-author-block{text-align:left;border-right:1px solid rgba(255,255,255,.08);padding-right:20px;flex-shrink:0}
+.site-author-block .aname{font-size:1.05rem;font-weight:700;color:#f59e0b;line-height:1.4}
+.site-author-block .abook{font-size:.7rem;color:#64748b;margin-top:2px}
+header{text-align:center;padding:50px 20px 40px;position:relative}
+.header-badge{display:inline-block;background:linear-gradient(135deg,rgba(0,188,235,0.1),rgba(124,58,237,0.1));border:1px solid var(--border);border-radius:30px;padding:6px 20px;font-size:12px;color:var(--accent);letter-spacing:2px;margin-bottom:20px;text-transform:uppercase}
+header h1{font-size:clamp(28px,5vw,52px);font-weight:800;background:linear-gradient(135deg,#fff 30%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;line-height:1.2}
+header p{color:var(--muted);font-size:clamp(14px,2.5vw,18px);max-width:600px;margin:0 auto 30px;line-height:1.7}
+.stats-bar{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin-bottom:20px}
+.stat{text-align:center}
+.stat-num{display:block;font-size:28px;font-weight:800;color:var(--accent)}
+.stat-label{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.book-banner{background:linear-gradient(135deg,var(--surface),var(--surface2));border:1px solid var(--border);border-radius:16px;padding:20px 30px;display:flex;align-items:center;gap:20px;margin-bottom:40px;flex-wrap:wrap}
+.book-icon{font-size:48px;flex-shrink:0}
+.book-info h3{font-size:16px;color:var(--accent);margin-bottom:4px}
+.book-info p{font-size:14px;color:var(--muted);line-height:1.6}
+.section-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.section-title::before{content:'';flex:1;height:1px;background:linear-gradient(270deg,var(--border),transparent)}
+.labs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;margin-bottom:50px}
+.lab-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;text-decoration:none;color:var(--text);display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s,border-color .2s;position:relative}
+.lab-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+.lab-card-header{padding:24px 24px 16px;display:flex;align-items:flex-start;gap:16px}
+.lab-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.lab-card-title{flex:1}
+.lab-number{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;opacity:.7}
+.lab-card-title h2{font-size:18px;font-weight:700;line-height:1.3;margin-bottom:2px}
+.lab-card-title p{font-size:13px;color:var(--muted)}
+.lab-card-body{padding:0 24px 16px;flex:1}
+.lab-card-body p{font-size:14px;color:var(--muted);line-height:1.7}
+.lab-topics{padding:0 24px;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.topic-tag{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--muted)}
+.lab-card-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.chapter-badge{font-size:12px;color:var(--muted)}
+.open-btn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 14px;border-radius:8px;transition:background .2s}
+.card-blue{border-color:rgba(0,188,235,.3)}.card-blue:hover{border-color:rgba(0,188,235,.7);box-shadow:0 12px 40px rgba(0,188,235,.1)}.card-blue .lab-icon{background:rgba(0,188,235,.1)}.card-blue .lab-number,.card-blue .open-btn{color:#00bceb}.card-blue .open-btn:hover{background:rgba(0,188,235,.1)}
+.card-purple{border-color:rgba(124,58,237,.3)}.card-purple:hover{border-color:rgba(124,58,237,.7);box-shadow:0 12px 40px rgba(124,58,237,.1)}.card-purple .lab-icon{background:rgba(124,58,237,.1)}.card-purple .lab-number,.card-purple .open-btn{color:#a78bfa}.card-purple .open-btn:hover{background:rgba(124,58,237,.1)}
+.card-green{border-color:rgba(16,185,129,.3)}.card-green:hover{border-color:rgba(16,185,129,.7);box-shadow:0 12px 40px rgba(16,185,129,.1)}.card-green .lab-icon{background:rgba(16,185,129,.1)}.card-green .lab-number,.card-green .open-btn{color:#34d399}.card-green .open-btn:hover{background:rgba(16,185,129,.1)}
+.card-amber{border-color:rgba(245,158,11,.3)}.card-amber:hover{border-color:rgba(245,158,11,.7);box-shadow:0 12px 40px rgba(245,158,11,.1)}.card-amber .lab-icon{background:rgba(245,158,11,.1)}.card-amber .lab-number,.card-amber .open-btn{color:#fbbf24}.card-amber .open-btn:hover{background:rgba(245,158,11,.1)}
+.card-red{border-color:rgba(239,68,68,.3)}.card-red:hover{border-color:rgba(239,68,68,.7);box-shadow:0 12px 40px rgba(239,68,68,.1)}.card-red .lab-icon{background:rgba(239,68,68,.1)}.card-red .lab-number,.card-red .open-btn{color:#f87171}.card-red .open-btn:hover{background:rgba(239,68,68,.1)}
+.card-cyan{border-color:rgba(6,182,212,.3)}.card-cyan:hover{border-color:rgba(6,182,212,.7);box-shadow:0 12px 40px rgba(6,182,212,.1)}.card-cyan .lab-icon{background:rgba(6,182,212,.1)}.card-cyan .lab-number,.card-cyan .open-btn{color:#22d3ee}.card-cyan .open-btn:hover{background:rgba(6,182,212,.1)}
+.card-orange{border-color:rgba(249,115,22,.3)}.card-orange:hover{border-color:rgba(249,115,22,.7);box-shadow:0 12px 40px rgba(249,115,22,.1)}.card-orange .lab-icon{background:rgba(249,115,22,.1)}.card-orange .lab-number,.card-orange .open-btn{color:#fb923c}.card-orange .open-btn:hover{background:rgba(249,115,22,.1)}
+.card-pink{border-color:rgba(236,72,153,.3)}.card-pink:hover{border-color:rgba(236,72,153,.7);box-shadow:0 12px 40px rgba(236,72,153,.1)}.card-pink .lab-icon{background:rgba(236,72,153,.1)}.card-pink .lab-number,.card-pink .open-btn{color:#f472b6}.card-pink .open-btn:hover{background:rgba(236,72,153,.1)}
+.card-teal{border-color:rgba(20,184,166,.3)}.card-teal:hover{border-color:rgba(20,184,166,.7);box-shadow:0 12px 40px rgba(20,184,166,.1)}.card-teal .lab-icon{background:rgba(20,184,166,.1)}.card-teal .lab-number,.card-teal .open-btn{color:#2dd4bf}.card-teal .open-btn:hover{background:rgba(20,184,166,.1)}
+.card-indigo{border-color:rgba(99,102,241,.3)}.card-indigo:hover{border-color:rgba(99,102,241,.7);box-shadow:0 12px 40px rgba(99,102,241,.1)}.card-indigo .lab-icon{background:rgba(99,102,241,.1)}.card-indigo .lab-number,.card-indigo .open-btn{color:#818cf8}.card-indigo .open-btn:hover{background:rgba(99,102,241,.1)}
+.card-lime{border-color:rgba(132,204,22,.3)}.card-lime:hover{border-color:rgba(132,204,22,.7);box-shadow:0 12px 40px rgba(132,204,22,.1)}.card-lime .lab-icon{background:rgba(132,204,22,.1)}.card-lime .lab-number,.card-lime .open-btn{color:#a3e635}.card-lime .open-btn:hover{background:rgba(132,204,22,.1)}
+.coverage-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:50px}
+.chapter-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.ch-num{width:32px;height:32px;border-radius:8px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0}
+.ch-info{flex:1;min-width:0}
+.ch-info h4{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ch-info span{font-size:11px;color:var(--muted)}
+.ch-check{color:#10b981;font-size:16px;flex-shrink:0}
+.quickstart{background:linear-gradient(135deg,rgba(0,188,235,.05),rgba(124,58,237,.05));border:1px solid var(--border);border-radius:16px;padding:30px;margin-bottom:50px}
+.quickstart h3{font-size:18px;color:var(--accent);margin-bottom:16px}
+.qs-steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.qs-step{display:flex;align-items:flex-start;gap:12px}
+.qs-num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#000;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.qs-text{font-size:14px;color:var(--muted);line-height:1.5}
+footer{text-align:center;padding:30px 20px;border-top:1px solid var(--border);color:var(--muted);font-size:13px;line-height:1.8}
+.site-footer-bar{background:#04080f;border-top:2px solid #0f2040;padding:28px 30px;text-align:center}
+.site-footer-bar p{color:#475569;font-size:.8rem;line-height:2.2;margin:0}
+.site-footer-bar strong{color:#f59e0b}
+@media(max-width:600px){.labs-grid{grid-template-columns:1fr}.stats-bar{gap:20px}.book-banner{flex-direction:column;text-align:center}}
+.grade-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:12px;border:1px solid}
+.grade-A{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.4);color:#34d399}
+.grade-B{background:rgba(0,188,235,.10);border-color:rgba(0,188,235,.3);color:#00bceb}
+.grade-C{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.3);color:#fbbf24}
+.grade-D{background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.3);color:#f87171}
+.grade-none{background:rgba(100,116,139,.08);border-color:rgba(100,116,139,.2);color:#64748b}
+.lab-progress{padding:0 24px 14px}
+.lab-progress-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;font-size:11px}
+.lab-progress-label{color:#64748b}
+.lab-progress-score{font-weight:700;font-size:12px}
+.lab-progress-bar{background:rgba(255,255,255,.06);border-radius:20px;height:6px;overflow:hidden}
+.lab-progress-fill{height:100%;border-radius:20px;transition:width .5s;background:linear-gradient(90deg,#64748b,#475569)}
+.lab-progress-fill.fill-A{background:linear-gradient(90deg,#10b981,#34d399)}
+.lab-progress-fill.fill-B{background:linear-gradient(90deg,#0069a6,#00bceb)}
+.lab-progress-fill.fill-C{background:linear-gradient(90deg,#d97706,#fbbf24)}
+.lab-progress-fill.fill-D{background:linear-gradient(90deg,#dc2626,#f87171)}
+.reset-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);color:#f87171;border-radius:10px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:14px}
+.reset-btn:hover{background:rgba(239,68,68,.2);border-color:#f87171}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#0d1b2a;border:1px solid #1e3a5c;border-radius:16px;padding:32px;max-width:400px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal-box h3{color:#f87171;font-size:1.1rem;margin-bottom:10px}
+.modal-box p{color:#94a3b8;font-size:.88rem;line-height:1.7;margin-bottom:24px}
+.modal-actions{display:flex;gap:12px;justify-content:center}
+.modal-confirm{background:#dc2626;color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s}
+.modal-confirm:hover{background:#b91c1c}
+.modal-cancel{background:transparent;color:#64748b;border:1px solid #1e3a5c;border-radius:8px;padding:10px 24px;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s}
+.modal-cancel:hover{border-color:#64748b;color:#94a3b8}
+.share-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(0,188,235,.12);border:1px solid rgba(0,188,235,.4);color:#00bceb;border-radius:10px;padding:8px 18px;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .2s;margin-top:14px;margin-right:10px}
+.share-btn:hover{background:rgba(0,188,235,.25);border-color:#00bceb}
+.share-input{width:100%;background:#071020;border:1px solid #1e3a5c;border-radius:8px;color:#e0e6f0;padding:10px 14px;font-size:.9rem;margin:10px 0 16px;font-family:inherit;text-align:right}
+.share-input:focus{outline:none;border-color:#00bceb}
+.share-link-box{background:#071020;border:1px solid rgba(0,188,235,.3);border-radius:8px;padding:10px 14px;font-size:.72rem;color:#7ab3d4;word-break:break-all;direction:ltr;text-align:left;margin:10px 0;line-height:1.6;max-height:80px;overflow-y:auto}
+.copy-btn{background:#0069a6;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:.82rem;font-weight:700;cursor:pointer;transition:background .2s;width:100%}
+.copy-btn:hover{background:#005a8e}
+.copy-btn.copied{background:#10b981}
+.report-overlay{display:none;position:fixed;inset:0;background:#050c18;z-index:10000;overflow-y:auto;padding:24px 16px 60px}
+.report-overlay.open{display:block}
+.report-wrap{max-width:780px;margin:0 auto}
+.report-header{background:linear-gradient(135deg,#0a1628,#0d2145);border:1px solid #1e3a5f;border-radius:16px;padding:28px 32px;margin-bottom:20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.report-logo{width:64px;height:64px;background:linear-gradient(135deg,#006fa6,#00bceb);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0}
+.report-header-info{flex:1}
+.report-header-info h1{font-size:1.3rem;font-weight:800;color:#fff;margin:0 0 4px}
+.report-header-info p{font-size:.8rem;color:#93c5fd;margin:0}
+.report-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.report-meta-card{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:12px;padding:16px 20px}
+.report-meta-card .rmc-label{font-size:.72rem;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.report-meta-card .rmc-value{font-size:1rem;font-weight:700;color:#e0e6f0}
+.report-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.rsum-card{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:12px;padding:16px;text-align:center}
+.rsum-card .rsum-num{font-size:1.6rem;font-weight:800;margin-bottom:4px}
+.rsum-card .rsum-label{font-size:.7rem;color:#64748b;line-height:1.4}
+.report-section{background:#0d1b2a;border:1px solid #1e3a5f;border-radius:14px;padding:20px 24px;margin-bottom:20px}
+.report-section h3{font-size:.88rem;font-weight:700;color:#7ab3d4;margin-bottom:16px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #1e3a5f;padding-bottom:10px}
+.overall-bar-wrap{margin-bottom:6px}
+.overall-bar-track{background:#1e3a5c;border-radius:20px;height:14px;overflow:hidden}
+.overall-bar-fill{height:100%;border-radius:20px;transition:width .8s}
+.overall-bar-labels{display:flex;justify-content:space-between;font-size:.75rem;color:#64748b;margin-top:4px}
+.lab-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(30,58,92,.5)}
+.lab-row:last-child{border-bottom:none}
+.lab-row-icon{font-size:1.2rem;flex-shrink:0;width:28px;text-align:center}
+.lab-row-info{flex:1;min-width:0}
+.lab-row-name{font-size:.85rem;font-weight:600;color:#e0e6f0;margin-bottom:2px}
+.lab-row-chapter{font-size:.72rem;color:#64748b}
+.lab-row-bar{width:120px;flex-shrink:0}
+.lab-row-bar-track{background:#1e3a5c;border-radius:20px;height:6px;overflow:hidden}
+.lab-row-bar-fill{height:100%;border-radius:20px}
+.lab-row-score{width:70px;text-align:center;flex-shrink:0;font-size:.8rem;font-weight:700}
+.lab-row-grade{width:40px;text-align:center;flex-shrink:0}
+.lab-grade-pill{display:inline-block;font-size:.72rem;font-weight:800;padding:2px 8px;border-radius:20px;border:1px solid}
+.grade-pill-A{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.4);color:#34d399}
+.grade-pill-B{background:rgba(0,188,235,.12);border-color:rgba(0,188,235,.35);color:#00bceb}
+.grade-pill-C{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:#fbbf24}
+.grade-pill-D{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.35);color:#f87171}
+.grade-pill-none{background:rgba(100,116,139,.1);border-color:rgba(100,116,139,.25);color:#64748b}
+.lab-row-notdone{font-size:.78rem;color:#475569;font-style:italic}
+.grade-dist{display:flex;gap:10px;flex-wrap:wrap}
+.grade-dist-item{flex:1;min-width:60px;background:#071020;border-radius:10px;padding:12px 8px;text-align:center;border:1px solid #1e3a5f}
+.grade-dist-item .gdi-num{font-size:1.4rem;font-weight:800}
+.grade-dist-item .gdi-label{font-size:.68rem;color:#64748b;margin-top:2px}
+.report-actions{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.print-btn{background:#006fa6;color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:.88rem;font-weight:700;cursor:pointer;transition:background .2s;display:flex;align-items:center;gap:8px}
+.print-btn:hover{background:#005a8e}
+.back-report-btn{background:transparent;color:#64748b;border:1px solid #1e3a5c;border-radius:10px;padding:12px 28px;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .2s}
+.back-report-btn:hover{border-color:#64748b;color:#94a3b8}
+@media(max-width:600px){.report-summary{grid-template-columns:repeat(2,1fr)}.report-meta{grid-template-columns:1fr}.lab-row-bar{width:70px}}
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  html,body{background:#fff!important;color:#000!important}
+  body > *:not(.report-overlay){display:none!important}
+  .report-overlay{display:block!important;position:static!important;background:#fff!important;color:#000!important;padding:0!important;overflow:visible!important}
+  .report-wrap{max-width:100%!important}
+  .report-actions,.back-report-btn,.print-btn{display:none!important}
+  .report-header{background:#0069a6!important;border-color:#0069a6!important}
+  .report-section,.report-meta-card,.rsum-card{background:#f8fafc!important;border-color:#e2e8f0!important}
+  .rmc-value,.lab-row-name,.report-header-info h1{color:#1e293b!important}
+  .rmc-label,.lab-row-chapter,.overall-bar-labels,.rsum-label,.report-section h3{color:#64748b!important}
+  .overall-bar-track,.lab-row-bar{background:#e2e8f0!important}
+}
+</style>
+</head>
+<body>
+<div class="site-topbar">
+  <span>🌐 بيئة تدريبية — للاستخدام الأكاديمي فقط &nbsp;|&nbsp; مختبرات CCNA 200-301 التفاعلية</span>
+  <span class="author-tag">م. عبدالله الأسمري &nbsp;·&nbsp; Eng. Abdullah Alasmari</span>
+</div>
+<div class="site-header-bar">
+  <div class="site-logo-box">🌐</div>
+  <div class="site-lab-info">
+    <h2>مختبرات CCNA 200-301 التفاعلية</h2>
+    <span>Cisco Certified Network Associate · استناداً إلى: Wendell Odom — Vol. 1</span>
+  </div>
+  <div class="site-author-block">
+    <div class="aname">م. عبدالله الأسمري</div>
+    <div class="abook">CCNA 200-301 Official Cert Guide — Vol. 1</div>
+  </div>
+</div>
+
+<div class="container">
+  <header>
+    <div class="header-badge">🌐 مختبرات CCNA · 200-301</div>
+    <h1>مختبرات CCNA 200-301 التفاعلية</h1>
+    <p>محاكاة تفاعلية شاملة لجميع محاور شهادة CCNA · <strong style="color:#f59e0b">م. عبدالله الأسمري</strong> · استناداً إلى Wendell Odom Vol. 1</p>
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-num">10</span><span class="stat-label">مختبر تفاعلي</span></div>
+      <div class="stat"><span class="stat-num">29</span><span class="stat-label">فصل من المنهج</span></div>
+      <div class="stat"><span class="stat-num">80+</span><span class="stat-label">تمرين عملي</span></div>
+      <div class="stat"><span class="stat-num">100%</span><span class="stat-label">يعمل بدون إنترنت</span></div>
+    </div>
+    <div id="progress-summary" style="display:none;margin-bottom:6px"></div>
+    <button class="reset-btn" id="reset-all-btn" onclick="openResetModal()" style="display:none">🗑️ إعادة تعيين جميع نتائج الاختبارات</button>
+    <button class="share-btn" onclick="openShareModal()">📤 مشاركة نتائجي مع الأستاذ</button>
+  </header>
+
+  <div class="modal-overlay" id="reset-modal">
+    <div class="modal-box">
+      <h3>⚠️ تأكيد إعادة التعيين</h3>
+      <p>هل أنت متأكد أنك تريد حذف جميع نتائج الاختبارات المحفوظة؟<br>لا يمكن التراجع عن هذا الإجراء.</p>
+      <div class="modal-actions">
+        <button class="modal-confirm" onclick="confirmReset()">نعم، احذف الكل</button>
+        <button class="modal-cancel" onclick="closeResetModal()">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="book-banner">
+    <div class="book-icon">📘</div>
+    <div class="book-info">
+      <h3>المرجع: CCNA 200-301 Official Cert Guide, Vol. 1 — Wendell Odom (Cisco Press)</h3>
+      <p>هذه المختبرات تغطي جميع فصول المجلد الأول الـ 29 فصلاً — من أساسيات الشبكات والـ Ethernet وصولاً إلى التوجيه بـ OSPF والـ IPv6 والشبكات اللاسلكية. كل مفهوم نظري تحوّل إلى محاكاة عملية تفاعلية تعمل مباشرةً في المتصفح دون الحاجة لأي برنامج إضافي.</p>
+    </div>
+  </div>
+
+  <div class="section-title">🧪 المختبرات التفاعلية</div>
+  <div class="labs-grid">
+
+    <a href="network-fundamentals-lab.html" class="lab-card card-blue">
+      <div class="lab-card-header">
+        <div class="lab-icon">🌐</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر الأول</div>
+          <h2>أساسيات الشبكات</h2>
+          <p>TCP/IP · OSI · أنواع الشبكات</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>استكشف نموذجَي OSI وTCP/IP، حدّد وظيفة كل طبقة، وتعرّف على أنواع الشبكات وبروتوكولاتها الأساسية.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">نموذج OSI</span><span class="topic-tag">TCP/IP</span>
+        <span class="topic-tag">LAN / WAN / MAN</span><span class="topic-tag">البروتوكولات</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab01" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab01">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab01" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 1–3</span><span class="grade-badge grade-none" id="gb-ccna_lab01">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="ethernet-switching-lab.html" class="lab-card card-purple">
+      <div class="lab-card-header">
+        <div class="lab-icon">🔀</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر الثاني</div>
+          <h2>Ethernet والتحويل</h2>
+          <p>MAC · عمل السويتش · CLI</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>تعمّق في آلية عمل السويتش وجدول MAC، تعلّم أوامر Cisco CLI الأساسية، وضبط الإعدادات الأولية للسويتش.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">جدول MAC</span><span class="topic-tag">Cisco CLI</span>
+        <span class="topic-tag">Duplex / Speed</span><span class="topic-tag">إعدادات السويتش</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab02" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab02">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab02" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 4–6</span><span class="grade-badge grade-none" id="gb-ccna_lab02">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="vlans-lab.html" class="lab-card card-green">
+      <div class="lab-card-header">
+        <div class="lab-icon">🏷️</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر الثالث</div>
+          <h2>الشبكات الافتراضية VLANs</h2>
+          <p>Trunk · Access · Inter-VLAN Routing</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>قسّم الشبكة إلى VLANs، حدّد منافذ الـ Trunk والـ Access، وفهم آلية التوجيه بين VLANs باستخدام Router-on-a-Stick.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">VLAN Trunking</span><span class="topic-tag">802.1Q</span>
+        <span class="topic-tag">Access Port</span><span class="topic-tag">Inter-VLAN</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab03" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab03">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab03" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصل 7</span><span class="grade-badge grade-none" id="gb-ccna_lab03">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="stp-lab.html" class="lab-card card-amber">
+      <div class="lab-card-header">
+        <div class="lab-icon">🌳</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر الرابع</div>
+          <h2>بروتوكول Spanning Tree</h2>
+          <p>STP · RSTP · انتخاب Root Bridge</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>تعلّم كيف يمنع STP حلقات الشبكة، حدّد Root Bridge، عيّن أدوار المنافذ، وقارن بين STP وRSTP وأنواع MST.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">Root Bridge</span><span class="topic-tag">Port Roles</span>
+        <span class="topic-tag">RSTP</span><span class="topic-tag">EtherChannel</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab04" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab04">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab04" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 8–10</span><span class="grade-badge grade-none" id="gb-ccna_lab04">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="subnetting-lab.html" class="lab-card card-red">
+      <div class="lab-card-header">
+        <div class="lab-icon">🔢</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر الخامس</div>
+          <h2>عنونة IPv4 والتقسيم</h2>
+          <p>Subnetting · CIDR · حسابات الشبكة</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>أتقن تحليل الشبكات الكلاسيكية، احسب قناع الشبكة، حدّد عنوان الشبكة والبث، وجرّب حاسبة الـ Subnetting التفاعلية.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">Class A/B/C</span><span class="topic-tag">CIDR / VLSM</span>
+        <span class="topic-tag">Network / Broadcast</span><span class="topic-tag">حاسبة Subnet</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab05" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab05">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab05" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 11–14</span><span class="grade-badge grade-none" id="gb-ccna_lab05">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="ip-routing-lab.html" class="lab-card card-cyan">
+      <div class="lab-card-header">
+        <div class="lab-icon">🗺️</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر السادس</div>
+          <h2>التوجيه بـ IPv4</h2>
+          <p>Router CLI · Static Routes · جدول التوجيه</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>تعلّم قراءة جدول التوجيه، ضبط المسارات الثابتة، إعداد عناوين IP على الراوتر، والتحقق من الاتصالية بأوامر ping وtraceroute.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">Routing Table</span><span class="topic-tag">Static Route</span>
+        <span class="topic-tag">Default Route</span><span class="topic-tag">ping / traceroute</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab06" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab06">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab06" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 15–18</span><span class="grade-badge grade-none" id="gb-ccna_lab06">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="ospf-lab.html" class="lab-card card-orange">
+      <div class="lab-card-header">
+        <div class="lab-icon">📡</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر السابع</div>
+          <h2>بروتوكول OSPF</h2>
+          <p>DR/BDR · تكلفة OSPF · المجاورة</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>افهم كيف يكتشف OSPF الجيران، يحسب أقصر مسار، ينتخب DR/BDR، ويوزّع جداول التوجيه بين الراوترات.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">OSPF Neighbors</span><span class="topic-tag">DR / BDR</span>
+        <span class="topic-tag">تكلفة OSPF</span><span class="topic-tag">LSA / LSDB</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab07" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab07">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab07" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 19–21</span><span class="grade-badge grade-none" id="gb-ccna_lab07">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="ipv6-lab.html" class="lab-card card-pink">
+      <div class="lab-card-header">
+        <div class="lab-icon">6️⃣</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر الثامن</div>
+          <h2>أساسيات IPv6</h2>
+          <p>عنونة IPv6 · اختصار العناوين · التوجيه</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>تعلّم بنية عناوين IPv6 وأنواعها، اختصر العناوين الطويلة، احسب البادئات، وافهم كيف يتعاون IPv6 مع IPv4.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">Global Unicast</span><span class="topic-tag">Link-Local</span>
+        <span class="topic-tag">اختصار العنوان</span><span class="topic-tag">EUI-64</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab08" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab08">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab08" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 22–25</span><span class="grade-badge grade-none" id="gb-ccna_lab08">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="wireless-lab.html" class="lab-card card-teal">
+      <div class="lab-card-header">
+        <div class="lab-icon">📶</div>
+        <div class="lab-card-title">
+          <div class="lab-number">المختبر التاسع</div>
+          <h2>الشبكات اللاسلكية</h2>
+          <p>802.11 · WPA3 · معماريات الـ WLAN</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>قارن بين معايير Wi-Fi، افهم معماريات الـ WLAN المركزية واللامركزية، وتعلّم بروتوكولات الأمان اللاسلكي من WEP إلى WPA3.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">802.11 a/b/g/n/ac/ax</span><span class="topic-tag">WPA2 / WPA3</span>
+        <span class="topic-tag">AP / WLC</span><span class="topic-tag">BSS / ESS</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab09" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab09">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab09" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">الفصول 26–29</span><span class="grade-badge grade-none" id="gb-ccna_lab09">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+    <a href="capstone-lab.html" class="lab-card card-lime">
+      <div class="lab-card-header">
+        <div class="lab-icon">🏆</div>
+        <div class="lab-card-title">
+          <div class="lab-number">الاختبار الشامل النهائي</div>
+          <h2>التحدي الشامل — CCNA</h2>
+          <p>تصميم شبكة متكاملة من البداية</p>
+        </div>
+      </div>
+      <div class="lab-card-body"><p>سيناريو متعدد المراحل: تصميم الشبكة ← ضبط VLANs ← إعداد التوجيه ← تطبيق OSPF ← ضبط اللاسلكي. مع نظام تقييم شامل.</p></div>
+      <div class="lab-topics">
+        <span class="topic-tag">جميع المحاور</span><span class="topic-tag">تصميم الشبكة</span>
+        <span class="topic-tag">التقييم الشامل</span><span class="topic-tag">التحضير للاختبار</span>
+      </div>
+      <div class="lab-progress" id="lp-ccna_lab10" style="display:none">
+        <div class="lab-progress-row"><span class="lab-progress-label">نتيجة الاختبار</span><span class="lab-progress-score" id="ps-ccna_lab10">—</span></div>
+        <div class="lab-progress-bar"><div class="lab-progress-fill" id="pf-ccna_lab10" style="width:0%"></div></div>
+      </div>
+      <div class="lab-card-footer">
+        <span class="chapter-badge">جميع الفصول</span><span class="grade-badge grade-none" id="gb-ccna_lab10">—</span>
+        <span class="open-btn">فتح المختبر ←</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="section-title">📖 تغطية فصول المنهج</div>
+  <div class="coverage-grid">
+    <div class="chapter-item"><div class="ch-num">1</div><div class="ch-info"><h4>مقدمة شبكات TCP/IP</h4><span>المختبر الأول — أساسيات الشبكات</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">2</div><div class="ch-info"><h4>أساسيات شبكات Ethernet</h4><span>المختبر الأول — أساسيات الشبكات</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">3</div><div class="ch-info"><h4>أساسيات WAN والتوجيه</h4><span>المختبر الأول — أساسيات الشبكات</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">4</div><div class="ch-info"><h4>استخدام واجهة CLI</h4><span>المختبر الثاني — Ethernet والتحويل</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">5</div><div class="ch-info"><h4>تحليل تحويل Ethernet</h4><span>المختبر الثاني — Ethernet والتحويل</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">6</div><div class="ch-info"><h4>إعداد السويتش الأساسي</h4><span>المختبر الثاني — Ethernet والتحويل</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">7</div><div class="ch-info"><h4>تطبيق VLANs الافتراضية</h4><span>المختبر الثالث — VLANs</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">8</div><div class="ch-info"><h4>مفاهيم Spanning Tree</h4><span>المختبر الرابع — STP</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">9</div><div class="ch-info"><h4>RSTP وميزات STP الاختيارية</h4><span>المختبر الرابع — STP</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">10</div><div class="ch-info"><h4>إعداد RSTP وEtherChannel</h4><span>المختبر الرابع — STP</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">11</div><div class="ch-info"><h4>منظورات تقسيم IPv4</h4><span>المختبر الخامس — Subnetting</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">12</div><div class="ch-info"><h4>تحليل شبكات IPv4 الكلاسيكية</h4><span>المختبر الخامس — Subnetting</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">13</div><div class="ch-info"><h4>تحليل أقنعة الشبكة</h4><span>المختبر الخامس — Subnetting</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">14</div><div class="ch-info"><h4>تحليل الشبكات الفرعية الموجودة</h4><span>المختبر الخامس — Subnetting</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">15</div><div class="ch-info"><h4>تشغيل راوترات Cisco</h4><span>المختبر السادس — التوجيه IPv4</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">16</div><div class="ch-info"><h4>إعداد عناوين IPv4 والمسارات الثابتة</h4><span>المختبر السادس — التوجيه IPv4</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">17</div><div class="ch-info"><h4>التوجيه في الشبكة المحلية</h4><span>المختبر السادس — التوجيه IPv4</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">18</div><div class="ch-info"><h4>التحقق من اتصالية المضيف</h4><span>المختبر السادس — التوجيه IPv4</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">19</div><div class="ch-info"><h4>فهم مفاهيم OSPF</h4><span>المختبر السابع — OSPF</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">20</div><div class="ch-info"><h4>تطبيق OSPF</h4><span>المختبر السابع — OSPF</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">21</div><div class="ch-info"><h4>أنواع شبكات OSPF والجيران</h4><span>المختبر السابع — OSPF</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">22</div><div class="ch-info"><h4>أساسيات IPv6</h4><span>المختبر الثامن — IPv6</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">23</div><div class="ch-info"><h4>عنونة IPv6 والتقسيم</h4><span>المختبر الثامن — IPv6</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">24</div><div class="ch-info"><h4>تطبيق عنونة IPv6 على الراوترات</h4><span>المختبر الثامن — IPv6</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">25</div><div class="ch-info"><h4>تطبيق توجيه IPv6</h4><span>المختبر الثامن — IPv6</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">26</div><div class="ch-info"><h4>أساسيات الشبكات اللاسلكية</h4><span>المختبر التاسع — اللاسلكية</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">27</div><div class="ch-info"><h4>معماريات Cisco اللاسلكية</h4><span>المختبر التاسع — اللاسلكية</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">28</div><div class="ch-info"><h4>تأمين الشبكات اللاسلكية</h4><span>المختبر التاسع — اللاسلكية</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">29</div><div class="ch-info"><h4>بناء شبكة WLAN</h4><span>المختبر التاسع — اللاسلكية</span></div><span class="ch-check">✓</span></div>
+    <div class="chapter-item"><div class="ch-num">★</div><div class="ch-info"><h4>الاختبار الشامل النهائي</h4><span>التحدي الشامل — جميع الفصول</span></div><span class="ch-check">✓</span></div>
+  </div>
+
+  <div class="quickstart">
+    <h3>🚀 كيف تستخدم هذه المختبرات؟</h3>
+    <div class="qs-steps">
+      <div class="qs-step"><div class="qs-num">1</div><div class="qs-text">ابدأ بالمختبر الأول لفهم أساسيات نماذج OSI وTCP/IP قبل الانتقال لمختبرات التحويل والتوجيه</div></div>
+      <div class="qs-step"><div class="qs-num">2</div><div class="qs-text">اتبع ترتيب المختبرات حسب الجدول الدراسي، أو انتقل مباشرةً للمختبر المرتبط بمحاضرة اليوم</div></div>
+      <div class="qs-step"><div class="qs-num">3</div><div class="qs-text">جميع المختبرات تعمل في المتصفح مباشرةً — لا إنترنت ولا تثبيت Packet Tracer</div></div>
+      <div class="qs-step"><div class="qs-num">4</div><div class="qs-text">تعمل على Windows وMac وiPad وiPhone وأجهزة Android بالمتصفحات الحديثة</div></div>
+    </div>
+  </div>
+
+  <footer>
+    <p>مختبرات CCNA 200-301 التفاعلية — استناداً إلى Wendell Odom Official Cert Guide Vol. 1</p>
+    <p style="margin-top:6px;font-size:11px;opacity:.5">جميع المحاكاة لأغراض تعليمية أكاديمية فقط · All simulations are for educational purposes only</p>
+  </footer>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="share-modal">
+  <div class="modal-box" style="max-width:480px">
+    <h3 style="color:#00bceb;margin-bottom:8px">📤 مشاركة نتائجي مع الأستاذ</h3>
+    <p style="color:#94a3b8;font-size:.85rem;line-height:1.7;margin-bottom:16px">أدخل اسمك الكامل، ثم انسخ الرابط وأرسله لأستاذك عبر واتساب أو البريد الإلكتروني أو نظام الإدارة التعليمية.</p>
+    <input class="share-input" id="student-name-input" type="text" placeholder="الاسم الكامل (مثال: عبدالله محمد الأسمري)" maxlength="60" />
+    <button class="modal-confirm" style="width:100%;margin-bottom:8px;background:#006fa6" onclick="generateShareLink()">🔗 إنشاء رابط التقرير</button>
+    <div id="share-link-area" style="display:none;margin-top:12px">
+      <div style="font-size:.78rem;color:#34d399;margin-bottom:6px;font-weight:700">✓ الرابط جاهز — انسخه وأرسله:</div>
+      <div class="share-link-box" id="share-link-box"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="copy-btn" id="copy-btn" onclick="copyShareLink()" style="flex:1">📋 نسخ الرابط</button>
+        <button onclick="shareToTelegram()" style="flex:1;background:#2CA5E0;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .2s">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+          تيليغرام
+        </button>
+      </div>
+    </div>
+    <button class="modal-cancel" style="width:100%;margin-top:10px" onclick="closeShareModal()">إغلاق</button>
+  </div>
+</div>
+
+<!-- Report Overlay -->
+<div class="report-overlay" id="report-overlay">
+  <div class="report-wrap">
+    <div id="report-content"></div>
+    <div class="report-actions">
+      <button class="print-btn" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+      <button class="back-report-btn" onclick="document.getElementById('report-overlay').classList.remove('open');history.replaceState(null,'',window.location.pathname)">← العودة للمختبرات</button>
+    </div>
+  </div>
+</div>
+
+<div class="site-footer-bar">
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري — Eng. Abdullah Alasmari</strong></p>
+  <p>استناداً إلى: <strong>CCNA 200-301 Official Cert Guide, Vol. 1 — Wendell Odom (Cisco Press)</strong></p>
+  <p style="font-size:.7rem;color:#334155;margin-top:4px">© 2025 · جميع المحتوى لأغراض تعليمية أكاديمية · مختبرات CCNA 200-301 التفاعلية</p>
+</div>
+
+<script>
+(function(){
+  var labs=[
+    {key:'ccna_lab01',label:'المختبر 1'},{key:'ccna_lab02',label:'المختبر 2'},
+    {key:'ccna_lab03',label:'المختبر 3'},{key:'ccna_lab04',label:'المختبر 4'},
+    {key:'ccna_lab05',label:'المختبر 5'},{key:'ccna_lab06',label:'المختبر 6'},
+    {key:'ccna_lab07',label:'المختبر 7'},{key:'ccna_lab08',label:'المختبر 8'},
+    {key:'ccna_lab09',label:'المختبر 9'},{key:'ccna_lab10',label:'الاختبار الشامل'},
+  ];
+  labs.forEach(function(lab){
+    var raw=localStorage.getItem(lab.key);
+    if(!raw)return;
+    try{
+      var d=JSON.parse(raw);
+      var pct=d.pct;
+      var grade,cls,fillCls;
+      if(pct>=90){grade='A';cls='grade-A';fillCls='fill-A';}
+      else if(pct>=75){grade='B';cls='grade-B';fillCls='fill-B';}
+      else if(pct>=60){grade='C';cls='grade-C';fillCls='fill-C';}
+      else{grade='D';cls='grade-D';fillCls='fill-D';}
+      var el=document.getElementById('gb-'+lab.key);
+      if(el){el.className='grade-badge '+cls;el.textContent=grade+' '+pct+'%';}
+      var lp=document.getElementById('lp-'+lab.key);
+      if(lp){
+        lp.style.display='block';
+        var ps=document.getElementById('ps-'+lab.key);
+        if(ps){ps.textContent=d.score+'/'+d.total+' ('+pct+'%)';ps.style.color=cls==='grade-A'?'#34d399':cls==='grade-B'?'#00bceb':cls==='grade-C'?'#fbbf24':'#f87171';}
+        var pf=document.getElementById('pf-'+lab.key);
+        if(pf){pf.style.width=pct+'%';pf.className='lab-progress-fill '+fillCls;}
+      }
+    }catch(e){}
+  });
+  var done=labs.filter(function(l){return localStorage.getItem(l.key);}).length;
+  if(done>0){
+    var ps=document.getElementById('progress-summary');
+    if(ps){ps.style.display='block';ps.innerHTML='<span style="color:#34d399;font-size:13px;font-weight:700">✓ أكملت '+done+' من 10 مختبرات</span>';}
+    var rb=document.getElementById('reset-all-btn');
+    if(rb)rb.style.display='inline-flex';
+  }
+})();
+
+var LAB_META=[
+  {key:'ccna_lab01',num:'01',name:'أساسيات الشبكات',chapter:'الفصول 1–3',icon:'🌐',color:'#00bceb'},
+  {key:'ccna_lab02',num:'02',name:'Ethernet والتحويل',chapter:'الفصول 4–6',icon:'🔀',color:'#a78bfa'},
+  {key:'ccna_lab03',num:'03',name:'الشبكات الافتراضية VLANs',chapter:'الفصل 7',icon:'🏷️',color:'#34d399'},
+  {key:'ccna_lab04',num:'04',name:'بروتوكول Spanning Tree',chapter:'الفصول 8–10',icon:'🌳',color:'#fbbf24'},
+  {key:'ccna_lab05',num:'05',name:'عنونة IPv4 والتقسيم',chapter:'الفصول 11–14',icon:'🔢',color:'#f87171'},
+  {key:'ccna_lab06',num:'06',name:'التوجيه بـ IPv4',chapter:'الفصول 15–18',icon:'🗺️',color:'#22d3ee'},
+  {key:'ccna_lab07',num:'07',name:'بروتوكول OSPF',chapter:'الفصول 19–21',icon:'📡',color:'#fb923c'},
+  {key:'ccna_lab08',num:'08',name:'أساسيات IPv6',chapter:'الفصول 22–25',icon:'6️⃣',color:'#f472b6'},
+  {key:'ccna_lab09',num:'09',name:'الشبكات اللاسلكية',chapter:'الفصول 26–29',icon:'📶',color:'#2dd4bf'},
+  {key:'ccna_lab10',num:'10',name:'التحدي الشامل — CCNA',chapter:'جميع الفصول',icon:'🏆',color:'#a3e635'},
+];
+
+function openShareModal(){
+  document.getElementById('share-modal').classList.add('open');
+  document.getElementById('share-link-area').style.display='none';
+  document.getElementById('student-name-input').value='';
+  var cb=document.getElementById('copy-btn');
+  if(cb){cb.textContent='نسخ الرابط';cb.className='copy-btn';}
+}
+function closeShareModal(){document.getElementById('share-modal').classList.remove('open');}
+function generateShareLink(){
+  var name=document.getElementById('student-name-input').value.trim();
+  if(!name){document.getElementById('student-name-input').style.borderColor='#f87171';return;}
+  document.getElementById('student-name-input').style.borderColor='';
+  var scores={};
+  LAB_META.forEach(function(lab){
+    var raw=localStorage.getItem(lab.key);
+    if(raw){try{scores[lab.key]=JSON.parse(raw);}catch(e){}}
+  });
+  var data={n:name,d:new Date().toLocaleDateString('ar-SA'),scores:scores,v:1};
+  var encoded=btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  var url=window.location.href.split('#')[0]+'#report='+encoded;
+  document.getElementById('share-link-box').textContent=url;
+  document.getElementById('share-link-area').style.display='block';
+}
+function copyShareLink(){
+  var link=document.getElementById('share-link-box').textContent;
+  var btn=document.getElementById('copy-btn');
+  var done=function(){btn.textContent='تم النسخ!';btn.className='copy-btn copied';setTimeout(function(){btn.textContent='نسخ الرابط';btn.className='copy-btn';},2500);};
+  if(navigator.clipboard){navigator.clipboard.writeText(link).then(done);}
+  else{var ta=document.createElement('textarea');ta.value=link;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
+}
+function shareToTelegram(){
+  var link=document.getElementById('share-link-box').textContent;
+  var name=document.getElementById('student-name-input').value.trim()||'الطالب';
+  var text='تقرير أداء الطالب '+name+' — مختبرات CCNA 200-301';
+  window.open('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent(text),'_blank');
+}
+
+function gradeInfo(pct){
+  if(pct>=90)return{g:'A',cls:'grade-pill-A',bar:'#34d399',label:'ممتاز'};
+  if(pct>=75)return{g:'B',cls:'grade-pill-B',bar:'#00bceb',label:'جيد جداً'};
+  if(pct>=60)return{g:'C',cls:'grade-pill-C',bar:'#fbbf24',label:'جيد'};
+  return{g:'D',cls:'grade-pill-D',bar:'#f87171',label:'يحتاج مراجعة'};
+}
+function renderReport(data){
+  var scores=data.scores||{};
+  var completed=LAB_META.filter(function(l){return scores[l.key];}).length;
+  var donePcts=LAB_META.map(function(l){return scores[l.key]?scores[l.key].pct:0;}).filter(function(p){return p>0;});
+  var avg=donePcts.length?Math.round(donePcts.reduce(function(a,b){return a+b;},0)/donePcts.length):0;
+  var totalPts=LAB_META.reduce(function(a,l){return a+(scores[l.key]?scores[l.key].score:0);},0);
+  var totalMax=LAB_META.reduce(function(a,l){return a+(scores[l.key]?scores[l.key].total:0);},0);
+  var overallGi=avg>0?gradeInfo(avg):{g:'—',cls:'grade-pill-none',bar:'#475569',label:'لم يبدأ بعد'};
+  var dist={A:0,B:0,C:0,D:0};
+  LAB_META.forEach(function(l){if(scores[l.key]){var gi=gradeInfo(scores[l.key].pct);if(dist[gi.g]!==undefined)dist[gi.g]++;}});
+  var labRows=LAB_META.map(function(l){
+    var d=scores[l.key];
+    if(!d)return '<div class="lab-row"><div class="lab-row-icon">'+l.icon+'</div><div class="lab-row-info"><div class="lab-row-name">المختبر '+l.num+' — '+l.name+'</div><div class="lab-row-chapter">'+l.chapter+'</div></div><div class="lab-row-bar"><div class="lab-row-bar-track"><div class="lab-row-bar-fill" style="width:0%;background:#1e3a5c"></div></div></div><div class="lab-row-score lab-row-notdone">لم يُكمل</div><div class="lab-row-grade"><span class="lab-grade-pill grade-pill-none">—</span></div></div>';
+    var gi=gradeInfo(d.pct);
+    return '<div class="lab-row"><div class="lab-row-icon">'+l.icon+'</div><div class="lab-row-info"><div class="lab-row-name">المختبر '+l.num+' — '+l.name+'</div><div class="lab-row-chapter">'+l.chapter+'</div></div><div class="lab-row-bar"><div class="lab-row-bar-track"><div class="lab-row-bar-fill" style="width:'+d.pct+'%;background:'+gi.bar+'"></div></div></div><div class="lab-row-score" style="color:'+gi.bar+'">'+d.score+'/'+d.total+'</div><div class="lab-row-grade"><span class="lab-grade-pill '+gi.cls+'">'+gi.g+'</span></div></div>';
+  }).join('');
+  var pctDone=(completed/10*100).toFixed(0);
+  var html='<div class="report-header"><div class="report-logo">🌐</div><div class="report-header-info"><h1>تقرير أداء الطالب — مختبرات CCNA 200-301</h1><p>CCNA 200-301 Official Cert Guide Vol. 1 · Wendell Odom · م. عبدالله الأسمري</p></div></div>'
+    +'<div class="report-meta"><div class="report-meta-card"><div class="rmc-label">اسم الطالب</div><div class="rmc-value" style="font-size:1.15rem">'+data.n+'</div></div><div class="report-meta-card"><div class="rmc-label">تاريخ التقرير</div><div class="rmc-value">'+data.d+'</div></div></div>'
+    +'<div class="report-summary"><div class="rsum-card"><div class="rsum-num" style="color:#00bceb">'+completed+'<span style="font-size:1rem;color:#475569">/10</span></div><div class="rsum-label">مختبرات مكتملة</div></div><div class="rsum-card"><div class="rsum-num" style="color:'+overallGi.bar+'">'+avg+'<span style="font-size:1rem;color:#475569">%</span></div><div class="rsum-label">متوسط النتيجة</div></div><div class="rsum-card"><div class="rsum-num"><span class="lab-grade-pill '+overallGi.cls+'" style="font-size:1.3rem;padding:5px 16px">'+overallGi.g+'</span></div><div class="rsum-label" style="margin-top:6px">التقدير العام<br>'+overallGi.label+'</div></div><div class="rsum-card"><div class="rsum-num" style="color:#fbbf24">'+totalPts+'<span style="font-size:1rem;color:#475569">/'+totalMax+'</span></div><div class="rsum-label">مجموع النقاط</div></div></div>'
+    +'<div class="report-section"><h3>التقدم العام في المنهج</h3><div class="overall-bar-wrap"><div style="display:flex;justify-content:space-between;font-size:.78rem;color:#7ab3d4;margin-bottom:6px"><span>اكتمال المختبرات</span><span>'+completed+' / 10 ('+pctDone+'%)</span></div><div class="overall-bar-track"><div class="overall-bar-fill" style="width:'+pctDone+'%;background:linear-gradient(90deg,#006fa6,#00bceb)"></div></div></div><div style="margin-top:6px;font-size:.78rem;color:#7ab3d4;display:flex;justify-content:space-between"><span>متوسط النتيجة</span><span>'+avg+'%</span></div><div class="overall-bar-track" style="margin-top:4px"><div class="overall-bar-fill" style="width:'+avg+'%;background:'+overallGi.bar+'"></div></div><div class="grade-dist" style="margin-top:20px"><div class="grade-dist-item"><div class="gdi-num" style="color:#34d399">'+dist.A+'</div><div class="gdi-label">ممتاز (A)<br>90%+</div></div><div class="grade-dist-item"><div class="gdi-num" style="color:#00bceb">'+dist.B+'</div><div class="gdi-label">جيد جداً (B)<br>75-89%</div></div><div class="grade-dist-item"><div class="gdi-num" style="color:#fbbf24">'+dist.C+'</div><div class="gdi-label">جيد (C)<br>60-74%</div></div><div class="grade-dist-item"><div class="gdi-num" style="color:#f87171">'+dist.D+'</div><div class="gdi-label">يحتاج مراجعة (D)<br>أقل من 60%</div></div><div class="grade-dist-item"><div class="gdi-num" style="color:#475569">'+(10-completed)+'</div><div class="gdi-label">لم يُكمل<br>بعد</div></div></div></div>'
+    +'<div class="report-section"><h3>تفاصيل نتائج كل مختبر</h3><div style="display:flex;align-items:center;font-size:.7rem;color:#475569;padding:4px 0 10px;border-bottom:1px solid #1e3a5f;margin-bottom:4px"><div style="flex:1">المختبر والفصل</div><div style="width:120px;text-align:center">شريط التقدم</div><div style="width:70px;text-align:center">النتيجة</div><div style="width:40px;text-align:center">تقدير</div></div>'+labRows+'</div>'
+    +'<div style="background:#0d1b2a;border:1px solid #1e3a5f;border-radius:12px;padding:16px 20px;text-align:center;color:#475569;font-size:.78rem;line-height:2">صُمِّمت بواسطة <strong style="color:#f59e0b">م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية<br>هذا التقرير تم إنشاؤه تلقائياً من نتائج الطالب المحفوظة محلياً في المتصفح</div>';
+  document.getElementById('report-content').innerHTML=html;
+  document.getElementById('report-overlay').classList.add('open');
+  window.scrollTo(0,0);
+}
+function checkForReport(){
+  var hash=window.location.hash;
+  if(!hash||hash.indexOf('#report=')<0)return;
+  try{var encoded=hash.slice(8);var data=JSON.parse(decodeURIComponent(escape(atob(encoded))));renderReport(data);}catch(e){}
+}
+checkForReport();
+
+function openResetModal(){document.getElementById('reset-modal').classList.add('open');}
+function closeResetModal(){document.getElementById('reset-modal').classList.remove('open');}
+function confirmReset(){
+  ['ccna_lab01','ccna_lab02','ccna_lab03','ccna_lab04','ccna_lab05','ccna_lab06','ccna_lab07','ccna_lab08','ccna_lab09','ccna_lab10'].forEach(function(k){localStorage.removeItem(k);});
+  closeResetModal();location.reload();
+}
+</script>
+</body>
+</html>

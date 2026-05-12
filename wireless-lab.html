@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 9 – الشبكات اللاسلكية | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;
+  --accent:#14b8a6;--accent2:#0d9488;--text:#f1f5f9;--text2:#94a3b8;
+  --border:#1a3a38;--success:#10b981;--error:#ef4444;--warning:#f59e0b;
+  --radius:12px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+
+.lab-header{background:linear-gradient(135deg,#14b8a6 0%,#0d9488 50%,#0f766e 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--text2)}
+
+/* STANDARD MATCH */
+.std-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.std-grid{grid-template-columns:1fr}}
+.std-col h4{font-size:.8rem;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.match-item{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:.88rem;margin-bottom:8px;transition:all .2s;user-select:none}
+.match-item:hover{border-color:var(--accent)}
+.match-item.selected{border-color:var(--accent);background:rgba(20,184,166,.08);color:var(--accent)}
+.match-item.matched{border-color:var(--success);background:rgba(16,185,129,.06);cursor:default;color:#34d399}
+.match-item.wrong{border-color:var(--error);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02)}
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-size:.85rem;cursor:pointer}
+select:focus{outline:none;border-color:var(--accent)}
+select.correct{border-color:var(--success);background:#062011}
+select.wrong{border-color:var(--error);background:#1f0707}
+
+/* SCENARIO CARDS */
+.scenario-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.scenario-card h4{font-size:.9rem;margin-bottom:10px}
+.opts-row{display:flex;flex-wrap:wrap;gap:8px}
+.opt-btn{padding:8px 16px;border:2px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text2);cursor:pointer;font-size:.85rem;transition:all .2s}
+.opt-btn:hover{border-color:var(--accent);color:var(--text)}
+.opt-btn.selected{border-color:var(--accent);color:var(--accent);background:#0a1e1d}
+.opt-btn.correct{border-color:var(--success);background:#062011;color:#6ee7b7}
+.opt-btn.wrong{border-color:var(--error);background:#1f0707;color:#fca5a5}
+
+/* QUIZ */
+.question{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.question p{font-size:.95rem;margin-bottom:14px;line-height:1.7}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;font-size:.88rem;line-height:1.5}
+.opt:hover{border-color:var(--accent)}
+.opt input{margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+.opt.correct{border-color:var(--success);background:#062011}
+.opt.wrong{border-color:var(--error);background:#1f0707}
+
+.feedback{display:none;padding:10px 14px;border-radius:8px;font-size:.85rem;margin-top:10px}
+.feedback.show{display:block}
+.feedback.ok{background:#062011;border:1px solid var(--success);color:#6ee7b7}
+.feedback.bad{background:#1f0707;border:1px solid var(--error);color:#fca5a5}
+
+.score-summary{text-align:center;padding:24px}
+.big-score{font-size:3rem;font-weight:800;color:var(--accent)}
+.grade-badge{display:inline-block;padding:6px 20px;border-radius:20px;font-weight:700;font-size:1rem;margin-top:8px}
+.grade-A{background:#064e3b;color:#6ee7b7}
+.grade-B{background:#1e3a5f;color:#93c5fd}
+.grade-C{background:#4d3800;color:#fcd34d}
+.grade-D{background:#4c0519;color:#fca5a5}
+
+/* WIFI STANDARDS TABLE */
+.std-table td:nth-child(2){font-family:monospace;direction:ltr;text-align:left;color:var(--accent)}
+.highlight-row{background:rgba(20,184,166,.08)}
+
+/* SECURITY COMPARE */
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:12px}
+.sec-card{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.sec-card .sec-name{font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:6px}
+.sec-card .sec-detail{font-size:.78rem;color:var(--text2);line-height:1.5}
+
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">📡</div>
+    CCNA 200-301 Labs
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html" style="color:var(--accent)">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+
+<div class="lab-header">
+  <div class="lab-badge">المختبر 9 من 10</div>
+  <h1>📡 الشبكات اللاسلكية WLAN</h1>
+  <p>معايير 802.11 وبنية الشبكة اللاسلكية وبروتوكولات الأمان WPA2/WPA3</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 26: مقدمة الشبكات اللاسلكية</span>
+    <span class="chapter-tag">الفصل 27: معايير 802.11</span>
+    <span class="chapter-tag">الفصل 28: أمان الشبكات اللاسلكية</span>
+    <span class="chapter-tag">الفصل 29: تهيئة WLAN</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">المجموع: <span id="stotal">0</span>/26</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+<div style="display:none"><span id="s1">0</span><span id="s2">0</span><span id="s3">0</span><span id="s4">0</span></div>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">📊 معايير 802.11</button>
+  <button class="tab-btn" onclick="switchTab(1)">🔒 أمان WLAN</button>
+  <button class="tab-btn" onclick="switchTab(2)">🏗️ بنية الشبكة & WLC</button>
+  <button class="tab-btn" onclick="switchTab(3)">📝 الاختبار</button>
+</div>
+
+<!-- TAB 1 -->
+<div class="tab-content active" id="tab0">
+<div class="container">
+
+  <div class="card">
+    <h2>📊 مطابقة معايير 802.11 مع خصائصها</h2>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px">انقر على مصطلح ثم انقر على تعريفه لمطابقتهما.</p>
+    <div class="std-grid">
+      <div class="std-col">
+        <h4>المعيار</h4>
+        <div id="leftItems"></div>
+      </div>
+      <div class="std-col">
+        <h4>الخصائص الرئيسية</h4>
+        <div id="rightItems"></div>
+      </div>
+    </div>
+    <div class="feedback" id="fb-match"></div>
+  </div>
+
+  <div class="card">
+    <h2>📚 مرجع معايير IEEE 802.11</h2>
+    <table class="std-table">
+      <thead><tr><th>المعيار</th><th>التردد</th><th>السرعة القصوى</th><th>الاسم الشائع</th><th>ملاحظات</th></tr></thead>
+      <tbody>
+        <tr><td>802.11b</td><td class="mono">2.4 GHz</td><td>11 Mbps</td><td>Wi-Fi 1</td><td>أول معيار شائع</td></tr>
+        <tr><td>802.11a</td><td class="mono">5 GHz</td><td>54 Mbps</td><td>Wi-Fi 2</td><td>تردد أعلى، نطاق أقل</td></tr>
+        <tr><td>802.11g</td><td class="mono">2.4 GHz</td><td>54 Mbps</td><td>Wi-Fi 3</td><td>متوافق مع 802.11b</td></tr>
+        <tr class="highlight-row"><td>802.11n</td><td class="mono">2.4/5 GHz</td><td>600 Mbps</td><td>Wi-Fi 4</td><td>MIMO، قنوات 40 MHz</td></tr>
+        <tr class="highlight-row"><td>802.11ac</td><td class="mono">5 GHz</td><td>6.9 Gbps</td><td>Wi-Fi 5</td><td>MU-MIMO، قنوات حتى 160 MHz</td></tr>
+        <tr class="highlight-row"><td>802.11ax</td><td class="mono">2.4/5/6 GHz</td><td>9.6 Gbps</td><td>Wi-Fi 6/6E</td><td>OFDMA، كفاءة عالية في الكثافة</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB 2 -->
+<div class="tab-content" id="tab1">
+<div class="container">
+
+  <div class="card">
+    <h2>🔒 سيناريوهات أمان WLAN</h2>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px">اختر بروتوكول الأمان المناسب لكل سيناريو.</p>
+    <div id="secScenarios"></div>
+    <button class="btn btn-primary" style="margin-top:4px" onclick="checkSec()">تحقق من الإجابات</button>
+    <div class="feedback" id="fb-sec"></div>
+  </div>
+
+  <div class="card">
+    <h2>📚 مقارنة بروتوكولات أمان WLAN</h2>
+    <div class="sec-grid">
+      <div class="sec-card">
+        <div class="sec-name">WEP</div>
+        <div class="sec-detail">RC4 • 40-bit key<br>⚠️ ضعيف جداً — لا تستخدمه<br>لا يُعتمد منذ 2004</div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-name">WPA</div>
+        <div class="sec-detail">TKIP • RC4<br>⚠️ مؤقت، غير موصى به<br>2003–2012</div>
+      </div>
+      <div class="sec-card" style="border-color:var(--accent)">
+        <div class="sec-name">WPA2</div>
+        <div class="sec-detail">AES-CCMP • 128-bit<br>✅ الأكثر شيوعاً<br>Personal & Enterprise</div>
+      </div>
+      <div class="sec-card" style="border-color:var(--success)">
+        <div class="sec-name">WPA3</div>
+        <div class="sec-detail">SAE • AES-GCMP-256<br>✅ الأحدث والأكثر أماناً<br>مطلوب لـ Wi-Fi 6</div>
+      </div>
+    </div>
+    <table style="margin-top:16px">
+      <thead><tr><th>الخاصية</th><th>WPA2-Personal</th><th>WPA2-Enterprise</th></tr></thead>
+      <tbody>
+        <tr><td>المصادقة</td><td>PSK (كلمة مرور مشتركة)</td><td>802.1X / RADIUS</td></tr>
+        <tr><td>الاستخدام</td><td>المنازل والشركات الصغيرة</td><td>الشركات والمؤسسات</td></tr>
+        <tr><td>إدارة المفاتيح</td><td>مفتاح واحد للجميع</td><td>مفتاح فريد لكل مستخدم</td></tr>
+        <tr><td>خادم المصادقة</td><td>غير مطلوب</td><td>RADIUS مطلوب</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB 3 -->
+<div class="tab-content" id="tab2">
+<div class="container">
+
+  <div class="card">
+    <h2>🏗️ مكونات بنية WLAN وأدوارها</h2>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px">اختر الدور الصحيح لكل مكون من مكونات الشبكة اللاسلكية.</p>
+    <table>
+      <thead><tr><th>المكوّن</th><th>الدور / الوظيفة</th></tr></thead>
+      <tbody id="archTable"></tbody>
+    </table>
+    <button class="btn btn-primary" style="margin-top:16px" onclick="checkArch()">تحقق من الإجابات</button>
+    <div class="feedback" id="fb-arch"></div>
+  </div>
+
+  <div class="card">
+    <h2>📚 مرجع مكونات WLAN</h2>
+    <table>
+      <thead><tr><th>المكوّن</th><th>الاختصار</th><th>الوظيفة</th></tr></thead>
+      <tbody>
+        <tr><td>Wireless LAN Controller</td><td>WLC</td><td>يتحكم مركزياً في نقاط الوصول Lightweight</td></tr>
+        <tr><td>Lightweight Access Point</td><td>LAP</td><td>نقطة وصول تعتمد على WLC للتحكم (CAPWAP)</td></tr>
+        <tr><td>Autonomous Access Point</td><td>AP</td><td>نقطة وصول مستقلة تعمل بدون WLC</td></tr>
+        <tr><td>CAPWAP</td><td>–</td><td>بروتوكول الاتصال بين LAP و WLC (UDP 5246/5247)</td></tr>
+        <tr><td>Basic Service Set</td><td>BSS</td><td>نقطة وصول واحدة مع عملائها</td></tr>
+        <tr><td>Extended Service Set</td><td>ESS</td><td>عدة نقاط وصول بنفس SSID لتغطية أوسع</td></tr>
+        <tr><td>Service Set Identifier</td><td>SSID</td><td>اسم الشبكة اللاسلكية (حتى 32 حرفاً)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB 4 -->
+<div class="tab-content" id="tab3">
+<div class="container">
+  <div class="card">
+    <h2>📝 اختبار الشبكات اللاسلكية – عشرة أسئلة</h2>
+    <div id="quizContainer"></div>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="gradeQuiz()">إرسال الاختبار</button>
+    <div class="feedback" id="fb-quiz"></div>
+    <div class="score-summary" id="quizResult" style="display:none"></div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · الفصول 26–29 · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+const sc={t1:0,t2:0,t3:0,t4:0};
+function upd(){
+  document.getElementById('s1').textContent=sc.t1;
+  document.getElementById('s2').textContent=sc.t2;
+  document.getElementById('s3').textContent=sc.t3;
+  document.getElementById('s4').textContent=sc.t4;
+  document.getElementById('stotal').textContent=sc.t1+sc.t2+sc.t3+sc.t4;
+}
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+function showFb(id,ok,okMsg,badMsg){
+  const el=document.getElementById(id);
+  el.className='feedback show '+(ok?'ok':'bad');
+  el.textContent=ok?okMsg:badMsg;
+}
+
+// ═══════ TAB 1 – MATCH ═══════════════════════════════════════════════════
+const matchPairs = [
+  {left:'802.11ac (Wi-Fi 5)',right:'يعمل على 5 GHz بسرعة حتى 6.9 Gbps مع MU-MIMO'},
+  {left:'802.11n (Wi-Fi 4)',right:'أول معيار يدعم تردد 2.4 و5 GHz معاً مع MIMO'},
+  {left:'802.11ax (Wi-Fi 6)',right:'يدعم OFDMA ومناسب للبيئات ذات الكثافة العالية'},
+  {left:'802.11b',right:'أول معيار شائع، 2.4 GHz، سرعة 11 Mbps فقط'},
+  {left:'802.11g',right:'2.4 GHz، 54 Mbps، متوافق مع 802.11b'},
+  {left:'802.11a',right:'5 GHz، 54 Mbps، نطاق أضيق لكن تداخل أقل'},
+];
+const shuffledRight = [...matchPairs].map(p=>p.right).sort(()=>Math.random()-.5);
+
+let selLeft=null, selRight=null, matchedCount=0;
+
+function buildMatch(){
+  const lc=document.getElementById('leftItems');
+  const rc=document.getElementById('rightItems');
+  lc.innerHTML=matchPairs.map((p,i)=>`<div class="match-item" id="L${i}" onclick="pickLeft(${i})">${p.left}</div>`).join('');
+  rc.innerHTML=shuffledRight.map((r,i)=>`<div class="match-item" id="R${i}" onclick="pickRight(${i})" data-val="${r}">${r}</div>`).join('');
+}
+buildMatch();
+
+function pickLeft(i){
+  if(document.getElementById('L'+i).classList.contains('matched')) return;
+  document.querySelectorAll('#leftItems .match-item').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('L'+i).classList.add('selected');
+  selLeft=i;
+  if(selRight!==null) tryMatch();
+}
+function pickRight(i){
+  if(document.getElementById('R'+i).classList.contains('matched')) return;
+  document.querySelectorAll('#rightItems .match-item').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('R'+i).classList.add('selected');
+  selRight=i;
+  if(selLeft!==null) tryMatch();
+}
+function tryMatch(){
+  const lEl=document.getElementById('L'+selLeft);
+  const rEl=document.getElementById('R'+selRight);
+  if(rEl.dataset.val===matchPairs[selLeft].right){
+    lEl.classList.remove('selected');lEl.classList.add('matched');
+    rEl.classList.remove('selected');rEl.classList.add('matched');
+    matchedCount++;
+    if(matchedCount===matchPairs.length){
+      sc.t1=6; upd();
+      showFb('fb-match',true,'ممتاز! طابقت جميع معايير 802.11 بشكل صحيح (6/6).');
+    }
+  } else {
+    lEl.classList.add('wrong');rEl.classList.add('wrong');
+    setTimeout(()=>{
+      lEl.classList.remove('wrong','selected');
+      rEl.classList.remove('wrong','selected');
+    },800);
+  }
+  selLeft=null; selRight=null;
+}
+
+// ═══════ TAB 2 – SECURITY SCENARIOS ══════════════════════════════════════
+const secData = [
+  {scenario:'مدرسة صغيرة تريد شبكة Wi-Fi بسيطة بكلمة مرور واحدة لجميع المستخدمين',correct:'WPA2-Personal',opts:['WEP','WPA2-Personal','WPA2-Enterprise','WPA3-Enterprise']},
+  {scenario:'شركة كبيرة تريد مصادقة كل موظف بحساب منفصل عبر خادم RADIUS',correct:'WPA2-Enterprise',opts:['WEP','WPA','WPA2-Personal','WPA2-Enterprise']},
+  {scenario:'بروتوكول قديم وضعيف يمكن كسره في دقائق — يجب تجنبه تماماً',correct:'WEP',opts:['WEP','WPA','WPA2-Personal','WPA3']},
+  {scenario:'أحدث بروتوكول أمان يستخدم SAE بدلاً من PSK ويُعدّ الأكثر أماناً حالياً',correct:'WPA3',opts:['WPA','WPA2-Personal','WPA2-Enterprise','WPA3']},
+  {scenario:'شبكة مستشفى تحتاج لتشفير AES-256 ومصادقة فردية لكل جهاز طبي',correct:'WPA3-Enterprise',opts:['WEP','WPA2-Personal','WPA3-Enterprise','WPA']},
+];
+
+function buildSec(){
+  document.getElementById('secScenarios').innerHTML = secData.map((s,i)=>`
+    <div class="scenario-card" id="ss${i}">
+      <h4>${i+1}. ${s.scenario}</h4>
+      <div class="opts-row">
+        ${s.opts.map(o=>`<button class="opt-btn" onclick="pickSec(${i},this,'${o}')" data-val="${o}">${o}</button>`).join('')}
+      </div>
+    </div>`).join('');
+}
+buildSec();
+
+function pickSec(i,el,val){
+  const box=document.getElementById('ss'+i);
+  if(box.querySelector('.correct')) return;
+  box.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function checkSec(){
+  let pts=0;
+  secData.forEach((s,i)=>{
+    const box=document.getElementById('ss'+i);
+    const sel=box.querySelector('.opt-btn.selected');
+    if(!sel) return;
+    if(sel.dataset.val===s.correct){sel.classList.add('correct');pts++;}
+    else{
+      sel.classList.add('wrong');
+      box.querySelectorAll('.opt-btn').forEach(b=>{if(b.dataset.val===s.correct)b.classList.add('correct');});
+    }
+  });
+  sc.t2=pts; upd();
+  showFb('fb-sec',pts===5,'ممتاز! أتقنت أمان الشبكات اللاسلكية ('+pts+'/5).','حصلت على '+pts+'/5. راجع الجدول المرجعي لأمان WLAN.');
+}
+
+// ═══════ TAB 3 – ARCH TABLE ══════════════════════════════════════════════
+const archData = [
+  {component:'Wireless LAN Controller (WLC)',correct:'يتحكم مركزياً في عشرات نقاط الوصول ويدير سياسات WLAN',opts:['يوصّل الأجهزة السلكية','يتحكم مركزياً في عشرات نقاط الوصول ويدير سياسات WLAN','يوزع عناوين IP','يوفر التوجيه بين الشبكات']},
+  {component:'CAPWAP',correct:'بروتوكول الاتصال بين نقطة الوصول Lightweight والـ WLC',opts:['بروتوكول تشفير WLAN','بروتوكول الاتصال بين نقطة الوصول Lightweight والـ WLC','معيار توجيه لاسلكي','بروتوكول مصادقة المستخدمين']},
+  {component:'SSID',correct:'اسم الشبكة اللاسلكية الذي تراه الأجهزة عند البحث عن شبكات Wi-Fi',opts:['عنوان IP الخاص بنقطة الوصول','اسم الشبكة اللاسلكية الذي تراه الأجهزة عند البحث عن شبكات Wi-Fi','بروتوكول أمان WLAN','معرّف الجهاز اللاسلكي']},
+  {component:'BSS (Basic Service Set)',correct:'خلية تغطية واحدة تضم نقطة وصول واحدة وعملاءها',opts:['عدة نقاط وصول بنفس الاسم','خلية تغطية واحدة تضم نقطة وصول واحدة وعملاءها','شبكة سلكية + لاسلكية','قناة الاتصال اللاسلكية']},
+  {component:'Roaming',correct:'انتقال الجهاز اللاسلكي بين نقاط وصول مختلفة دون انقطاع الاتصال',opts:['تغيير كلمة مرور الشبكة','انتقال الجهاز اللاسلكي بين نقاط وصول مختلفة دون انقطاع الاتصال','مشاركة نقطة الوصول مع جهاز آخر','تقليل تشفير الاتصال']},
+];
+
+function buildArch(){
+  document.getElementById('archTable').innerHTML = archData.map((a,i)=>`
+    <tr>
+      <td><strong>${a.component}</strong></td>
+      <td><select id="arch${i}">
+        <option value="">— اختر —</option>
+        ${a.opts.map(o=>`<option value="${o}">${o}</option>`).join('')}
+      </select></td>
+    </tr>`).join('');
+}
+buildArch();
+
+function checkArch(){
+  let pts=0;
+  archData.forEach((a,i)=>{
+    const sel=document.getElementById('arch'+i);
+    sel.classList.remove('correct','wrong');
+    if(sel.value===a.correct){sel.classList.add('correct');pts++;}
+    else sel.classList.add('wrong');
+  });
+  sc.t3=pts; upd();
+  showFb('fb-arch',pts===5,'ممتاز! أتقنت مكونات بنية WLAN ('+pts+'/5).','حصلت على '+pts+'/5. راجع الجدول المرجعي لمكونات WLAN.');
+}
+
+// ═══════ TAB 4 – QUIZ ════════════════════════════════════════════════════
+const quiz = [
+  {q:'ما معيار Wi-Fi الذي يدعم تردد 2.4 GHz و5 GHz معاً ويُعرف بـ Wi-Fi 4؟',opts:['802.11b','802.11g','802.11n','802.11ac'],ans:2},
+  {q:'ما بروتوكول أمان WLAN الأقدم والأضعف الذي يجب تجنبه تماماً؟',opts:['WPA','WPA2','WPA3','WEP'],ans:3},
+  {q:'ما بروتوكول الاتصال المستخدم بين نقطة الوصول Lightweight (LAP) والـ WLC؟',opts:['MPLS','CAPWAP','EIGRP','SPAN'],ans:1},
+  {q:'ما نوع نقطة الوصول التي تعمل بشكل مستقل دون الحاجة إلى WLC؟',opts:['Lightweight AP','CAPWAP AP','Autonomous AP','Managed AP'],ans:2},
+  {q:'في WPA2-Enterprise، ما الخادم المستخدم للمصادقة الفردية لكل مستخدم؟',opts:['DHCP Server','DNS Server','RADIUS Server','TFTP Server'],ans:2},
+  {q:'ما الفرق بين BSS وESS في بنية WLAN؟',opts:['BSS أسرع من ESS','ESS هو نقطة وصول واحدة بينما BSS يضم عدة نقاط','BSS نقطة وصول واحدة بينما ESS عدة نقاط وصول بنفس SSID','لا فرق بينهما'],ans:2},
+  {q:'ما أحدث معيار Wi-Fi يدعم OFDMA ومصمم للبيئات ذات الكثافة العالية؟',opts:['802.11ac','802.11ax (Wi-Fi 6)','802.11n','802.11g'],ans:1},
+  {q:'ما الاسم المعطى لعملية انتقال الجهاز اللاسلكي بين نقاط وصول مختلفة دون انقطاع؟',opts:['Handoff','Roaming','Switching','Tunneling'],ans:1},
+  {q:'ما بروتوكول أمان WPA3 الذي يحل محل PSK ويوفر حماية أفضل من هجمات القاموس؟',opts:['AES-CCMP','TKIP','SAE (Simultaneous Authentication of Equals)','PEAP'],ans:2},
+  {q:'على أي منفذ UDP يعمل بروتوكول CAPWAP لنقل بيانات التحكم؟',opts:['443','5246','5247','8080'],ans:1},
+];
+
+function buildQuiz(){
+  document.getElementById('quizContainer').innerHTML=quiz.map((q,i)=>`
+    <div class="question" id="qq${i}">
+      <p>${i+1}. ${q.q}</p>
+      <div class="options">
+        ${q.opts.map((o,j)=>`<label class="opt" id="qopt${i}_${j}">
+          <input type="radio" name="qq${i}" value="${j}"> ${o}
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+buildQuiz();
+
+function gradeQuiz(){
+  let pts=0;
+  quiz.forEach((q,i)=>{
+    const sel=document.querySelector(`input[name="qq${i}"]:checked`);
+    for(let j=0;j<q.opts.length;j++) document.getElementById(`qopt${i}_${j}`).classList.remove('correct','wrong');
+    if(!sel) return;
+    const v=parseInt(sel.value);
+    document.getElementById(`qopt${i}_${v}`).classList.add(v===q.ans?'correct':'wrong');
+    if(v===q.ans) pts++;
+    else document.getElementById(`qopt${i}_${q.ans}`).classList.add('correct');
+  });
+  sc.t4=pts; upd();
+  const pct=Math.round(pts/10*100);
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':'D';
+  const res=document.getElementById('quizResult');
+  res.style.display='block';
+  res.innerHTML=`<div class="big-score">${pts}/10</div>
+    <div class="grade-badge grade-${grade}">${grade} — ${pct}%</div>
+    <p style="margin-top:12px;color:var(--text2)">${pts>=8?'أداء ممتاز! أتقنت الشبكات اللاسلكية.':pts>=6?'جيد! راجع نقاط الضعف.':'راجع الفصول 26–29 من كتاب Wendell Odom.'}</p>`;
+  showFb('fb-quiz',pts>=8,'ممتاز! نتيجة رائعة في اختبار الشبكات اللاسلكية.','حصلت على '+pts+'/10. راجع الفصول 26–29.');
+}
+
+function saveScore(){
+  const total=sc.t1+sc.t2+sc.t3+sc.t4;
+  localStorage.setItem('ccna_lab09',JSON.stringify({score:total,max:26,date:new Date().toISOString()}));
+  alert('تم حفظ نتيجتك: '+total+'/26');
+}
+
+function resetAll(){
+  if(!confirm('هل تريد إعادة ضبط جميع الإجابات؟')) return;
+  sc.t1=sc.t2=sc.t3=sc.t4=0; matchedCount=0; selLeft=null; selRight=null;
+  upd(); buildMatch(); buildSec(); buildArch(); buildQuiz();
+  document.querySelectorAll('.feedback').forEach(f=>f.className='feedback');
+  document.getElementById('quizResult').style.display='none';
+}
+
+(function(){const s=localStorage.getItem('ccna_lab09');if(s) console.log('Saved:',JSON.parse(s).score);})();
+</script>
+</body>
+</html>

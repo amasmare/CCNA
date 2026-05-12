@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 05 — عنونة IPv4 والتقسيم | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;--accent:#f87171;--accent2:#7f1d1d;--text:#f1f5f9;--text2:#94a3b8;--border:#2a0a0a;--success:#10b981;--error:#ef4444;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+.lab-header{background:linear-gradient(135deg,#450a0a 0%,#7f1d1d 50%,#f87171 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--accent)}
+.subtitle{color:var(--text2);font-size:.88rem;margin-bottom:18px;line-height:1.7}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.alert{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.88rem;line-height:1.6}
+.alert-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#34d399}
+.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.alert-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.score-badge{display:inline-block;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.85rem;cursor:pointer;width:100%}
+select:focus{outline:none;border-color:var(--accent)}
+input[type=text],input[type=number]{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:8px 12px;font-size:.88rem;width:100%}
+input:focus{outline:none;border-color:var(--accent)}
+.quiz-q{margin-bottom:24px}
+.quiz-q p{font-weight:600;margin-bottom:12px;line-height:1.5}
+.quiz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;transition:all .2s;font-size:.88rem;text-align:right;width:100%;margin-bottom:8px;color:var(--text);display:block}
+.quiz-opt:hover{border-color:var(--accent)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399}
+.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.06);color:#f87171}
+.quiz-opt:disabled{cursor:default}
+.prog-wrap{background:var(--surface3);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.subnet-calc{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:20px}
+.result-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.result-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px}
+.result-label{font-size:.72rem;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.result-value{font-size:.95rem;font-weight:700;color:var(--accent);font-family:monospace}
+@media(max-width:600px){.result-grid{grid-template-columns:1fr}}
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">🔢</div>
+    <span>CCNA 200-301</span>
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html" style="color:var(--accent)">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+
+<div class="lab-header">
+  <div class="lab-badge">المختبر 05 من 10</div>
+  <h1>🔢 عنونة IPv4 وتقسيم الشبكات (Subnetting)</h1>
+  <p>م. عبدالله الأسمري · CCNA 200-301 · Wendell Odom Vol. 1</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 11: عناوين IPv4</span>
+    <span class="chapter-tag">الفصل 12–14: Subnetting وVLSM</span>
+    <span class="chapter-tag">حاسبة تفاعلية</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">الاختبار: <span id="stotal">0</span>/10</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">فئات IPv4</button>
+  <button class="tab-btn" onclick="switchTab(1)">حاسبة Subnetting</button>
+  <button class="tab-btn" onclick="switchTab(2)">تحديد الشبكات</button>
+  <button class="tab-btn" onclick="switchTab(3)">اختبار المعرفة</button>
+</div>
+
+<div class="container">
+
+<!-- تبويب 1: فئات IPv4 -->
+<div class="tab-content active">
+  <h2 style="color:var(--accent);margin-bottom:8px">فئات عناوين IPv4 الكلاسيكية</h2>
+  <p class="subtitle">راجع الفئات الثلاث A وB وC وخصائص كل منها، ثم صنّف العناوين أدناه.</p>
+
+  <div class="card">
+    <h3>📋 جدول الفئات</h3>
+    <table>
+      <thead><tr><th>الفئة</th><th>نطاق الأوكتيت الأول</th><th>القناع الافتراضي</th><th>الشبكات</th><th>الأجهزة/شبكة</th><th>الاستخدام</th></tr></thead>
+      <tbody>
+        <tr><td style="color:#f87171;font-weight:700">A</td><td>1–126</td><td>255.0.0.0 (/8)</td><td>126</td><td style="color:#34d399">16,777,214</td><td>شركات عملاقة، ISPs</td></tr>
+        <tr><td style="color:#fbbf24;font-weight:700">B</td><td>128–191</td><td>255.255.0.0 (/16)</td><td>16,384</td><td style="color:#fbbf24">65,534</td><td>جامعات، شركات كبيرة</td></tr>
+        <tr><td style="color:#00bceb;font-weight:700">C</td><td>192–223</td><td>255.255.255.0 (/24)</td><td>2,097,152</td><td style="color:#a78bfa">254</td><td>شركات صغيرة، فروع</td></tr>
+        <tr><td style="color:var(--text2)">D</td><td>224–239</td><td>—</td><td>—</td><td>—</td><td>Multicast</td></tr>
+        <tr><td style="color:var(--text2)">E</td><td>240–255</td><td>—</td><td>—</td><td>—</td><td>محجوزة للبحث</td></tr>
+      </tbody>
+    </table>
+    <div class="alert" style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);color:#fca5a5;font-size:.82rem;margin-top:12px">
+      ⚠️ 127.x.x.x محجوزة للـ Loopback (لا تنتمي لفئة A الاستخدامية). الـ 169.254.x.x هي عناوين APIPA.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>✏️ صنّف العناوين</h3>
+    <div id="class-quiz"></div>
+    <button class="btn btn-primary" onclick="checkClass()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="class-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 2: حاسبة Subnetting -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">حاسبة Subnetting التفاعلية</h2>
+  <p class="subtitle">أدخل عنوان IP وقناع الشبكة (أو CIDR)، وستحسب الحاسبة كل شيء تلقائياً.</p>
+
+  <div class="card">
+    <h3>🔢 حاسبة الشبكة الفرعية</h3>
+    <div class="subnet-calc">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:10px">
+        <input type="text" id="ip-input" placeholder="أدخل عنوان IP مثال: 192.168.10.50" style="font-family:monospace" />
+        <input type="text" id="mask-input" placeholder="القناع أو CIDR مثال: /24" style="width:auto;font-family:monospace" />
+      </div>
+      <button class="btn btn-primary" onclick="calcSubnet()" style="width:100%;margin-top:10px">احسب الشبكة 🔢</button>
+      <div id="subnet-error" style="margin-top:8px"></div>
+      <div class="result-grid" id="subnet-results" style="display:none">
+        <div class="result-item"><div class="result-label">عنوان الشبكة</div><div class="result-value" id="r-network">—</div></div>
+        <div class="result-item"><div class="result-label">قناع الشبكة</div><div class="result-value" id="r-mask">—</div></div>
+        <div class="result-item"><div class="result-label">أول عنوان صالح</div><div class="result-value" id="r-first">—</div></div>
+        <div class="result-item"><div class="result-label">آخر عنوان صالح</div><div class="result-value" id="r-last">—</div></div>
+        <div class="result-item"><div class="result-label">عنوان البث (Broadcast)</div><div class="result-value" id="r-broadcast">—</div></div>
+        <div class="result-item"><div class="result-label">عدد الأجهزة الصالحة</div><div class="result-value" id="r-hosts">—</div></div>
+        <div class="result-item"><div class="result-label">CIDR</div><div class="result-value" id="r-cidr">—</div></div>
+        <div class="result-item"><div class="result-label">فئة الشبكة</div><div class="result-value" id="r-class">—</div></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div style="font-size:.82rem;color:var(--text2);margin-bottom:8px">أمثلة سريعة — انقر للتجربة:</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <button onclick="setExample('192.168.1.0','/24')" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text2);font-size:.78rem;cursor:pointer">192.168.1.0/24</button>
+        <button onclick="setExample('10.0.0.0','/8')" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text2);font-size:.78rem;cursor:pointer">10.0.0.0/8</button>
+        <button onclick="setExample('172.16.5.100','/20')" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text2);font-size:.78rem;cursor:pointer">172.16.5.100/20</button>
+        <button onclick="setExample('192.168.100.200','/27')" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text2);font-size:.78rem;cursor:pointer">192.168.100.200/27</button>
+        <button onclick="setExample('10.10.10.10','/30')" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text2);font-size:.78rem;cursor:pointer">10.10.10.10/30</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- تبويب 3: تحديد الشبكات -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">تحديد عنوان الشبكة والبث والمضيفين</h2>
+  <p class="subtitle">لكل عنوان IP وقناع، حدّد عنوان الشبكة وعنوان البث وعدد الأجهزة الصالحة.</p>
+  <div class="score-badge" id="net-score">النتيجة: 0 / 0</div>
+  <div id="net-scenarios"></div>
+  <button class="btn btn-primary" onclick="checkNetScenarios()" style="margin-top:8px">تحقق من جميع الإجابات</button>
+  <div id="net-feedback" style="margin-top:12px"></div>
+</div>
+
+<!-- تبويب 4: اختبار المعرفة -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">اختبار المعرفة — الفصول 11–14 (Subnetting)</h2>
+  <p class="subtitle">10 أسئلة حول عنونة IPv4 والتقسيم. تُحفظ نتيجتك تلقائيًا.</p>
+  <div class="score-badge" id="quiz-score">النتيجة: 0 / 10</div>
+  <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+
+// ---- تصنيف العناوين ----
+const CLASS_ADDRS=[
+  {ip:'10.0.0.1',ans:'A',exp:'الأوكتيت الأول 10 يقع في النطاق 1–126 → الفئة A'},
+  {ip:'172.20.5.1',ans:'B',exp:'الأوكتيت الأول 172 يقع في النطاق 128–191 → الفئة B'},
+  {ip:'192.168.1.100',ans:'C',exp:'الأوكتيت الأول 192 يقع في النطاق 192–223 → الفئة C'},
+  {ip:'200.50.1.1',ans:'C',exp:'الأوكتيت الأول 200 يقع في النطاق 192–223 → الفئة C'},
+  {ip:'150.100.20.5',ans:'B',exp:'الأوكتيت الأول 150 يقع في النطاق 128–191 → الفئة B'},
+  {ip:'9.255.255.255',ans:'A',exp:'الأوكتيت الأول 9 يقع في النطاق 1–126 → الفئة A'},
+];
+function buildClassQuiz(){
+  document.getElementById('class-quiz').innerHTML=CLASS_ADDRS.map((a,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:12px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);flex-wrap:wrap">
+      <div style="font-family:monospace;font-weight:700;min-width:130px">${a.ip}</div>
+      <select id="cls-${i}" style="width:auto;min-width:100px">
+        <option value="">-- الفئة --</option><option>A</option><option>B</option><option>C</option><option>D</option>
+      </select>
+      <div id="clf-${i}" style="flex:1;font-size:.82rem"></div>
+    </div>`).join('');
+  document.getElementById('class-feedback').innerHTML='';
+}
+function checkClass(){
+  let correct=0;
+  CLASS_ADDRS.forEach((a,i)=>{
+    const val=document.getElementById('cls-'+i).value;
+    if(!val)return;
+    const ok=val===a.ans;
+    if(ok)correct++;
+    document.getElementById('clf-'+i).innerHTML=`<span style="color:${ok?'#34d399':'#f87171'}">${ok?'✓ صحيح':'✗ الصحيح: '+a.ans} — ${a.exp}</span>`;
+  });
+  document.getElementById('class-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${CLASS_ADDRS.length}</div>`;
+}
+buildClassQuiz();
+
+// ---- حاسبة Subnetting ----
+function ipToNum(ip){return ip.split('.').reduce((a,b)=>a*256+parseInt(b),0);}
+function numToIp(n){return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');}
+function maskToCidr(m){return m.split('.').reduce((a,b)=>a+parseInt(b).toString(2).split('').filter(c=>c==='1').length,0);}
+function calcSubnet(){
+  const ipRaw=document.getElementById('ip-input').value.trim();
+  let maskRaw=document.getElementById('mask-input').value.trim();
+  document.getElementById('subnet-error').innerHTML='';
+  document.getElementById('subnet-results').style.display='none';
+  const ipParts=ipRaw.split('.').map(Number);
+  if(ipParts.length!==4||ipParts.some(p=>isNaN(p)||p<0||p>255)){
+    document.getElementById('subnet-error').innerHTML='<div class="alert alert-danger">عنوان IP غير صحيح. مثال: 192.168.1.50</div>';return;
+  }
+  let cidr;
+  if(maskRaw.startsWith('/')){cidr=parseInt(maskRaw.slice(1));}
+  else if(maskRaw.includes('.')){cidr=maskToCidr(maskRaw);}
+  else{cidr=parseInt(maskRaw);}
+  if(isNaN(cidr)||cidr<0||cidr>32){
+    document.getElementById('subnet-error').innerHTML='<div class="alert alert-danger">قناع غير صحيح. مثال: /24 أو 255.255.255.0</div>';return;
+  }
+  const ipNum=ipToNum(ipRaw);
+  const maskNum=cidr===0?0:(0xFFFFFFFF<<(32-cidr))>>>0;
+  const netNum=ipNum&maskNum;
+  const bcastNum=netNum|(~maskNum>>>0);
+  const hosts=cidr>=31?Math.pow(2,32-cidr):Math.pow(2,32-cidr)-2;
+  const firstOct=ipParts[0];
+  const cls=firstOct<127?'A (خاص إذا كان 10.x.x.x)':firstOct<128?'Loopback':firstOct<192?'B (خاص إذا كان 172.16–31.x.x)':firstOct<224?'C (خاص إذا كان 192.168.x.x)':'D/E';
+  document.getElementById('r-network').textContent=numToIp(netNum);
+  document.getElementById('r-mask').textContent=numToIp(maskNum);
+  document.getElementById('r-first').textContent=cidr===32?numToIp(netNum):numToIp(netNum+1);
+  document.getElementById('r-last').textContent=cidr===32?numToIp(bcastNum):numToIp(bcastNum-1);
+  document.getElementById('r-broadcast').textContent=numToIp(bcastNum);
+  document.getElementById('r-hosts').textContent=hosts.toLocaleString('ar');
+  document.getElementById('r-cidr').textContent='/'+cidr;
+  document.getElementById('r-class').textContent=cls;
+  document.getElementById('subnet-results').style.display='grid';
+}
+function setExample(ip,mask){
+  document.getElementById('ip-input').value=ip;
+  document.getElementById('mask-input').value=mask;
+  calcSubnet();
+}
+
+// ---- تحديد الشبكات ----
+const NET_SC=[
+  {ip:'192.168.5.100',cidr:24,network:'192.168.5.0',broadcast:'192.168.5.255',hosts:254},
+  {ip:'10.20.30.40',cidr:8,network:'10.0.0.0',broadcast:'10.255.255.255',hosts:16777214},
+  {ip:'172.16.50.200',cidr:16,network:'172.16.0.0',broadcast:'172.16.255.255',hosts:65534},
+  {ip:'192.168.1.65',cidr:26,network:'192.168.1.64',broadcast:'192.168.1.127',hosts:62},
+  {ip:'10.1.1.100',cidr:30,network:'10.1.1.100',broadcast:'10.1.1.103',hosts:2},
+];
+function buildNetScenarios(){
+  document.getElementById('net-scenarios').innerHTML=NET_SC.map((sc,i)=>`
+    <div class="card" style="margin-bottom:12px">
+      <h3 style="font-family:monospace">${sc.ip}/${sc.cidr}</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        <div><label style="font-size:.78rem;color:var(--text2)">عنوان الشبكة:</label>
+          <input id="ns-net-${i}" type="text" placeholder="x.x.x.x" style="margin-top:4px;font-family:monospace"></div>
+        <div><label style="font-size:.78rem;color:var(--text2)">عنوان البث:</label>
+          <input id="ns-bc-${i}" type="text" placeholder="x.x.x.x" style="margin-top:4px;font-family:monospace"></div>
+        <div><label style="font-size:.78rem;color:var(--text2)">عدد الأجهزة الصالحة:</label>
+          <input id="ns-h-${i}" type="number" placeholder="العدد" style="margin-top:4px"></div>
+      </div>
+      <div id="nsf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('net-feedback').innerHTML='';
+}
+function checkNetScenarios(){
+  let correct=0,total=0;
+  NET_SC.forEach((sc,i)=>{
+    const net=document.getElementById('ns-net-'+i).value.trim();
+    const bc=document.getElementById('ns-bc-'+i).value.trim();
+    const h=parseInt(document.getElementById('ns-h-'+i).value);
+    if(!net&&!bc&&isNaN(h))return;
+    total++;
+    const ok=net===sc.network&&bc===sc.broadcast&&h===sc.hosts;
+    if(ok)correct++;
+    const feedback=[];
+    if(net!==sc.network)feedback.push('عنوان الشبكة الصحيح: '+sc.network);
+    if(bc!==sc.broadcast)feedback.push('عنوان البث الصحيح: '+sc.broadcast);
+    if(h!==sc.hosts)feedback.push('عدد الأجهزة الصحيح: '+sc.hosts);
+    document.getElementById('nsf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ '+feedback.join(' | ')}</div>`;
+  });
+  document.getElementById('net-score').textContent='النتيجة: '+correct+' / '+total;
+  document.getElementById('net-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${total}</div>`;
+}
+buildNetScenarios();
+
+// ---- اختبار المعرفة ----
+const QUIZ=[
+  {q:'كم عدد الأجهزة الصالحة في شبكة /27؟',opts:['30','32','62','126'],ans:0,exp:'الشبكة /27 لها 2^(32-27) = 32 عنوان. نطرح عنوان الشبكة وعنوان البث = 30 جهاز صالح.'},
+  {q:'ما الفئة التي ينتمي لها العنوان 172.16.5.1؟',opts:['A','B','C','D'],ans:1,exp:'الأوكتيت الأول 172 يقع في النطاق 128–191، لذا الفئة B. القناع الافتراضي /16.'},
+  {q:'ما عنوان الشبكة للعنوان 192.168.10.130/26؟',opts:['192.168.10.0','192.168.10.128','192.168.10.64','192.168.10.192'],ans:1,exp:'/26 = قناع 255.255.255.192. الشبكة تبدأ عند مضاعفات 64: الشبكة الثالثة هي 192.168.10.128 (128–191).'},
+  {q:'ما الـ CIDR المقابل لقناع الشبكة 255.255.255.240؟',opts:['/26','/27','/28','/29'],ans:2,exp:'255.255.255.240 بالثنائي = 11110000 في الأوكتيت الأخير → 24+4 = /28.'},
+  {q:'ما عنوان البث لشبكة 10.0.0.0/8؟',opts:['10.0.0.255','10.255.255.255','255.255.255.255','10.0.255.255'],ans:1,exp:'شبكة /8 تعني الأوكتيت الأول فقط للشبكة. عنوان البث = 10.255.255.255.'},
+  {q:'لتوصيل جهازين فقط بـ WAN Link، ما أصغر Subnet مناسب؟',opts:['/28','/29','/30','/31'],ans:2,exp:'/30 يعطي 2^2=4 عناوين: عنوان شبكة + جهازين صالحين + عنوان بث. مثالي لـ Point-to-Point WAN.'},
+  {q:'ما العنوان الخاص (Private) من بين الآتية؟',opts:['200.100.50.1','192.168.5.10','1.2.3.4','8.8.8.8'],ans:1,exp:'العناوين الخاصة: 10.x.x.x (/8)، 172.16-31.x.x (/12)، 192.168.x.x (/16). 192.168.5.10 خاص.'},
+  {q:'كم عدد الشبكات الفرعية الممكنة عند أخذ 3 بتات من الأجهزة لتقسيم الشبكة؟',opts:['4','6','8','16'],ans:2,exp:'عدد الشبكات = 2^n حيث n = عدد بتات القناع المأخوذة. 2^3 = 8 شبكات فرعية.'},
+  {q:'ما معنى VLSM؟',opts:['Virtual LAN Subnet Mask','Variable Length Subnet Mask','VLAN Layer Subnet Method','Virtual Link Subnet Mode'],ans:1,exp:'VLSM (Variable Length Subnet Mask) يتيح استخدام أقنعة بأحجام مختلفة لتحسين استخدام العناوين في نفس الشبكة.'},
+  {q:'ما الأوكتيت الأول للعناوين الخاصة من نوع Class B (RFC 1918)؟',opts:['10','127','172','192'],ans:2,exp:'عناوين Class B الخاصة هي 172.16.0.0–172.31.255.255 (/12). الأوكتيت الأول هو 172.'},
+];
+let quizScore=0,quizAnswered=0;
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=QUIZ.map((q,i)=>`
+    <div class="quiz-q" id="qq-${i}">
+      <p>${i+1}. ${q.q}</p>
+      ${q.opts.map((o,j)=>`<button class="quiz-opt" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      <div id="qfb-${i}" style="margin-top:6px"></div>
+    </div>`).join('');
+}
+function answerQuiz(qi,oi){
+  const q=QUIZ[qi];
+  const btns=document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(oi!==q.ans)btns[oi].classList.add('incorrect');
+  else quizScore++;
+  quizAnswered++;
+  document.getElementById('qfb-'+qi).innerHTML=`<div class="alert ${oi===q.ans?'alert-success':'alert-danger'}" style="font-size:.82rem">${oi===q.ans?'✅ صحيح!':'❌ غير صحيح.'} ${q.exp}</div>`;
+  document.getElementById('quiz-score').textContent='النتيجة: '+quizScore+' / '+QUIZ.length;
+  document.getElementById('quiz-prog').style.width=(quizAnswered/QUIZ.length*100)+'%';
+  if(quizAnswered===QUIZ.length){
+    const pct=Math.round(quizScore/QUIZ.length*100);
+    localStorage.setItem('ccna_lab05',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));
+    document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;
+    document.getElementById('quiz-container').insertAdjacentHTML('beforeend',
+      `<div class="alert ${pct>=90?'alert-success':pct>=60?'alert-warn':'alert-danger'}" style="margin-top:20px;font-size:1rem;font-weight:700">
+        🎓 انتهى الاختبار! نتيجتك: ${quizScore}/${QUIZ.length} (${pct}%) — ${pct>=90?'ممتاز 🏆':pct>=75?'جيد جداً ⭐':pct>=60?'جيد ✓':'يحتاج مراجعة 📖'}
+        <br><a href="index.html" style="color:var(--accent);font-size:.85rem;display:inline-block;margin-top:8px">← العودة للمختبرات</a>
+      </div>`);
+  }
+}
+buildQuiz();
+function resetAll(){localStorage.removeItem('ccna_lab05');location.reload();}
+function saveScore(){if(quizAnswered>0){const pct=Math.round(quizScore/QUIZ.length*100);localStorage.setItem('ccna_lab05',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;}}
+(function(){const s=JSON.parse(localStorage.getItem('ccna_lab05')||'null');if(s)document.getElementById('stotal').textContent=s.score+'/'+s.total;})();
+</script>
+</body>
+</html>

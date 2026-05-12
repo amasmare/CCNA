@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 06 — التوجيه بـ IPv4 | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;--accent:#22d3ee;--accent2:#0e7490;--text:#f1f5f9;--text2:#94a3b8;--border:#0a2030;--success:#10b981;--error:#ef4444;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+.lab-header{background:linear-gradient(135deg,#042330 0%,#0e7490 50%,#22d3ee 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--accent)}
+.subtitle{color:var(--text2);font-size:.88rem;margin-bottom:18px;line-height:1.7}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.alert{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.88rem;line-height:1.6}
+.alert-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#34d399}
+.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.alert-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.score-badge{display:inline-block;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.85rem;cursor:pointer;width:100%}
+select:focus{outline:none;border-color:var(--accent)}
+.quiz-q{margin-bottom:24px}
+.quiz-q p{font-weight:600;margin-bottom:12px;line-height:1.5}
+.quiz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;transition:all .2s;font-size:.88rem;text-align:right;width:100%;margin-bottom:8px;color:var(--text);display:block}
+.quiz-opt:hover{border-color:var(--accent)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399}
+.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.06);color:#f87171}
+.quiz-opt:disabled{cursor:default}
+.prog-wrap{background:var(--surface3);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.cli-box{background:#020810;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:.82rem;color:#34d399;line-height:1.8;overflow-x:auto;margin:12px 0}
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">🗺️</div>
+    <span>CCNA 200-301</span>
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html" style="color:var(--accent)">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+
+<div class="lab-header">
+  <div class="lab-badge">المختبر 06 من 10</div>
+  <h1>🗺️ التوجيه بـ IPv4 (IP Routing)</h1>
+  <p>م. عبدالله الأسمري · CCNA 200-301 · Wendell Odom Vol. 1</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 15: أساسيات التوجيه</span>
+    <span class="chapter-tag">الفصل 16–17: المسارات الثابتة</span>
+    <span class="chapter-tag">الفصل 18: Longest Prefix Match</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">الاختبار: <span id="stotal">0</span>/10</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">قراءة جدول التوجيه</button>
+  <button class="tab-btn" onclick="switchTab(1)">المسارات الثابتة</button>
+  <button class="tab-btn" onclick="switchTab(2)">سيناريوهات التوجيه</button>
+  <button class="tab-btn" onclick="switchTab(3)">اختبار المعرفة</button>
+</div>
+
+<div class="container">
+
+<!-- تبويب 1: قراءة جدول التوجيه -->
+<div class="tab-content active">
+  <h2 style="color:var(--accent);margin-bottom:8px">قراءة جدول التوجيه (Routing Table)</h2>
+  <p class="subtitle">تعلّم كيفية قراءة مخرجات أمر "show ip route" وتفسير رموز المسارات.</p>
+
+  <div class="card">
+    <h3>🖥️ مخرجات show ip route — راوتر R1</h3>
+    <div class="cli-box">
+      <div style="color:var(--text2)">R1# show ip route</div>
+      <div style="color:var(--text2)">Codes: C - connected, S - static, R - RIP, O - OSPF</div>
+      <div style="color:var(--text2)">       D - EIGRP, B - BGP, * - candidate default</div>
+      <div style="margin-top:8px"><span style="color:#34d399">C</span>    <span style="color:var(--accent)">192.168.1.0/24</span> is directly connected, <span style="color:var(--text2)">GigabitEthernet0/0</span></div>
+      <div><span style="color:#34d399">L</span>    <span style="color:var(--accent)">192.168.1.1/32</span> is directly connected, <span style="color:var(--text2)">GigabitEthernet0/0</span></div>
+      <div><span style="color:#34d399">C</span>    <span style="color:var(--accent)">10.0.0.0/30</span> is directly connected, <span style="color:var(--text2)">Serial0/0/0</span></div>
+      <div><span style="color:#34d399">L</span>    <span style="color:var(--accent)">10.0.0.1/32</span> is directly connected, <span style="color:var(--text2)">Serial0/0/0</span></div>
+      <div><span style="color:#fbbf24">S</span>    <span style="color:var(--accent)">192.168.2.0/24</span> [1/0] via <span style="color:#f87171">10.0.0.2</span></div>
+      <div><span style="color:#fbbf24">S</span>    <span style="color:var(--accent)">192.168.3.0/24</span> [1/0] via <span style="color:#f87171">10.0.0.2</span></div>
+      <div><span style="color:#fb923c">O</span>    <span style="color:var(--accent)">172.16.0.0/16</span> [110/2] via <span style="color:#f87171">10.0.0.2</span>, 00:05:20, Serial0/0/0</div>
+      <div><span style="color:#fbbf24">S*</span>   <span style="color:var(--accent)">0.0.0.0/0</span> [1/0] via <span style="color:#f87171">10.0.0.2</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>📋 تفسير رموز جدول التوجيه</h3>
+    <div id="rt-quiz-container"></div>
+    <button class="btn btn-primary" onclick="checkRtQuiz()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="rt-quiz-feedback" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <h3>💡 مرجع: تفسير السطر [1/0] via 10.0.0.2</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:8px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:4px;font-size:.85rem">[1/0]</div>
+        <div style="font-size:.75rem;color:var(--text2)">1 = Administrative Distance<br>0 = Metric (التكلفة)</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:4px;font-size:.85rem">via 10.0.0.2</div>
+        <div style="font-size:.75rem;color:var(--text2)">عنوان Next-Hop<br>الراوتر التالي في المسار</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:4px;font-size:.85rem">AD القيم</div>
+        <div style="font-size:.75rem;color:var(--text2)">مباشر C=0<br>ثابت S=1<br>OSPF O=110<br>RIP R=120</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:4px;font-size:.85rem">0.0.0.0/0</div>
+        <div style="font-size:.75rem;color:var(--text2)">المسار الافتراضي<br>Default Route<br>يطابق أي وجهة</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- تبويب 2: المسارات الثابتة -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">إعداد المسارات الثابتة (Static Routes)</h2>
+  <p class="subtitle">اختر الأمر الصحيح لكل سيناريو توجيه ثابت.</p>
+
+  <div class="card">
+    <h3>📐 صيغة الأمر</h3>
+    <div class="cli-box">
+      <div style="color:var(--text2)">! المسار الثابت الأساسي:</div>
+      <div><span style="color:#34d399">ip route</span> <span style="color:var(--accent)">[الشبكة الوجهة]</span> <span style="color:#fbbf24">[قناع الشبكة]</span> <span style="color:#f87171">[Next-Hop أو المنفذ الخارج]</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! أمثلة:</div>
+      <div><span style="color:#34d399">ip route</span> <span style="color:var(--accent)">192.168.2.0</span> <span style="color:#fbbf24">255.255.255.0</span> <span style="color:#f87171">10.0.0.2</span></div>
+      <div><span style="color:#34d399">ip route</span> <span style="color:var(--accent)">0.0.0.0</span> <span style="color:#fbbf24">0.0.0.0</span> <span style="color:#f87171">10.0.0.1</span>  <span style="color:var(--text2)">← مسار افتراضي</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>✏️ سيناريوهات المسارات الثابتة</h3>
+    <div id="static-route-container"></div>
+    <button class="btn btn-primary" onclick="checkStaticRoutes()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="sr-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 3: سيناريوهات التوجيه -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">سيناريوهات التوجيه التفاعلية</h2>
+  <p class="subtitle">لكل سيناريو، حدّد المنفذ الخارج أو الـ Next-Hop الذي سيختاره الراوتر.</p>
+  <div class="score-badge" id="sc-score">النتيجة: 0 / 0</div>
+  <div id="routing-scenarios"></div>
+  <button class="btn btn-primary" onclick="checkRoutingScenarios()" style="margin-top:8px">تحقق من الإجابات</button>
+  <div id="rs-feedback" style="margin-top:12px"></div>
+</div>
+
+<!-- تبويب 4: اختبار المعرفة -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">اختبار المعرفة — الفصول 15–18 (التوجيه)</h2>
+  <p class="subtitle">10 أسئلة حول التوجيه بـ IPv4. تُحفظ نتيجتك تلقائيًا.</p>
+  <div class="score-badge" id="quiz-score">النتيجة: 0 / 10</div>
+  <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+
+// ---- قراءة جدول التوجيه ----
+const RT_Q=[
+  {q:'ما معنى الرمز "C" في جدول التوجيه؟',opts:['مسار ثابت (Static)','شبكة متصلة مباشرةً (Connected)','مسار OSPF','مسار افتراضي'],ans:1,exp:'"C" يعني الشبكة متصلة مباشرةً بمنفذ الراوتر. لا تحتاج بروتوكول توجيه — الراوتر يعرفها تلقائياً.'},
+  {q:'في السطر: S* 0.0.0.0/0 [1/0] via 10.0.0.2 — ما وظيفة هذا المسار؟',opts:['يوجّه لشبكة 0.0.0.0 فقط','المسار الافتراضي — يطابق أي حزمة لا تجد مسارًا آخر','يحظر جميع الحزم','يوجّه الـ Broadcast'],ans:1,exp:'0.0.0.0/0 هو المسار الافتراضي (Default Route). يُستخدم عندما لا يجد الراوتر مسارًا محدداً للوجهة.'},
+  {q:'ما قيمة Administrative Distance للمسار الثابت (Static Route)؟',opts:['0','1','110','120'],ans:1,exp:'AD=1 للمسارات الثابتة. مباشر C=0، OSPF=110، RIP=120. كلما صغر AD كلما كان المسار أكثر ثقة.'},
+  {q:'إذا كان لدى الراوتر مسارين للشبكة ذاتها: OSPF [110/2] وStatic [1/0] — أيهما يُستخدم؟',opts:['OSPF لأن Metric أصغر','Static لأن AD أصغر','كلاهما معاً','الأحدث منهما'],ans:1,exp:'يُستخدم المسار ذو أقل Administrative Distance. Static (AD=1) أقل من OSPF (AD=110)، لذا Static يفوز.'},
+];
+function buildRtQuiz(){
+  document.getElementById('rt-quiz-container').innerHTML=RT_Q.map((q,i)=>`
+    <div style="margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <p style="font-weight:600;margin-bottom:10px">${i+1}. ${q.q}</p>
+      <select id="rtq-${i}">
+        <option value="">-- اختر --</option>
+        ${q.opts.map((o,j)=>`<option value="${j}">${o}</option>`).join('')}
+      </select>
+      <div id="rtf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+}
+function checkRtQuiz(){
+  let correct=0;
+  RT_Q.forEach((q,i)=>{
+    const val=parseInt(document.getElementById('rtq-'+i).value);
+    if(isNaN(val))return;
+    const ok=val===q.ans;
+    if(ok)correct++;
+    document.getElementById('rtf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+q.opts[q.ans]} — ${q.exp}</div>`;
+  });
+  document.getElementById('rt-quiz-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${RT_Q.length}</div>`;
+}
+buildRtQuiz();
+
+// ---- المسارات الثابتة ----
+const SR_Q=[
+  {q:'أضف مساراً ثابتاً على R1 للوصول لشبكة 192.168.2.0/24 عبر Next-Hop 10.0.0.2',
+   opts:['ip route 192.168.2.0 255.255.255.0 10.0.0.2','static route 192.168.2.0/24 10.0.0.2','ip route 10.0.0.2 192.168.2.0 255.255.255.0','route add 192.168.2.0 255.255.255.0 10.0.0.2'],ans:0,
+   exp:'الصيغة الصحيحة: ip route [شبكة الوجهة] [قناع الشبكة] [Next-Hop أو المنفذ الخارج]'},
+  {q:'أضف مساراً افتراضياً على R1 يُرسل جميع الحزم غير المعروفة عبر 203.0.113.1',
+   opts:['ip route 0.0.0.0 0.0.0.0 203.0.113.1','ip route default 203.0.113.1','ip default-route 203.0.113.1','ip route any 203.0.113.1'],ans:0,
+   exp:'المسار الافتراضي: ip route 0.0.0.0 0.0.0.0 [Next-Hop]. يطابق أي وجهة لا تجد مسارًا آخر.'},
+  {q:'ما الأمر للتحقق من جدول التوجيه الكامل على الراوتر؟',
+   opts:['show route table','show ip route','display routing-table','show routing'],ans:1,
+   exp:'"show ip route" يعرض جدول التوجيه الكامل مع جميع المسارات المباشرة والثابتة والديناميكية.'},
+  {q:'لحذف مسار ثابت، ما الأمر الصحيح؟',
+   opts:['delete ip route 192.168.2.0 255.255.255.0 10.0.0.2','no ip route 192.168.2.0 255.255.255.0 10.0.0.2','remove route 192.168.2.0','clear ip route 192.168.2.0'],ans:1,
+   exp:'إضافة "no" قبل الأمر يحذفه في Cisco IOS. نفس الصيغة مع "no" في البداية.'},
+];
+function buildStaticRoutes(){
+  document.getElementById('static-route-container').innerHTML=SR_Q.map((q,i)=>`
+    <div style="margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <p style="font-weight:600;margin-bottom:10px">${i+1}. ${q.q}</p>
+      <select id="sr-${i}" style="font-family:monospace">
+        <option value="">-- اختر الأمر الصحيح --</option>
+        ${q.opts.map((o,j)=>`<option value="${j}">${o}</option>`).join('')}
+      </select>
+      <div id="srf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('sr-feedback').innerHTML='';
+}
+function checkStaticRoutes(){
+  let correct=0;
+  SR_Q.forEach((q,i)=>{
+    const val=parseInt(document.getElementById('sr-'+i).value);
+    if(isNaN(val))return;
+    const ok=val===q.ans;
+    if(ok)correct++;
+    document.getElementById('srf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+q.opts[q.ans]} — ${q.exp}</div>`;
+  });
+  document.getElementById('sr-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${SR_Q.length}</div>`;
+}
+buildStaticRoutes();
+
+// ---- سيناريوهات التوجيه ----
+const RS=[
+  {context:'جدول التوجيه على R1:\nC 192.168.1.0/24 via Gi0/0\nS 10.0.0.0/8 via 172.16.0.1\nO 172.16.0.0/16 [110/2] via 10.1.1.1\nS* 0.0.0.0/0 via 203.0.113.1',
+   q:'وصلت حزمة وجهتها 10.5.5.5 — أي مسار يُختار؟',
+   opts:['S 10.0.0.0/8 via 172.16.0.1','O 172.16.0.0/16 via 10.1.1.1','S* 0.0.0.0/0 via 203.0.113.1','يُتجاهل لأن المسار مجهول'],
+   ans:0,exp:'Longest Prefix Match: 10.5.5.5 يطابق 10.0.0.0/8 (/8 أطول من /0). المسار الأطول (أكثر تحديداً) يفوز دائماً.'},
+  {context:'جدول التوجيه:\nS 192.168.5.0/24 via 10.0.0.2\nS 192.168.5.0/26 via 10.0.0.3\nS* 0.0.0.0/0 via 10.0.0.1',
+   q:'وجهة الحزمة: 192.168.5.10 — أي مسار يُختار؟',
+   opts:['S 192.168.5.0/24 via 10.0.0.2','S 192.168.5.0/26 via 10.0.0.3','S* 0.0.0.0/0 via 10.0.0.1','لا يوجد مسار'],
+   ans:1,exp:'192.168.5.0/26 يغطي 192.168.5.0–192.168.5.63. العنوان 192.168.5.10 يقع فيها. /26 أطول (أكثر تحديداً) من /24.'},
+  {context:'جدول التوجيه:\nC 192.168.1.0/24 via Gi0/0\nS* 0.0.0.0/0 via 10.0.0.1',
+   q:'وجهة الحزمة: 8.8.8.8 — أي مسار يُختار؟',
+   opts:['C 192.168.1.0/24 via Gi0/0','S* 0.0.0.0/0 via 10.0.0.1','يُتجاهل الحزمة','يُرسل للـ Broadcast'],
+   ans:1,exp:'8.8.8.8 لا يطابق 192.168.1.0/24. يُستخدم المسار الافتراضي 0.0.0.0/0 كملاذ أخير.'},
+];
+function buildRoutingScenarios(){
+  document.getElementById('routing-scenarios').innerHTML=RS.map((sc,i)=>`
+    <div class="card" style="margin-bottom:12px">
+      <div style="background:#020810;border:1px solid var(--border);border-radius:6px;padding:10px;font-family:monospace;font-size:.8rem;color:var(--accent);margin-bottom:12px;white-space:pre-line">${sc.context}</div>
+      <p style="font-weight:600;margin-bottom:10px">${sc.q}</p>
+      ${sc.opts.map((o,j)=>`<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 12px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;font-size:.85rem;color:var(--text2);font-family:monospace">
+        <input type="radio" name="rs-${i}" value="${j}" style="accent-color:var(--accent)"> ${o}
+      </label>`).join('')}
+      <div id="rsf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('rs-feedback').innerHTML='';
+}
+function checkRoutingScenarios(){
+  let correct=0,answered=0;
+  RS.forEach((sc,i)=>{
+    const sel=document.querySelector(`input[name="rs-${i}"]:checked`);
+    if(!sel)return;
+    answered++;
+    const ok=parseInt(sel.value)===sc.ans;
+    if(ok)correct++;
+    document.getElementById('rsf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+sc.opts[sc.ans]} — ${sc.exp}</div>`;
+  });
+  document.getElementById('sc-score').textContent='النتيجة: '+correct+' / '+answered;
+  document.getElementById('rs-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${answered}</div>`;
+}
+buildRoutingScenarios();
+
+// ---- اختبار المعرفة ----
+const QUIZ=[
+  {q:'ما مبدأ اختيار المسار عند وجود عدة مسارات تطابق الوجهة؟',opts:['أقل AD يفوز','Longest Prefix Match (المسار الأطول يفوز)','أعلى Metric يفوز','أحدث مسار يفوز'],ans:1,exp:'Longest Prefix Match: الراوتر يختار المسار الأكثر تحديداً (أطول قناع شبكة). إذا تساوت البادئات يُستخدم AD.'},
+  {q:'ما الأمر لتعيين عنوان IP على منفذ الراوتر Gi0/0؟',opts:['ip address 10.0.0.1 255.255.255.0','set ip 10.0.0.1/24','interface ip 10.0.0.1','ip assign 10.0.0.1 255.255.255.0'],ans:0,exp:'في وضع interface config: "ip address [IP] [mask]" ثم "no shutdown" لتفعيل المنفذ.'},
+  {q:'ما وظيفة بروتوكول ARP؟',opts:['توجيه الحزم بين الشبكات','ترجمة عنوان IP لعنوان MAC','تعيين عناوين IP تلقائياً','تشفير البيانات'],ans:1,exp:'ARP (Address Resolution Protocol) يُترجم عناوين IP Layer 3 لعناوين MAC Layer 2 ضرورية لإرسال الإطارات.'},
+  {q:'ما الفرق بين Routed Port وSVI على Layer 3 Switch؟',opts:['لا فرق','Routed Port منفذ فيزيائي بعنوان IP، SVI منفذ افتراضي لـ VLAN بعنوان IP','SVI أسرع من Routed Port','Routed Port للـ WAN فقط'],ans:1,exp:'Routed Port: منفذ فيزيائي يُعمل كمنفذ راوتر. SVI (Switch Virtual Interface): منفذ افتراضي يمثل VLAN ويُستخدم للإدارة أو Inter-VLAN Routing.'},
+  {q:'ما أمر الـ ping الممتد (Extended Ping) في Cisco IOS؟',opts:['ping extended','ping verbose','ping (ثم الضغط Enter والتعديل التفاعلي)','extended-ping'],ans:2,exp:'Extended Ping: اكتب "ping" ثم اضغط Enter. يعطيك خيارات متقدمة: عنوان المصدر، عدد الحزم، الحجم، وغيرها.'},
+  {q:'ما الأمر لعرض جدول ARP على الراوتر؟',opts:['show mac address-table','show arp','show ip neighbors','display arp-table'],ans:1,exp:'"show arp" يعرض جدول ARP الذي يربط عناوين IP بعناوين MAC للأجهزة في الشبكة المتصلة.'},
+  {q:'ما معنى Administrative Distance = 0؟',opts:['المسار مرفوض','المسار من مصدر غير موثوق','المسار مباشر متصل — أعلى مصداقية ممكنة','المسار مجهول'],ans:2,exp:'AD=0 للمسارات المباشرة (Connected). أقل AD = أكثر موثوقية. الراوتر يُفضل دائماً المسارات ذات أقل AD.'},
+  {q:'ما الأمر لعرض ملخص معلومات المنافذ على الراوتر؟',opts:['show interfaces brief','show ip interface brief','show interface summary','show ports status'],ans:1,exp:'"show ip interface brief" يعرض حالة جميع المنافذ (Up/Down) وعناوين IP المعينة لها بشكل موجز.'},
+  {q:'ما الذي يعنيه status "administratively down" على المنفذ؟',opts:['عطل فيزيائي في الكابل','المنفذ مُغلق بواسطة المسؤول بأمر "shutdown"','لا يوجد جهاز متصل','خطأ في الإعداد'],ans:1,exp:'"Administratively Down" يعني المنفذ مُوقف يدوياً بأمر "shutdown". الحل: "no shutdown" لتفعيله.'},
+  {q:'ما قيمة Administrative Distance لـ EIGRP؟',opts:['90','100','110','120'],ans:0,exp:'AD لبروتوكولات التوجيه: EIGRP=90، OSPF=110، IS-IS=115، RIP=120. EIGRP أكثر موثوقية من OSPF وRIP.'},
+];
+let quizScore=0,quizAnswered=0;
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=QUIZ.map((q,i)=>`
+    <div class="quiz-q" id="qq-${i}">
+      <p>${i+1}. ${q.q}</p>
+      ${q.opts.map((o,j)=>`<button class="quiz-opt" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      <div id="qfb-${i}" style="margin-top:6px"></div>
+    </div>`).join('');
+}
+function answerQuiz(qi,oi){
+  const q=QUIZ[qi];
+  const btns=document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(oi!==q.ans)btns[oi].classList.add('incorrect');
+  else quizScore++;
+  quizAnswered++;
+  document.getElementById('qfb-'+qi).innerHTML=`<div class="alert ${oi===q.ans?'alert-success':'alert-danger'}" style="font-size:.82rem">${oi===q.ans?'✅ صحيح!':'❌ غير صحيح.'} ${q.exp}</div>`;
+  document.getElementById('quiz-score').textContent='النتيجة: '+quizScore+' / '+QUIZ.length;
+  document.getElementById('quiz-prog').style.width=(quizAnswered/QUIZ.length*100)+'%';
+  if(quizAnswered===QUIZ.length){
+    const pct=Math.round(quizScore/QUIZ.length*100);
+    localStorage.setItem('ccna_lab06',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));
+    document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;
+    document.getElementById('quiz-container').insertAdjacentHTML('beforeend',
+      `<div class="alert ${pct>=90?'alert-success':pct>=60?'alert-warn':'alert-danger'}" style="margin-top:20px;font-size:1rem;font-weight:700">
+        🎓 انتهى الاختبار! نتيجتك: ${quizScore}/${QUIZ.length} (${pct}%) — ${pct>=90?'ممتاز 🏆':pct>=75?'جيد جداً ⭐':pct>=60?'جيد ✓':'يحتاج مراجعة 📖'}
+        <br><a href="index.html" style="color:var(--accent);font-size:.85rem;display:inline-block;margin-top:8px">← العودة للمختبرات</a>
+      </div>`);
+  }
+}
+buildQuiz();
+function resetAll(){localStorage.removeItem('ccna_lab06');location.reload();}
+function saveScore(){if(quizAnswered>0){const pct=Math.round(quizScore/QUIZ.length*100);localStorage.setItem('ccna_lab06',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;}}
+(function(){const s=JSON.parse(localStorage.getItem('ccna_lab06')||'null');if(s)document.getElementById('stotal').textContent=s.score+'/'+s.total;})();
+</script>
+</body>
+</html>

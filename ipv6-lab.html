@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 8 – IPv6 | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;
+  --accent:#06b6d4;--accent2:#0891b2;--text:#f1f5f9;--text2:#94a3b8;
+  --border:#1e3a4a;--success:#10b981;--error:#ef4444;--warning:#f59e0b;
+  --radius:12px;--tab-active:#06b6d4;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+
+/* TOPBAR */
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.topbar-links{display:flex;gap:16px;font-size:.85rem}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+
+/* HEADER */
+.lab-header{background:linear-gradient(135deg,#06b6d4 0%,#0891b2 50%,#0e7490 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+
+/* TABS */
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+
+/* CONTENT */
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--text)}
+
+/* MATCH EXERCISE */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.match-col h4{font-size:.8rem;color:var(--text2);margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em}
+.match-item{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:12px 16px;cursor:pointer;font-size:.88rem;transition:all .2s;user-select:none}
+.match-item:hover{border-color:var(--accent)}
+.match-item.selected{border-color:var(--accent);background:rgba(6,182,212,.08);color:var(--accent)}
+.match-item.matched{border-color:var(--success);background:rgba(16,185,129,.06);cursor:default;color:#34d399}
+.match-item.wrong{border-color:var(--error);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* IPv6 DISPLAY */
+.ipv6-box{background:#0a0e1a;border:1px solid var(--border);border-radius:10px;padding:16px;font-family:monospace;font-size:.95rem;letter-spacing:.05em;color:var(--accent);text-align:center;margin:12px 0}
+.ipv6-abbr-exercise{display:flex;flex-direction:column;gap:12px}
+.abbr-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.abbr-row input{background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:.9rem;font-family:monospace;text-align:center;direction:ltr;width:100%}
+.abbr-row input.correct{border-color:var(--success);background:#062011}
+.abbr-row input.incorrect{border-color:var(--error);background:#1f0707}
+.arrow{color:var(--text2);font-size:1.2rem}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:rgba(6,182,212,.05)}
+.mono{font-family:monospace;direction:ltr;text-align:left}
+
+/* ADDRESS TYPE CARDS */
+.addr-types{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.addr-card{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:all .2s;text-align:center}
+.addr-card:hover{border-color:var(--accent)}
+.addr-card.selected{border-color:var(--accent);background:#0a1e2a}
+.addr-card.correct{border-color:var(--success);background:#062011}
+.addr-card.wrong{border-color:var(--error);background:#1f0707}
+.addr-card .prefix{font-family:monospace;font-size:.85rem;color:var(--accent);margin-bottom:6px}
+.addr-card .label{font-size:.78rem;color:var(--text2)}
+
+/* EUI-64 CALCULATOR */
+.eui-calc{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.eui-calc label{font-size:.85rem;color:var(--text2);display:block;margin-bottom:6px}
+.eui-calc input{background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:.9rem;font-family:monospace;width:100%;direction:ltr;margin-bottom:12px}
+.eui-calc input:focus{outline:none;border-color:var(--accent)}
+.eui-result{background:#0a0e1a;border:1px solid var(--border);border-radius:8px;padding:14px;font-family:monospace;font-size:.9rem;direction:ltr;margin-top:4px;min-height:40px;color:var(--accent)}
+.eui-steps{margin-top:12px;font-size:.82rem;color:var(--text2);line-height:1.8}
+
+/* QUESTION */
+.question{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+.question p{font-size:.95rem;margin-bottom:14px;line-height:1.7}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;font-size:.88rem;line-height:1.5}
+.opt:hover{border-color:var(--accent)}
+.opt input{margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+.opt.correct{border-color:var(--success);background:#062011}
+.opt.wrong{border-color:var(--error);background:#1f0707}
+
+/* FEEDBACK */
+.feedback{display:none;padding:10px 14px;border-radius:8px;font-size:.85rem;margin-top:8px}
+.feedback.show{display:block}
+.feedback.ok{background:#062011;border:1px solid var(--success);color:#6ee7b7}
+.feedback.bad{background:#1f0707;border:1px solid var(--error);color:#fca5a5}
+
+/* SCORE MODAL */
+.score-summary{text-align:center;padding:24px}
+.big-score{font-size:3rem;font-weight:800;color:var(--accent)}
+.grade-badge{display:inline-block;padding:6px 20px;border-radius:20px;font-weight:700;font-size:1rem;margin-top:8px}
+.grade-A{background:#064e3b;color:#6ee7b7}
+.grade-B{background:#1e3a5f;color:#93c5fd}
+.grade-C{background:#4d3800;color:#fcd34d}
+.grade-D{background:#4c0519;color:#fca5a5}
+
+/* REFERENCE */
+.ref-table{font-size:.82rem}
+.ref-table td:first-child{font-family:monospace;direction:ltr;text-align:left;color:var(--accent)}
+
+/* PROGRESS */
+.progress-bar-wrap{background:var(--surface3);border-radius:4px;height:8px;overflow:hidden;margin-top:4px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .4s}
+
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">⬡</div>
+    CCNA 200-301 Labs
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html" style="color:var(--accent)">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="lab-header">
+  <div class="lab-badge">المختبر 8 من 10</div>
+  <h1>🌐 IPv6 – العنونة والتوجيه</h1>
+  <p>تعلّم عنونة IPv6 وتقصير العناوين وحساب EUI-64 وتوجيه IPv6</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 22: أساسيات IPv6</span>
+    <span class="chapter-tag">الفصل 23: أنواع عناوين IPv6</span>
+    <span class="chapter-tag">الفصل 24: تقصير العناوين</span>
+    <span class="chapter-tag">الفصل 25: توجيه IPv6</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">المجموع: <span id="stotal">0</span>/25</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+<div style="display:none"><span id="s1">0</span><span id="s2">0</span><span id="s3">0</span><span id="s4">0</span></div>
+
+<!-- TABS -->
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">🔤 أنواع العناوين</button>
+  <button class="tab-btn" onclick="switchTab(1)">✂️ تقصير العناوين & EUI-64</button>
+  <button class="tab-btn" onclick="switchTab(2)">🔁 توجيه IPv6</button>
+  <button class="tab-btn" onclick="switchTab(3)">📝 الاختبار</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 1 -->
+<div class="tab-content active" id="tab0">
+<div class="container">
+
+  <div class="card">
+    <h2>🔤 تصنيف أنواع عناوين IPv6</h2>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px">انقر على نوع العنوان الصحيح لكل عنوان IPv6 المعروض.</p>
+    <div id="addrQuestions"></div>
+    <button class="btn btn-primary" style="margin-top:12px" onclick="checkAddrTypes()">تحقق من الإجابات</button>
+    <div class="feedback" id="fb-addr"></div>
+  </div>
+
+  <div class="card">
+    <h2>📚 مرجع أنواع عناوين IPv6</h2>
+    <table>
+      <thead><tr><th>النطاق / البادئة</th><th>النوع</th><th>الوصف</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">::1/128</td><td>Loopback</td><td>عنوان الحلقة المحلية (مثل 127.0.0.1)</td></tr>
+        <tr><td class="mono">FE80::/10</td><td>Link-Local</td><td>للتواصل على الشبكة المحلية فقط، لا يُرسَل خارجها</td></tr>
+        <tr><td class="mono">FC00::/7</td><td>Unique Local</td><td>خاص (يعادل RFC1918 في IPv4)</td></tr>
+        <tr><td class="mono">2000::/3</td><td>Global Unicast</td><td>عناوين قابلة للتوجيه عبر الإنترنت</td></tr>
+        <tr><td class="mono">FF00::/8</td><td>Multicast</td><td>إرسال لمجموعة أجهزة</td></tr>
+        <tr><td class="mono">::/128</td><td>Unspecified</td><td>عنوان غير محدد</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 2 -->
+<div class="tab-content" id="tab1">
+<div class="container">
+
+  <div class="card">
+    <h2>✂️ تقصير عناوين IPv6</h2>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:4px">قاعدتان للتقصير: (1) احذف الأصفار القيادية في كل مجموعة. (2) استبدل مجموعة واحدة متتالية من المجموعات الصفرية بـ <code style="color:var(--accent);">::</code> (مرة واحدة فقط).</p>
+    <div class="ipv6-abbr-exercise" id="abbrExercise"></div>
+    <button class="btn btn-primary" style="margin-top:16px" onclick="checkAbbr()">تحقق من التقصير</button>
+    <div class="feedback" id="fb-abbr"></div>
+  </div>
+
+  <div class="card">
+    <h2>🔢 حاسبة EUI-64</h2>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:14px">EUI-64 يحوّل عنوان MAC (48 بت) إلى معرّف واجهة IPv6 (64 بت) تلقائياً.</p>
+    <div class="eui-calc">
+      <label>أدخل عنوان MAC (مثال: 00:1A:2B:3C:4D:5E)</label>
+      <input type="text" id="macInput" placeholder="AA:BB:CC:DD:EE:FF" oninput="calcEUI64()" dir="ltr">
+      <label>الشبكة الفرعية IPv6 (مثال: 2001:DB8::/64)</label>
+      <input type="text" id="prefixInput" placeholder="2001:DB8::" oninput="calcEUI64()" dir="ltr">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+        <div>
+          <label style="margin-bottom:4px">معرّف الواجهة EUI-64:</label>
+          <div class="eui-result" id="euiResult">–</div>
+        </div>
+        <div>
+          <label style="margin-bottom:4px">عنوان IPv6 الكامل:</label>
+          <div class="eui-result" id="fullAddr">–</div>
+        </div>
+      </div>
+      <div class="eui-steps" id="euiSteps"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 3 -->
+<div class="tab-content" id="tab2">
+<div class="container">
+
+  <div class="card">
+    <h2>🔁 سيناريوهات توجيه IPv6</h2>
+    <div id="routeQuestions"></div>
+    <button class="btn btn-primary" style="margin-top:4px" onclick="checkRoutes()">تحقق من الإجابات</button>
+    <div class="feedback" id="fb-routes"></div>
+  </div>
+
+  <div class="card">
+    <h2>📚 مرجع أوامر IPv6 في Cisco IOS</h2>
+    <table class="ref-table">
+      <thead><tr><th>الأمر</th><th>الوظيفة</th></tr></thead>
+      <tbody>
+        <tr><td>ipv6 unicast-routing</td><td>تفعيل توجيه IPv6 على الراوتر</td></tr>
+        <tr><td>ipv6 address 2001:DB8::1/64</td><td>تعيين عنوان IPv6 ثابت للواجهة</td></tr>
+        <tr><td>ipv6 address FE80::1 link-local</td><td>تعيين عنوان Link-Local يدوياً</td></tr>
+        <tr><td>ipv6 address autoconfig</td><td>تفعيل SLAAC للحصول على عنوان تلقائياً</td></tr>
+        <tr><td>ipv6 route ::/0 [next-hop]</td><td>مسار افتراضي IPv6</td></tr>
+        <tr><td>show ipv6 interface brief</td><td>عرض عناوين IPv6 على الواجهات</td></tr>
+        <tr><td>show ipv6 route</td><td>عرض جدول توجيه IPv6</td></tr>
+        <tr><td>ping ipv6 [address]</td><td>اختبار الاتصال بعنوان IPv6</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ TAB 4 -->
+<div class="tab-content" id="tab3">
+<div class="container">
+  <div class="card">
+    <h2>📝 اختبار IPv6 – عشرة أسئلة</h2>
+    <div id="quizContainer"></div>
+    <button class="btn btn-primary" style="margin-top:8px" onclick="gradeQuiz()">إرسال الاختبار</button>
+    <div class="feedback" id="fb-quiz"></div>
+    <div class="score-summary" id="quizResult" style="display:none"></div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · الفصول 22–25 · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+// ── SCORES ─────────────────────────────────────────────────────────────────
+const sc = {t1:0,t2:0,t3:0,t4:0};
+function upd(){
+  document.getElementById('s1').textContent=sc.t1;
+  document.getElementById('s2').textContent=sc.t2;
+  document.getElementById('s3').textContent=sc.t3;
+  document.getElementById('s4').textContent=sc.t4;
+  document.getElementById('stotal').textContent=sc.t1+sc.t2+sc.t3+sc.t4;
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// TAB 1 – ADDRESS TYPES
+// ══════════════════════════════════════════════════════════════════════════
+const addrData = [
+  {addr:'::1',correct:'Loopback'},
+  {addr:'FE80::1:2AB:C3FF:FE45:6789',correct:'Link-Local'},
+  {addr:'2001:0DB8:85A3::8A2E:0370:7334',correct:'Global Unicast'},
+  {addr:'FF02::1',correct:'Multicast'},
+  {addr:'FC00::1',correct:'Unique Local'},
+  {addr:'::',correct:'Unspecified'},
+];
+const addrTypes = ['Loopback','Link-Local','Global Unicast','Multicast','Unique Local','Unspecified'];
+
+function buildAddrQ(){
+  const c = document.getElementById('addrQuestions');
+  c.innerHTML = addrData.map((q,i)=>`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px" id="aq${i}">
+      <p style="font-family:monospace;color:var(--accent);font-size:1rem;margin-bottom:10px;direction:ltr">${q.addr}</p>
+      <div class="addr-types">
+        ${addrTypes.map(t=>`<div class="addr-card" onclick="selectAddrType(${i},this,'${t}')" data-val="${t}">
+          <div class="label">${t}</div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+buildAddrQ();
+
+function selectAddrType(i, el, val){
+  const box = document.getElementById('aq'+i);
+  if(box.querySelector('.correct')) return;
+  box.querySelectorAll('.addr-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function checkAddrTypes(){
+  let pts = 0;
+  addrData.forEach((q,i)=>{
+    const box = document.getElementById('aq'+i);
+    const sel = box.querySelector('.addr-card.selected');
+    if(!sel) return;
+    if(sel.dataset.val === q.correct){
+      sel.classList.add('correct');
+      pts++;
+    } else {
+      sel.classList.add('wrong');
+      box.querySelectorAll('.addr-card').forEach(c=>{if(c.dataset.val===q.correct)c.classList.add('correct');});
+    }
+  });
+  sc.t1=pts; upd();
+  showFb('fb-addr',pts===6,'حصلت على '+pts+'/6. ممتاز! أتقنت أنواع عناوين IPv6.','حصلت على '+pts+'/6. راجع الجدول المرجعي أدناه لمعرفة الفروق.');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// TAB 2 – ABBREVIATION & EUI-64
+// ══════════════════════════════════════════════════════════════════════════
+const abbrData = [
+  {full:'2001:0DB8:0000:0000:0000:0000:0000:0001',abbr:'2001:DB8::1'},
+  {full:'FE80:0000:0000:0000:021A:2BFF:FE3C:4D5E',abbr:'FE80::21A:2BFF:FE3C:4D5E'},
+  {full:'FF02:0000:0000:0000:0000:0000:0000:0001',abbr:'FF02::1'},
+  {full:'2001:0DB8:0001:0002:0000:0000:0000:0001',abbr:'2001:DB8:1:2::1'},
+  {full:'0000:0000:0000:0000:0000:0000:0000:0001',abbr:'::1'},
+];
+
+function buildAbbr(){
+  const c = document.getElementById('abbrExercise');
+  c.innerHTML = abbrData.map((a,i)=>`
+    <div class="abbr-row">
+      <div style="font-family:monospace;font-size:.82rem;color:var(--text2);direction:ltr">${a.full}</div>
+      <div class="arrow">→</div>
+      <input type="text" id="abbr${i}" placeholder="العنوان المختصر" dir="ltr">
+    </div>`).join('');
+}
+buildAbbr();
+
+function checkAbbr(){
+  let pts = 0;
+  abbrData.forEach((a,i)=>{
+    const inp = document.getElementById('abbr'+i);
+    const val = inp.value.trim().toUpperCase();
+    if(val === a.abbr.toUpperCase()){inp.classList.add('correct');pts++;}
+    else{inp.classList.remove('correct');inp.classList.add('incorrect');inp.placeholder=a.abbr;}
+  });
+  sc.t2=pts; upd();
+  showFb('fb-abbr',pts===5,'ممتاز! أتقنت تقصير عناوين IPv6 ('+pts+'/5).','حصلت على '+pts+'/5. تذكّر: احذف الأصفار القيادية، واستخدم :: مرة واحدة للمجموعات الصفرية المتتالية.');
+}
+
+// EUI-64
+function calcEUI64(){
+  const mac = document.getElementById('macInput').value.trim();
+  const prefix = document.getElementById('prefixInput').value.trim();
+  const ri = document.getElementById('euiResult');
+  const fi = document.getElementById('fullAddr');
+  const si = document.getElementById('euiSteps');
+
+  // parse MAC
+  const macClean = mac.replace(/[:\-]/g,'');
+  if(macClean.length !== 12 || !/^[0-9A-Fa-f]{12}$/.test(macClean)){
+    ri.textContent='–'; fi.textContent='–'; si.textContent='';return;
+  }
+  const bytes = macClean.match(/.{2}/g).map(b=>parseInt(b,16));
+  // insert FF:FE
+  const eui = [...bytes.slice(0,3), 0xFF, 0xFE, ...bytes.slice(3)];
+  // flip 7th bit
+  eui[0] ^= 0x02;
+  // format as IPv6 groups
+  const g1 = eui.slice(0,2).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const g2 = eui.slice(2,4).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const g3 = eui.slice(4,6).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const g4 = eui.slice(6,8).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const iid = `${g1}:${g2}:${g3}:${g4}`;
+  ri.textContent = iid.toUpperCase();
+
+  const pfx = prefix.replace(/\/\d+$/,'').replace(/:+$/,'');
+  fi.textContent = (pfx ? pfx+':'+iid : '::'+iid).toUpperCase();
+
+  si.innerHTML = `
+    <strong>خطوات حساب EUI-64:</strong><br>
+    1. عنوان MAC الأصلي: ${mac.toUpperCase()}<br>
+    2. تقسيمه إلى نصفين: ${bytes.slice(0,3).map(b=>b.toString(16).padStart(2,'0')).join(':').toUpperCase()} | ${bytes.slice(3).map(b=>b.toString(16).padStart(2,'0')).join(':').toUpperCase()}<br>
+    3. إدراج FF:FE في المنتصف: ${eui.map(b=>b.toString(16).padStart(2,'0')).join(':').toUpperCase()} (قبل عكس البت)<br>
+    4. عكس البت السابع (U/L bit): ${(bytes[0]).toString(16).padStart(2,'0').toUpperCase()} → ${eui[0].toString(16).padStart(2,'0').toUpperCase()}<br>
+    5. معرّف الواجهة: ${iid.toUpperCase()}
+  `;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// TAB 3 – ROUTING SCENARIOS
+// ══════════════════════════════════════════════════════════════════════════
+const routeQs = [
+  {
+    q:'ما الأمر الأول الذي يجب تنفيذه لتفعيل توجيه IPv6 على راوتر Cisco IOS؟',
+    opts:['ipv6 enable','ipv6 unicast-routing','ip routing ipv6','ipv6 forwarding'],
+    ans:1
+  },
+  {
+    q:'ما نوع تكوين العنوان الذي يعتمد على NDP (Neighbor Discovery Protocol) لتعلّم المعلومات من الراوتر تلقائياً دون DHCPv6؟',
+    opts:['Static','EUI-64 Manual','SLAAC (Stateless Address Autoconfiguration)','DHCPv6 Stateful'],
+    ans:2
+  },
+  {
+    q:'في جدول توجيه IPv6، ما رمز المسارات المتعلمة عبر OSPFv3؟',
+    opts:['S','C','O','R'],
+    ans:2
+  },
+  {
+    q:'ما الأمر الصحيح لإضافة مسار ثابت IPv6 افتراضي عبر Next-Hop 2001:DB8::1؟',
+    opts:['ipv6 route default 2001:DB8::1','ipv6 route ::/0 2001:DB8::1','ip route 0.0.0.0 0.0.0.0 2001:DB8::1','ipv6 default-gateway 2001:DB8::1'],
+    ans:1
+  },
+];
+
+function buildRoutes(){
+  const c = document.getElementById('routeQuestions');
+  c.innerHTML = routeQs.map((q,i)=>`
+    <div class="question" id="rq${i}">
+      <p>${i+1}. ${q.q}</p>
+      <div class="options">
+        ${q.opts.map((o,j)=>`<label class="opt" id="ropt${i}_${j}">
+          <input type="radio" name="rq${i}" value="${j}"> ${o}
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+buildRoutes();
+
+function checkRoutes(){
+  let pts=0;
+  routeQs.forEach((q,i)=>{
+    const sel = document.querySelector(`input[name="rq${i}"]:checked`);
+    for(let j=0;j<q.opts.length;j++){
+      const el=document.getElementById(`ropt${i}_${j}`);
+      el.classList.remove('correct','wrong');
+    }
+    if(!sel) return;
+    const v=parseInt(sel.value);
+    document.getElementById(`ropt${i}_${v}`).classList.add(v===q.ans?'correct':'wrong');
+    if(v===q.ans) pts++;
+    else document.getElementById(`ropt${i}_${q.ans}`).classList.add('correct');
+  });
+  sc.t3=pts; upd();
+  showFb('fb-routes',pts===4,'ممتاز! أجبت على '+pts+'/4 بشكل صحيح.','حصلت على '+pts+'/4. راجع أوامر توجيه IPv6 في الجدول المرجعي.');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// TAB 4 – QUIZ
+// ══════════════════════════════════════════════════════════════════════════
+const quiz = [
+  {q:'كم عدد بتات عنوان IPv6؟',opts:['32','64','128','256'],ans:2},
+  {q:'ما الرمز الذي يمثّل مجموعة أو أكثر من مجموعات الأصفار المتتالية في تقصير IPv6؟',opts:[':','::','0x','/'],ans:1},
+  {q:'ما بادئة عناوين Link-Local في IPv6؟',opts:['FF00::/8','FC00::/7','FE80::/10','2000::/3'],ans:2},
+  {q:'كم طول معرّف الواجهة في عنوان IPv6 Global Unicast النموذجي؟',opts:['32 بت','48 بت','64 بت','128 بت'],ans:2},
+  {q:'ما البروتوكول الذي يحل محل ARP في IPv6؟',opts:['DHCPv6','NDP (Neighbor Discovery Protocol)','ICMPv4','OSPF'],ans:1},
+  {q:'في EUI-64، أي بت يتم عكسه في بايت عنوان MAC الأول؟',opts:['البت الأول','البت الثالث','البت السابع (U/L bit)','البت الثامن'],ans:2},
+  {q:'ما عنوان IPv6 Multicast المستخدم للوصول إلى جميع الراوترات على الشبكة المحلية؟',opts:['FF02::1','FF02::2','FE80::1','FF00::0'],ans:1},
+  {q:'ما الأمر المستخدم لعرض عناوين IPv6 على جميع واجهات الراوتر؟',opts:['show ip interface','show ipv6 interface brief','display ipv6 addresses','show interfaces ipv6'],ans:1},
+  {q:'كم عدد مجموعات Hexadecimal (16 بت) في عنوان IPv6 الكامل؟',opts:['4','6','8','16'],ans:2},
+  {q:'ما الاختلاف الرئيسي بين Unique Local (FC00::/7) و Global Unicast (2000::/3) في IPv6؟',opts:['الطول','قابلية التوجيه عبر الإنترنت','عدد البتات','طريقة التقصير'],ans:1},
+];
+
+function buildQuiz(){
+  document.getElementById('quizContainer').innerHTML = quiz.map((q,i)=>`
+    <div class="question" id="qq${i}">
+      <p>${i+1}. ${q.q}</p>
+      <div class="options">
+        ${q.opts.map((o,j)=>`<label class="opt" id="qopt${i}_${j}">
+          <input type="radio" name="qq${i}" value="${j}"> ${o}
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+buildQuiz();
+
+function gradeQuiz(){
+  let pts=0;
+  quiz.forEach((q,i)=>{
+    const sel=document.querySelector(`input[name="qq${i}"]:checked`);
+    for(let j=0;j<q.opts.length;j++) document.getElementById(`qopt${i}_${j}`).classList.remove('correct','wrong');
+    if(!sel) return;
+    const v=parseInt(sel.value);
+    document.getElementById(`qopt${i}_${v}`).classList.add(v===q.ans?'correct':'wrong');
+    if(v===q.ans) pts++;
+    else document.getElementById(`qopt${i}_${q.ans}`).classList.add('correct');
+  });
+  sc.t4=pts; upd();
+  const pct=Math.round(pts/10*100);
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':'D';
+  const res=document.getElementById('quizResult');
+  res.style.display='block';
+  res.innerHTML=`<div class="big-score">${pts}/10</div>
+    <div class="grade-badge grade-${grade}">${grade} — ${pct}%</div>
+    <p style="margin-top:12px;color:var(--text2)">${pts>=8?'أداء ممتاز! أتقنت IPv6.':pts>=6?'جيد! راجع نقاط الضعف.':'تحتاج إلى مراجعة الفصول 22–25.'}</p>`;
+  showFb('fb-quiz',pts>=8,'ممتاز! نتيجة رائعة في اختبار IPv6.','حصلت على '+pts+'/10. راجع الفصول 22–25 من كتاب Wendell Odom.');
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────
+function showFb(id,ok,okMsg,badMsg){
+  const el=document.getElementById(id);
+  el.className='feedback show '+(ok?'ok':'bad');
+  el.textContent=ok?okMsg:badMsg;
+}
+
+function saveScore(){
+  const total=sc.t1+sc.t2+sc.t3+sc.t4;
+  localStorage.setItem('ccna_lab08',JSON.stringify({score:total,max:25,date:new Date().toISOString()}));
+  alert('تم حفظ نتيجتك: '+total+'/25');
+}
+
+function resetAll(){
+  if(!confirm('هل تريد إعادة ضبط جميع الإجابات؟')) return;
+  sc.t1=sc.t2=sc.t3=sc.t4=0; upd();
+  buildAddrQ(); buildAbbr(); buildRoutes(); buildQuiz();
+  document.querySelectorAll('.feedback').forEach(f=>f.className='feedback');
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('euiResult').textContent='–';
+  document.getElementById('fullAddr').textContent='–';
+  document.getElementById('euiSteps').textContent='';
+  document.getElementById('macInput').value='';
+  document.getElementById('prefixInput').value='';
+}
+
+// Load saved
+(function(){
+  const saved=localStorage.getItem('ccna_lab08');
+  if(saved){const d=JSON.parse(saved);console.log('Saved score:',d.score);}
+})();
+</script>
+</body>
+</html>

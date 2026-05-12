@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 04 — بروتوكول Spanning Tree | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;--accent:#fbbf24;--accent2:#92400e;--text:#f1f5f9;--text2:#94a3b8;--border:#2a1f00;--success:#10b981;--error:#ef4444;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+.lab-header{background:linear-gradient(135deg,#451a03 0%,#92400e 50%,#fbbf24 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--accent)}
+.subtitle{color:var(--text2);font-size:.88rem;margin-bottom:18px;line-height:1.7}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.alert{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.88rem;line-height:1.6}
+.alert-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#34d399}
+.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.alert-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.score-badge{display:inline-block;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;text-align:center}
+td:first-child{text-align:right}
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.85rem;cursor:pointer;width:100%}
+select:focus{outline:none;border-color:var(--accent)}
+.quiz-q{margin-bottom:24px}
+.quiz-q p{font-weight:600;margin-bottom:12px;line-height:1.5}
+.quiz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;transition:all .2s;font-size:.88rem;text-align:right;width:100%;margin-bottom:8px;color:var(--text);display:block}
+.quiz-opt:hover{border-color:var(--accent)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399}
+.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.06);color:#f87171}
+.quiz-opt:disabled{cursor:default}
+.prog-wrap{background:var(--surface3);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.switch-node{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px;text-align:center;display:inline-block;min-width:120px}
+.switch-node.root{border-color:var(--accent);background:rgba(251,191,36,.08)}
+.switch-title{font-weight:700;font-size:.88rem;margin-bottom:4px}
+.switch-bid{font-size:.72rem;color:var(--text2);font-family:monospace}
+.port-role{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:10px;margin:2px}
+.role-root{background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.4);color:#34d399}
+.role-designated{background:rgba(0,188,235,.15);border:1px solid rgba(0,188,235,.4);color:#00bceb}
+.role-blocked{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#f87171}
+.stp-scenario{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">🌳</div>
+    <span>CCNA 200-301</span>
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html" style="color:var(--accent)">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+
+<div class="lab-header">
+  <div class="lab-badge">المختبر 04 من 10</div>
+  <h1>🌳 بروتوكول Spanning Tree (STP)</h1>
+  <p>م. عبدالله الأسمري · CCNA 200-301 · Wendell Odom Vol. 1</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 8: STP الأساسيات</span>
+    <span class="chapter-tag">الفصل 9: RSTP وتطبيقات Cisco</span>
+    <span class="chapter-tag">الفصل 10: EtherChannel</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">الاختبار: <span id="stotal">0</span>/10</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">انتخاب Root Bridge</button>
+  <button class="tab-btn" onclick="switchTab(1)">أدوار المنافذ</button>
+  <button class="tab-btn" onclick="switchTab(2)">STP مقابل RSTP</button>
+  <button class="tab-btn" onclick="switchTab(3)">اختبار المعرفة</button>
+</div>
+
+<div class="container">
+
+<!-- تبويب 1: انتخاب Root Bridge -->
+<div class="tab-content active">
+  <h2 style="color:var(--accent);margin-bottom:8px">انتخاب Root Bridge</h2>
+  <p class="subtitle">يُنتخب Root Bridge بناءً على أقل Bridge ID = Priority + MAC Address. حدّد Root Bridge لكل سيناريو.</p>
+
+  <div class="card">
+    <h3>📐 قاعدة الانتخاب</h3>
+    <div style="background:var(--surface2);border-radius:8px;padding:14px;font-size:.85rem;line-height:1.8;border:1px solid var(--border)">
+      <div style="color:var(--accent);font-weight:700;margin-bottom:6px">Bridge ID = Priority (2 بايت) + MAC Address (6 بايت)</div>
+      <div style="color:var(--text2)">• الأولوية الافتراضية: <span style="color:var(--text)">32768</span></div>
+      <div style="color:var(--text2)">• يُنتخب السويتش ذو <span style="color:#34d399">أقل Bridge ID</span> كـ Root Bridge</div>
+      <div style="color:var(--text2)">• إذا تساوت الأولوية → أقل MAC Address يفوز</div>
+      <div style="color:var(--text2)">• الأولوية تأتي بمضاعفات 4096 فقط: 0، 4096، 8192، ... 32768، ...</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🏆 سيناريوهات الانتخاب</h3>
+    <div id="rb-scenarios"></div>
+    <button class="btn btn-primary" onclick="checkRB()" style="margin-top:12px">تحقق من الإجابات</button>
+    <button class="btn btn-ghost btn-sm" onclick="buildRB()" style="margin-top:12px;margin-right:8px">إعادة تعيين</button>
+    <div id="rb-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 2: أدوار المنافذ -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">أدوار منافذ STP</h2>
+  <p class="subtitle">لكل منفذ في السيناريو، حدّد دوره: Root Port، Designated Port، أم Blocked (Alternate).</p>
+
+  <div class="card">
+    <h3>📋 تعريف أدوار المنافذ</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:8px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <span class="port-role role-root">Root Port (RP)</span>
+        <div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-top:8px">المنفذ على السويتش غير الجذر الذي يصل لـ Root Bridge بأقل تكلفة. كل سويتش غير جذر له Root Port واحد فقط.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <span class="port-role role-designated">Designated Port (DP)</span>
+        <div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-top:8px">المنفذ المُختار على كل Segment لإرسال البيانات نحو الشبكة. جميع منافذ Root Bridge هي Designated.</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px">
+        <span class="port-role role-blocked">Blocked / Alternate</span>
+        <div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-top:8px">المنفذ المحظور لمنع الحلقات. لا يُرسل ولا يستقبل بيانات عادية، لكن يستقبل BPDUs ليستعد للتفعيل عند الحاجة.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚙️ تعيين أدوار المنافذ</h3>
+    <div id="port-role-scenarios"></div>
+    <button class="btn btn-primary" onclick="checkPortRoles()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="pr-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 3: STP مقابل RSTP -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">STP مقابل RSTP وأنواع أخرى</h2>
+  <p class="subtitle">طابق كل خاصية بالبروتوكول الصحيح.</p>
+
+  <div class="card">
+    <h3>⏱️ مقارنة أوقات التقارب</h3>
+    <table>
+      <thead><tr>
+        <th>الخاصية</th>
+        <th style="text-align:center;color:var(--accent)">STP (802.1D)</th>
+        <th style="text-align:center;color:#34d399">RSTP (802.1w)</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>وقت التقارب</td><td style="color:#f87171">30–50 ثانية</td><td style="color:#34d399">أقل من ثانية</td></tr>
+        <tr><td>حالات المنفذ</td><td>5 حالات</td><td>3 حالات</td></tr>
+        <tr><td>آلية التقارب</td><td>Timer-based</td><td>Proposal/Agreement</td></tr>
+        <tr><td>المعيار</td><td>IEEE 802.1D</td><td>IEEE 802.1w</td></tr>
+        <tr><td>دعم Cisco</td><td>PVST+</td><td>Rapid PVST+</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>✏️ أسئلة المقارنة</h3>
+    <div id="stp-compare-container"></div>
+    <button class="btn btn-primary" onclick="checkCompare()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="compare-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 4: اختبار المعرفة -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">اختبار المعرفة — الفصول 8–10 (STP)</h2>
+  <p class="subtitle">10 أسئلة حول STP وRSTP وEtherChannel. تُحفظ نتيجتك تلقائيًا.</p>
+  <div class="score-badge" id="quiz-score">النتيجة: 0 / 10</div>
+  <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+
+// ---- انتخاب Root Bridge ----
+const RB_SCENARIOS=[
+  {
+    title:'سيناريو 1: ثلاثة سويتشات بأولويات مختلفة',
+    switches:[{name:'SW-A',priority:32768,mac:'AA:AA:AA:AA:AA:01'},{name:'SW-B',priority:4096,mac:'BB:BB:BB:BB:BB:01'},{name:'SW-C',priority:32768,mac:'CC:CC:CC:CC:CC:01'}],
+    ans:'SW-B',
+    exp:'SW-B يفوز لأن أولويته (4096) هي الأقل بين الثلاثة. أقل Priority = أقل Bridge ID = Root Bridge.'
+  },
+  {
+    title:'سيناريو 2: سويتشان بنفس الأولوية',
+    switches:[{name:'SW-X',priority:32768,mac:'FF:FF:FF:FF:FF:01'},{name:'SW-Y',priority:32768,mac:'AA:AA:AA:AA:AA:01'}],
+    ans:'SW-Y',
+    exp:'الأولوية متساوية (32768)، لذا يُقارن عنوان MAC. SW-Y يملك MAC أصغر قيمةً (AA) مقارنةً بـ FF، فيفوز.'
+  },
+  {
+    title:'سيناريو 3: أربعة سويتشات',
+    switches:[{name:'SW1',priority:32768,mac:'BB:BB:BB:BB:BB:02'},{name:'SW2',priority:8192,mac:'CC:CC:CC:CC:CC:02'},{name:'SW3',priority:8192,mac:'AA:AA:AA:AA:AA:02'},{name:'SW4',priority:32768,mac:'AA:AA:AA:AA:AA:01'}],
+    ans:'SW3',
+    exp:'SW2 وSW3 كلاهما أولويتهما 8192. نقارن MAC: SW3 (AA:...:02) أصغر من SW2 (CC:...:02)، لذا SW3 يفوز.'
+  },
+];
+function buildRB(){
+  document.getElementById('rb-scenarios').innerHTML=RB_SCENARIOS.map((sc,i)=>`
+    <div class="stp-scenario">
+      <div style="font-weight:700;color:var(--accent);margin-bottom:10px">${sc.title}</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        ${sc.switches.map(sw=>`<div class="switch-node"><div class="switch-title">${sw.name}</div><div class="switch-bid">Priority: ${sw.priority}</div><div class="switch-bid">MAC: ${sw.mac}</div></div>`).join('<div style="display:flex;align-items:center;padding:0 4px;color:var(--text2);font-size:1.2rem">—</div>')}
+      </div>
+      <div>
+        <label style="font-size:.85rem;color:var(--text2);margin-bottom:6px;display:block">من هو Root Bridge؟</label>
+        <select id="rb-${i}" style="width:auto;min-width:140px">
+          <option value="">-- اختر --</option>
+          ${sc.switches.map(sw=>`<option value="${sw.name}">${sw.name}</option>`).join('')}
+        </select>
+      </div>
+      <div id="rbf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('rb-feedback').innerHTML='';
+}
+function checkRB(){
+  let correct=0;
+  RB_SCENARIOS.forEach((sc,i)=>{
+    const val=document.getElementById('rb-'+i).value;
+    if(!val)return;
+    const ok=val===sc.ans;
+    if(ok)correct++;
+    document.getElementById('rbf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+sc.ans} — ${sc.exp}</div>`;
+  });
+  document.getElementById('rb-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${RB_SCENARIOS.length}</div>`;
+}
+buildRB();
+
+// ---- أدوار المنافذ ----
+const PR_SCENARIOS=[
+  {
+    context:'SW1 هو Root Bridge. المنافذ المذكورة على السويتشات غير الجذر.',
+    ports:[
+      {name:'SW2 — المنفذ المتصل بـ SW1',ans:'Root Port',exp:'المنفذ الذي يصل لـ Root Bridge على SW2 هو Root Port.'},
+      {name:'SW2 — المنفذ المتصل بـ SW3 (SW2 أقرب لـ Root)',ans:'Designated Port',exp:'SW2 هو الأقرب للجذر على هذا الـ Segment، لذا منفذه هو Designated.'},
+      {name:'SW3 — المنفذ المتصل بـ SW2',ans:'Blocked',exp:'SW3 أبعد عن الجذر في هذا الـ Segment، لذا منفذه يُحظر لمنع الحلقة.'},
+      {name:'SW3 — المنفذ المتصل بـ SW1 مباشرةً',ans:'Root Port',exp:'المنفذ المباشر لـ Root Bridge على SW3 هو Root Port.'},
+    ]
+  }
+];
+function buildPortRoles(){
+  document.getElementById('port-role-scenarios').innerHTML=PR_SCENARIOS.map((sc,si)=>`
+    <div style="margin-bottom:12px">
+      <div class="alert" style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);color:var(--accent);font-size:.82rem;margin-bottom:12px">💡 ${sc.context}</div>
+      ${sc.ports.map((p,pi)=>`
+        <div class="stp-scenario" style="margin-bottom:8px">
+          <div style="font-weight:600;margin-bottom:8px">${p.name}</div>
+          <select id="prs-${si}-${pi}" style="width:auto;min-width:180px">
+            <option value="">-- اختر الدور --</option>
+            <option>Root Port</option><option>Designated Port</option><option>Blocked</option>
+          </select>
+          <div id="prf-${si}-${pi}" style="margin-top:6px"></div>
+        </div>`).join('')}
+    </div>`).join('');
+  document.getElementById('pr-feedback').innerHTML='';
+}
+function checkPortRoles(){
+  let correct=0,total=0;
+  PR_SCENARIOS.forEach((sc,si)=>{
+    sc.ports.forEach((p,pi)=>{
+      const val=document.getElementById('prs-'+si+'-'+pi).value;
+      if(!val)return;
+      total++;
+      const ok=val===p.ans;
+      if(ok)correct++;
+      document.getElementById('prf-'+si+'-'+pi).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+p.ans} — ${p.exp}</div>`;
+    });
+  });
+  document.getElementById('pr-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${total}</div>`;
+}
+buildPortRoles();
+
+// ---- STP مقابل RSTP ----
+const COMPARE_Q=[
+  {q:'أي بروتوكول يستخدم آلية Proposal/Agreement للتقارب السريع؟',opts:['STP (802.1D)','RSTP (802.1w)','كلاهما','لا أحد'],ans:1,exp:'RSTP يستخدم Proposal/Agreement handshake للتقارب فوري بدلاً من الانتظار على Timers.'},
+  {q:'ما الاسم الذي يُطلقه Cisco على تطبيقه الخاص لـ RSTP؟',opts:['PVST+','Rapid PVST+','MST','STP Plus'],ans:1,exp:'Cisco يُسمي تطبيق RSTP الخاص به Rapid PVST+ (Rapid Per-VLAN Spanning Tree Plus).'},
+  {q:'في RSTP، ما عدد حالات المنفذ؟',opts:['2','3','5','7'],ans:1,exp:'RSTP له 3 حالات: Discarding، Learning، Forwarding. بينما STP له 5: Blocking، Listening، Learning، Forwarding، Disabled.'},
+  {q:'ما وقت تقارب STP (802.1D) الافتراضي تقريباً؟',opts:['أقل من ثانية','5–10 ثوانٍ','30–50 ثانية','5 دقائق'],ans:2,exp:'STP يستغرق 30–50 ثانية للتقارب: 20 ثانية Max Age + 15 ثانية Listening + 15 ثانية Learning.'},
+  {q:'ما وظيفة EtherChannel؟',opts:['تشفير الإطارات','دمج عدة روابط فيزيائية كرابط منطقي واحد','فصل الـ VLANs','منع الحلقات'],ans:1,exp:'EtherChannel يجمع 2–8 منافذ فيزيائية في رابط منطقي واحد لزيادة عرض النطاق وتوفير Redundancy.'},
+];
+function buildCompare(){
+  document.getElementById('stp-compare-container').innerHTML=COMPARE_Q.map((q,i)=>`
+    <div style="margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <p style="font-weight:600;margin-bottom:10px">${i+1}. ${q.q}</p>
+      <select id="cmp-${i}">
+        <option value="">-- اختر --</option>
+        ${q.opts.map((o,j)=>`<option value="${j}">${o}</option>`).join('')}
+      </select>
+      <div id="cmpf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('compare-feedback').innerHTML='';
+}
+function checkCompare(){
+  let correct=0;
+  COMPARE_Q.forEach((q,i)=>{
+    const val=parseInt(document.getElementById('cmp-'+i).value);
+    if(isNaN(val))return;
+    const ok=val===q.ans;
+    if(ok)correct++;
+    document.getElementById('cmpf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+q.opts[q.ans]} — ${q.exp}</div>`;
+  });
+  document.getElementById('compare-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${COMPARE_Q.length}</div>`;
+}
+buildCompare();
+
+// ---- اختبار المعرفة ----
+const QUIZ=[
+  {q:'ما الهدف الرئيسي لبروتوكول STP؟',opts:['زيادة سرعة الشبكة','منع حلقات Layer 2 في الشبكات المتبادلة','تشفير البيانات','توزيع الحمل بين الروابط'],ans:1,exp:'STP يمنع حلقات Ethernet عن طريق تعطيل بعض الروابط وتفعيلها عند الحاجة كـ Backup.'},
+  {q:'ما القيمة الافتراضية لـ Bridge Priority في Cisco؟',opts:['0','4096','32768','65535'],ans:2,exp:'الأولوية الافتراضية هي 32768 (2^15). يمكن تغييرها بمضاعفات 4096 فقط.'},
+  {q:'ما الإطار الذي يُرسله STP لاكتشاف الطوبولوجيا ومنع الحلقات؟',opts:['ARP','BPDU','ICMP','CDP'],ans:1,exp:'BPDU (Bridge Protocol Data Unit) هو الإطار الذي تتبادله السويتشات لانتخاب Root Bridge وتعيين أدوار المنافذ.'},
+  {q:'في STP الكلاسيكي، ما حالة المنفذ التي يبدأ فيها تعلم عناوين MAC؟',opts:['Blocking','Listening','Learning','Forwarding'],ans:2,exp:'مرحلة Learning: المنفذ يتعلم عناوين MAC لكن لا يُرسل بيانات بعد. تستمر 15 ثانية بالإعداد الافتراضي.'},
+  {q:'ما أمر Cisco IOS لعرض حالة STP على السويتش؟',opts:['show stp','show spanning-tree','show topology','show bridge'],ans:1,exp:'"show spanning-tree" يعرض معلومات STP شاملاً: Root Bridge، أولوية الجهاز، أدوار وحالات المنافذ.'},
+  {q:'ما آلية PortFast في STP؟',opts:['تسريع نقل البيانات','السماح للمنافذ المتصلة بالأجهزة النهائية بالتخطي مباشرةً لحالة Forwarding','إيقاف STP نهائياً','دمج منافذ متعددة'],ans:1,exp:'PortFast يُتيح للمنافذ المتصلة بالـ PCs والطابعات الدخول لـ Forwarding فوراً دون انتظار 30 ثانية.'},
+  {q:'ما الفرق بين Blocking وDiscarding في STP/RSTP؟',opts:['لا فرق — Discarding يُستخدم في RSTP ويعادل Blocking في STP','Discarding أسرع من Blocking','Blocking للراوترات وDiscarding للسويتشات','Discarding يُرسل بيانات بينما Blocking لا'],ans:0,exp:'RSTP دمج حالات Blocking وListening وDisabled في حالة واحدة تُسمى Discarding لتبسيط الآلية.'},
+  {q:'ما الأمر لتعيين سويتش كـ Root Bridge بشكل أوتوماتيكي في Cisco؟',opts:['spanning-tree root primary','spanning-tree priority 0','set root bridge','spanning-tree mode root'],ans:0,exp:'"spanning-tree vlan [id] root primary" يُعيّن الأولوية تلقائياً لتكون الأقل في الشبكة ويفوز الجهاز بمنصب Root.'},
+  {q:'كم رابطاً فيزيائياً يمكن دمجه في EtherChannel؟',opts:['2 فقط','2–4','2–8','2–16'],ans:2,exp:'EtherChannel يدعم دمج 2–8 روابط فيزيائية. LACP (IEEE) وPAgP (Cisco) هما بروتوكولا التفاوض.'},
+  {q:'ما خاصية BPDU Guard وما وظيفتها؟',opts:['تسريع BPDU','إيقاف تشغيل المنفذ تلقائياً إذا استقبل BPDU على منفذ PortFast','تشفير BPDU','زيادة أولوية Root Bridge'],ans:1,exp:'BPDU Guard يحمي الشبكة من إضافة سويتشات غير مصرح بها — يُوقف المنفذ (err-disabled) فوراً عند استقبال BPDU.'},
+];
+let quizScore=0,quizAnswered=0;
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=QUIZ.map((q,i)=>`
+    <div class="quiz-q" id="qq-${i}">
+      <p>${i+1}. ${q.q}</p>
+      ${q.opts.map((o,j)=>`<button class="quiz-opt" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      <div id="qfb-${i}" style="margin-top:6px"></div>
+    </div>`).join('');
+}
+function answerQuiz(qi,oi){
+  const q=QUIZ[qi];
+  const btns=document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(oi!==q.ans)btns[oi].classList.add('incorrect');
+  else quizScore++;
+  quizAnswered++;
+  document.getElementById('qfb-'+qi).innerHTML=`<div class="alert ${oi===q.ans?'alert-success':'alert-danger'}" style="font-size:.82rem">${oi===q.ans?'✅ صحيح!':'❌ غير صحيح.'} ${q.exp}</div>`;
+  document.getElementById('quiz-score').textContent='النتيجة: '+quizScore+' / '+QUIZ.length;
+  document.getElementById('quiz-prog').style.width=(quizAnswered/QUIZ.length*100)+'%';
+  if(quizAnswered===QUIZ.length){
+    const pct=Math.round(quizScore/QUIZ.length*100);
+    localStorage.setItem('ccna_lab04',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));
+    document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;
+    document.getElementById('quiz-container').insertAdjacentHTML('beforeend',
+      `<div class="alert ${pct>=90?'alert-success':pct>=60?'alert-warn':'alert-danger'}" style="margin-top:20px;font-size:1rem;font-weight:700">
+        🎓 انتهى الاختبار! نتيجتك: ${quizScore}/${QUIZ.length} (${pct}%) — ${pct>=90?'ممتاز 🏆':pct>=75?'جيد جداً ⭐':pct>=60?'جيد ✓':'يحتاج مراجعة 📖'}
+        <br><a href="index.html" style="color:var(--accent);font-size:.85rem;display:inline-block;margin-top:8px">← العودة للمختبرات</a>
+      </div>`);
+  }
+}
+buildQuiz();
+function resetAll(){localStorage.removeItem('ccna_lab04');location.reload();}
+function saveScore(){if(quizAnswered>0){const pct=Math.round(quizScore/QUIZ.length*100);localStorage.setItem('ccna_lab04',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;}}
+(function(){const s=JSON.parse(localStorage.getItem('ccna_lab04')||'null');if(s)document.getElementById('stotal').textContent=s.score+'/'+s.total;})();
+</script>
+</body>
+</html>

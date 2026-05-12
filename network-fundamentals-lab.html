@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 1 – أساسيات الشبكات | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;--accent:#00bceb;--accent2:#006fa6;--text:#f1f5f9;--text2:#94a3b8;--border:#0f2a3a;--success:#10b981;--error:#ef4444;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+.lab-header{background:linear-gradient(135deg,#006fa6 0%,#00bceb 60%,#0097c4 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--accent)}
+.subtitle{color:var(--text2);font-size:.88rem;margin-bottom:18px;line-height:1.7}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.alert{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.88rem;line-height:1.6}
+.alert-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#34d399}
+.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.alert-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.score-badge{display:inline-block;background:rgba(0,188,235,.1);border:1px solid rgba(0,188,235,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+.match-container{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:16px 0}
+.match-col h4{font-size:.85rem;color:var(--text2);margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}
+.match-item{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s;font-size:.88rem;user-select:none}
+.match-item:hover{border-color:var(--accent)}
+.match-item.selected{border-color:var(--accent);background:rgba(0,188,235,.08);color:var(--accent)}
+.match-item.matched{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399;cursor:default}
+.match-item.wrong-match{border-color:var(--error);background:rgba(239,68,68,.06);animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,.02)}
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.85rem;cursor:pointer;width:100%}
+select:focus{outline:none;border-color:var(--accent)}
+.quiz-q{margin-bottom:24px}
+.quiz-q p{font-weight:600;margin-bottom:12px;line-height:1.5}
+.quiz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;transition:all .2s;font-size:.88rem;text-align:right;width:100%;margin-bottom:8px;color:var(--text);display:block}
+.quiz-opt:hover{border-color:var(--accent)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399}
+.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.06);color:#f87171}
+.quiz-opt:disabled{cursor:default}
+.prog-wrap{background:var(--surface3);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.net-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin:16px 0}
+.scenario-card{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:all .2s}
+.scenario-card:hover{border-color:var(--accent)}
+.scenario-card.selected{border-color:var(--success);background:#062011}
+.scenario-card.wrong{border-color:var(--error);background:#1f0707}
+.scenario-icon{font-size:2rem;margin-bottom:8px}
+.scenario-name{font-weight:700;margin-bottom:4px}
+.scenario-desc{font-size:.75rem;color:var(--text2);line-height:1.4}
+.correct-row td{background:rgba(16,185,129,.06)!important}
+.wrong-row td{background:rgba(239,68,68,.06)!important}
+@media(max-width:600px){.match-container{grid-template-columns:1fr}.net-grid{grid-template-columns:1fr 1fr}}
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand"><div class="logo">🌐</div>CCNA 200-301 Labs</div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html" style="color:var(--accent)">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+<div class="lab-header">
+  <div class="lab-badge">المختبر 1 من 10</div>
+  <h1>🌐 أساسيات الشبكات</h1>
+  <p>نماذج OSI وTCP/IP — البروتوكولات — أنواع الشبكات</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 1: أساسيات الشبكات</span>
+    <span class="chapter-tag">الفصل 2: نموذجا OSI وTCP/IP</span>
+    <span class="chapter-tag">الفصل 3: أنواع الشبكات</span>
+  </div>
+</div>
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">الاختبار: <span id="stotal">0</span>/10</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">نموذجا OSI وTCP/IP</button>
+  <button class="tab-btn" onclick="switchTab(1)">تحديد البروتوكولات</button>
+  <button class="tab-btn" onclick="switchTab(2)">أنواع الشبكات</button>
+  <button class="tab-btn" onclick="switchTab(3)">اختبار المعرفة</button>
+</div>
+
+<div class="tab-content active" id="tab0">
+<div class="container">
+  <div class="card">
+    <h2>🔗 مطابقة طبقات OSI بوظائفها</h2>
+    <p class="subtitle">انقر على طبقة من اليمين ثم على وظيفتها من اليسار.</p>
+    <div class="score-badge" id="osi-score">تمت المطابقة: 0 / 7</div>
+    <div class="match-container">
+      <div><div class="match-col"><h4>الطبقة</h4></div><div id="osi-left"></div></div>
+      <div><div class="match-col"><h4>الوظيفة الرئيسية</h4></div><div id="osi-right"></div></div>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="resetOSI()">إعادة تعيين</button>
+    <div id="osi-feedback" style="margin-top:12px"></div>
+  </div>
+  <div class="card">
+    <h3>📋 مقارنة سريعة: OSI مقابل TCP/IP</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+      <div>
+        <div style="color:var(--accent);font-weight:700;margin-bottom:8px;font-size:.88rem">نموذج OSI (7 طبقات)</div>
+        <div style="background:var(--surface2);border-radius:8px;overflow:hidden">
+          <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:.82rem"><span style="color:#f87171;font-weight:700;margin-left:8px">7</span>التطبيق (Application)</div>
+          <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:.82rem"><span style="color:#fb923c;font-weight:700;margin-left:8px">6</span>التقديم (Presentation)</div>
+          <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:.82rem"><span style="color:#fbbf24;font-weight:700;margin-left:8px">5</span>الجلسة (Session)</div>
+          <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:.82rem"><span style="color:#34d399;font-weight:700;margin-left:8px">4</span>النقل (Transport)</div>
+          <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:.82rem"><span style="color:var(--accent);font-weight:700;margin-left:8px">3</span>الشبكة (Network)</div>
+          <div style="padding:8px 12px;border-bottom:1px solid var(--border);font-size:.82rem"><span style="color:#818cf8;font-weight:700;margin-left:8px">2</span>ربط البيانات (Data Link)</div>
+          <div style="padding:8px 12px;font-size:.82rem"><span style="color:#a78bfa;font-weight:700;margin-left:8px">1</span>المادية (Physical)</div>
+        </div>
+      </div>
+      <div>
+        <div style="color:var(--accent);font-weight:700;margin-bottom:8px;font-size:.88rem">نموذج TCP/IP (4 طبقات)</div>
+        <div style="background:var(--surface2);border-radius:8px;overflow:hidden">
+          <div style="padding:20px 12px;border-bottom:1px solid var(--border);font-size:.82rem;text-align:center"><span style="color:#f87171;font-weight:700">التطبيق</span><div style="font-size:.72rem;color:var(--text2);margin-top:4px">يغطي OSI 5، 6، 7</div></div>
+          <div style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:.82rem;text-align:center"><span style="color:#34d399;font-weight:700">النقل</span><div style="font-size:.72rem;color:var(--text2);margin-top:4px">يقابل OSI 4</div></div>
+          <div style="padding:14px 12px;border-bottom:1px solid var(--border);font-size:.82rem;text-align:center"><span style="color:var(--accent);font-weight:700">الإنترنت</span><div style="font-size:.72rem;color:var(--text2);margin-top:4px">يقابل OSI 3</div></div>
+          <div style="padding:20px 12px;font-size:.82rem;text-align:center"><span style="color:#818cf8;font-weight:700">الوصول للشبكة</span><div style="font-size:.72rem;color:var(--text2);margin-top:4px">يغطي OSI 1 و2</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="tab-content" id="tab1">
+<div class="container">
+  <div class="card">
+    <h2>🔍 تحديد طبقة البروتوكول</h2>
+    <p class="subtitle">لكل بروتوكول، حدّد الطبقة الصحيحة من نموذج OSI.</p>
+    <table>
+      <thead><tr><th>البروتوكول / التقنية</th><th>طبقة OSI</th><th>الحالة</th></tr></thead>
+      <tbody id="proto-tbody"></tbody>
+    </table>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="checkProtos()">تحقق من الإجابات</button>
+      <button class="btn btn-ghost btn-sm" onclick="resetProtos()">إعادة تعيين</button>
+    </div>
+    <div id="proto-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+</div>
+
+<div class="tab-content" id="tab2">
+<div class="container">
+  <div class="card">
+    <h2>🗺️ أنواع الشبكات وسيناريوهاتها</h2>
+    <p class="subtitle">اختر نوع الشبكة المناسب لكل سيناريو.</p>
+    <div class="score-badge" id="net-score">النتيجة: 0 / 0</div>
+    <h3 id="net-q-num">السيناريو 1 من 5</h3>
+    <p id="net-scenario" style="margin:12px 0;line-height:1.7"></p>
+    <div class="net-grid" id="net-options"></div>
+    <div id="net-feedback" style="margin-top:12px"></div>
+    <button class="btn btn-primary" id="net-next" onclick="nextNet()" style="margin-top:16px;display:none">السيناريو التالي ←</button>
+  </div>
+</div>
+</div>
+
+<div class="tab-content" id="tab3">
+<div class="container">
+  <div class="card">
+    <h2>📝 اختبار المعرفة — الفصول 1–3</h2>
+    <p class="subtitle">10 أسئلة حول أساسيات الشبكات. تُحفظ نتيجتك تلقائيًا.</p>
+    <div class="score-badge" id="quiz-score">النتيجة: 0 / 10</div>
+    <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+    <div id="quiz-container"></div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · الفصول 1–3 · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+
+// ---- مطابقة OSI ----
+const OSI_DATA=[
+  {layer:'الطبقة السابعة — التطبيق',func:'واجهة المستخدم مع الشبكة (HTTP، FTP، DNS، SMTP)'},
+  {layer:'الطبقة السادسة — التقديم',func:'تشفير البيانات وضغطها وتحويل الصيغ (SSL/TLS، JPEG)'},
+  {layer:'الطبقة الخامسة — الجلسة',func:'إنشاء الجلسات وإدارتها وإنهاؤها بين التطبيقات'},
+  {layer:'الطبقة الرابعة — النقل',func:'تجزئة البيانات وضمان التسليم (TCP/UDP، الأرقام المنفذية)'},
+  {layer:'الطبقة الثالثة — الشبكة',func:'التوجيه المنطقي وعناوين IP واتخاذ قرار المسار'},
+  {layer:'الطبقة الثانية — ربط البيانات',func:'عناوين MAC وKRames والوصول إلى الوسط (Ethernet)'},
+  {layer:'الطبقة الأولى — المادية',func:'نقل البتات عبر الوسط: الكابلات والإشارات الكهربائية'},
+];
+let osiSelected=null,osiMatched=0;
+function buildOSI(){
+  osiSelected=null;osiMatched=0;
+  const shuffledR=[...OSI_DATA].sort(()=>Math.random()-.5);
+  document.getElementById('osi-left').innerHTML=OSI_DATA.map((d,i)=>`<div class="match-item" id="ol-${i}" onclick="selectOsiLeft(${i})">${d.layer}</div>`).join('');
+  document.getElementById('osi-right').innerHTML=shuffledR.map((d,i)=>`<div class="match-item" id="or-${i}" onclick="selectOsiRight(${i})" data-func="${d.func}">${d.func}</div>`).join('');
+  document.getElementById('osi-score').textContent='تمت المطابقة: 0 / 7';
+  document.getElementById('osi-feedback').innerHTML='';
+}
+function selectOsiLeft(i){
+  document.querySelectorAll('#osi-left .match-item').forEach(el=>el.classList.remove('selected'));
+  document.getElementById('ol-'+i).classList.add('selected');
+  osiSelected=i;
+}
+function selectOsiRight(i){
+  if(osiSelected===null)return;
+  const rightEl=document.getElementById('or-'+i);
+  const func=rightEl.dataset.func;
+  if(func===OSI_DATA[osiSelected].func){
+    document.getElementById('ol-'+osiSelected).classList.replace('selected','matched');
+    document.getElementById('ol-'+osiSelected).style.pointerEvents='none';
+    rightEl.classList.add('matched');rightEl.style.pointerEvents='none';
+    osiMatched++;
+    document.getElementById('osi-score').textContent='تمت المطابقة: '+osiMatched+' / 7';
+    if(osiMatched===7)document.getElementById('osi-feedback').innerHTML='<div class="alert alert-success">🎉 ممتاز! طابقت جميع طبقات OSI بشكل صحيح!</div>';
+  } else {
+    document.getElementById('ol-'+osiSelected).classList.add('wrong-match');
+    rightEl.classList.add('wrong-match');
+    setTimeout(()=>{document.getElementById('ol-'+osiSelected).classList.remove('wrong-match','selected');rightEl.classList.remove('wrong-match');},700);
+  }
+  osiSelected=null;
+}
+function resetOSI(){buildOSI();}
+buildOSI();
+
+// ---- تحديد البروتوكولات ----
+const PROTO_DATA=[
+  {proto:'HTTP / HTTPS',ans:'الطبقة السابعة (تطبيق)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+  {proto:'IP (بروتوكول الإنترنت)',ans:'الطبقة الثالثة (شبكة)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+  {proto:'TCP / UDP',ans:'الطبقة الرابعة (نقل)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+  {proto:'Ethernet (كابلات وإطارات)',ans:'الطبقة الثانية (ربط البيانات)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+  {proto:'إشارات كهربائية / بصرية على الكابل',ans:'الطبقة الأولى (مادية)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+  {proto:'DNS (خدمة أسماء النطاقات)',ans:'الطبقة السابعة (تطبيق)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+  {proto:'عنوان MAC',ans:'الطبقة الثانية (ربط البيانات)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+  {proto:'OSPF / RIP (بروتوكولات التوجيه)',ans:'الطبقة الثالثة (شبكة)',opts:['الطبقة الأولى (مادية)','الطبقة الثانية (ربط البيانات)','الطبقة الثالثة (شبكة)','الطبقة الرابعة (نقل)','الطبقة السابعة (تطبيق)']},
+];
+function buildProtos(){
+  document.getElementById('proto-tbody').innerHTML=PROTO_DATA.map((d,i)=>`<tr id="pr-${i}">
+    <td style="font-weight:600">${d.proto}</td>
+    <td><select id="ps-${i}"><option value="">-- اختر الطبقة --</option>${d.opts.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></td>
+    <td id="pc-${i}" style="font-size:.8rem"></td>
+  </tr>`).join('');
+}
+function checkProtos(){
+  let correct=0;
+  PROTO_DATA.forEach((d,i)=>{
+    const sel=document.getElementById('ps-'+i);
+    const row=document.getElementById('pr-'+i);
+    const cell=document.getElementById('pc-'+i);
+    if(!sel.value){cell.textContent='—';return;}
+    if(sel.value===d.ans){correct++;row.className='correct-row';cell.innerHTML='<span style="color:#34d399">✓ صحيح</span>';}
+    else{row.className='wrong-row';cell.innerHTML='<span style="color:#f87171">✗ الصحيح: '+d.ans+'</span>';}
+  });
+  document.getElementById('proto-feedback').innerHTML=`<div class="alert ${correct===PROTO_DATA.length?'alert-success':'alert-warn'}">النتيجة: ${correct} / ${PROTO_DATA.length}</div>`;
+}
+function resetProtos(){buildProtos();document.getElementById('proto-feedback').innerHTML='';}
+buildProtos();
+
+// ---- أنواع الشبكات ----
+const NET_SCENARIOS=[
+  {q:'شبكة توصل مباني شركة متفرقة في مدينة واحدة تبعد أقل من 50 كم.',ans:'MAN',opts:[{n:'LAN',i:'🏠',d:'شبكة محلية'},{n:'MAN',i:'🏙️',d:'شبكة مدينة'},{n:'WAN',i:'🌍',d:'شبكة واسعة'},{n:'PAN',i:'📱',d:'شبكة شخصية'}],explain:'MAN تربط مواقع متعددة داخل مدينة بمسافات 1–50 كم.'},
+  {q:'موظف في المنزل يتصل بخوادم الشركة في مدينة أخرى عبر الإنترنت.',ans:'WAN',opts:[{n:'LAN',i:'🏠',d:'شبكة محلية'},{n:'MAN',i:'🏙️',d:'شبكة مدينة'},{n:'WAN',i:'🌍',d:'شبكة واسعة'},{n:'VPN',i:'🔒',d:'شبكة خاصة افتراضية'}],explain:'WAN تربط المواقع البعيدة جغرافياً. VPN تقنية فوق WAN للتشفير.'},
+  {q:'مختبر حاسوب في جامعة يحتوي على 30 جهاز متصلة بسويتشات داخل نفس المبنى.',ans:'LAN',opts:[{n:'LAN',i:'🏠',d:'شبكة محلية'},{n:'MAN',i:'🏙️',d:'شبكة مدينة'},{n:'WAN',i:'🌍',d:'شبكة واسعة'},{n:'CAN',i:'🏫',d:'شبكة حرم جامعي'}],explain:'LAN تربط الأجهزة في موقع محدود كمبنى أو طابق.'},
+  {q:'ساعة ذكية تنقل البيانات لهاتف محمول عبر بلوتوث.',ans:'PAN',opts:[{n:'LAN',i:'🏠',d:'شبكة محلية'},{n:'PAN',i:'📱',d:'شبكة شخصية'},{n:'WAN',i:'🌍',d:'شبكة واسعة'},{n:'MAN',i:'🏙️',d:'شبكة مدينة'}],explain:'PAN تربط الأجهزة الشخصية بنطاق قصير جداً كالبلوتوث وNFC.'},
+  {q:'شركة دولية تربط فروعها في الرياض ولندن وطوكيو عبر خطوط MPLS.',ans:'WAN',opts:[{n:'LAN',i:'🏠',d:'شبكة محلية'},{n:'MAN',i:'🏙️',d:'شبكة مدينة'},{n:'WAN',i:'🌍',d:'شبكة واسعة'},{n:'SAN',i:'💾',d:'شبكة تخزين'}],explain:'WAN عبر MPLS تربط المواقع البعيدة عالمياً.'},
+];
+let netIdx=0,netCorrect=0;
+function loadNet(){
+  const sc=NET_SCENARIOS[netIdx];
+  document.getElementById('net-q-num').textContent='السيناريو '+(netIdx+1)+' من '+NET_SCENARIOS.length;
+  document.getElementById('net-scenario').textContent=sc.q;
+  document.getElementById('net-feedback').innerHTML='';
+  document.getElementById('net-next').style.display='none';
+  document.getElementById('net-options').innerHTML=sc.opts.map(o=>`
+    <div class="scenario-card" onclick="selectNet('${o.n}')">
+      <div class="scenario-icon">${o.i}</div>
+      <div class="scenario-name">${o.n}</div>
+      <div class="scenario-desc">${o.d}</div>
+    </div>`).join('');
+  updateNetScore();
+}
+function selectNet(choice){
+  const sc=NET_SCENARIOS[netIdx];
+  document.querySelectorAll('#net-options .scenario-card').forEach(c=>{
+    c.style.pointerEvents='none';
+    if(c.querySelector('.scenario-name').textContent===sc.ans)c.classList.add('selected');
+    else if(c.querySelector('.scenario-name').textContent===choice&&choice!==sc.ans)c.classList.add('wrong');
+  });
+  if(choice===sc.ans)netCorrect++;
+  document.getElementById('net-feedback').innerHTML=`<div class="alert ${choice===sc.ans?'alert-success':'alert-danger'}">${choice===sc.ans?'✅ صحيح!':'❌ غير صحيح.'} ${sc.explain}</div>`;
+  document.getElementById('net-next').style.display='inline-block';
+  updateNetScore();
+}
+function nextNet(){
+  netIdx++;
+  if(netIdx>=NET_SCENARIOS.length){
+    document.getElementById('net-options').innerHTML='';
+    document.getElementById('net-scenario').textContent='';
+    document.getElementById('net-q-num').textContent='اكتمل القسم!';
+    document.getElementById('net-feedback').innerHTML=`<div class="alert alert-success">حصلت على ${netCorrect}/${NET_SCENARIOS.length} في أنواع الشبكات.<br><button class="btn btn-ghost btn-sm" onclick="netIdx=0;netCorrect=0;loadNet()" style="margin-top:10px">إعادة المحاولة</button></div>`;
+    document.getElementById('net-next').style.display='none';return;
+  }
+  loadNet();
+}
+function updateNetScore(){document.getElementById('net-score').textContent='النتيجة: '+netCorrect+' / '+Math.min(netIdx,NET_SCENARIOS.length);}
+loadNet();
+
+// ---- اختبار المعرفة ----
+const QUIZ=[
+  {q:'ما هو اسم وحدة البيانات (PDU) في الطبقة الرابعة (النقل)؟',opts:['إطار (Frame)','حزمة (Packet)','مقطع (Segment)','بت (Bit)'],ans:2,exp:'الطبقة الرابعة تتعامل مع Segments. الثالثة مع Packets، الثانية مع Frames، الأولى مع Bits.'},
+  {q:'أي بروتوكول يضمن الإرسال الموثوق مع الترتيب؟',opts:['UDP','IP','TCP','ICMP'],ans:2,exp:'TCP يضمن التسليم الموثوق والمرتب عبر ثلاث مراحل: SYN، SYN-ACK، ACK.'},
+  {q:'كم عدد طبقات نموذج OSI؟',opts:['4','5','7','9'],ans:2,exp:'نموذج OSI يحتوي على 7 طبقات من المادية للتطبيق.'},
+  {q:'في نموذج TCP/IP، أي طبقة تجمع طبقات التطبيق والتقديم والجلسة في OSI؟',opts:['طبقة الإنترنت','طبقة النقل','طبقة الوصول للشبكة','طبقة التطبيق'],ans:3,exp:'طبقة التطبيق في TCP/IP تجمع وظائف الطبقات 5 و6 و7 من OSI.'},
+  {q:'ما نوع الشبكة التي تربط مبانٍ متعددة داخل مدينة واحدة؟',opts:['LAN','WAN','MAN','PAN'],ans:2,exp:'MAN (Metropolitan Area Network) للمواقع داخل نطاق المدينة.'},
+  {q:'أي طبقة من OSI مسؤولة عن عناوين MAC وإطارات Ethernet؟',opts:['الطبقة الأولى','الطبقة الثانية','الطبقة الثالثة','الطبقة الرابعة'],ans:1,exp:'الطبقة الثانية (Data Link) تتعامل مع عناوين MAC وإطارات Ethernet.'},
+  {q:'ما الفرق الرئيسي بين TCP وUDP؟',opts:['TCP أسرع','UDP يضمن التسليم','TCP يضمن التسليم والترتيب بينما UDP لا','لا فرق'],ans:2,exp:'TCP موثوق وأبطأ. UDP سريع وغير موثوق — مناسب للبث المباشر.'},
+  {q:'في نموذج OSI، أي طبقة تتعامل مع التوجيه وعناوين IP؟',opts:['الثانية','الثالثة','الرابعة','الخامسة'],ans:1,exp:'الطبقة الثالثة (Network) مسؤولة عن التوجيه المنطقي وعناوين IP.'},
+  {q:'ما اسم عملية تجزئة البيانات الكبيرة عند الإرسال؟',opts:['التشفير','التجزئة (Segmentation)','التغليف (Encapsulation)','التوجيه'],ans:1,exp:'التجزئة (Segmentation) تقسّم البيانات لأجزاء صغيرة لإرسالها عبر الشبكة.'},
+  {q:'ما البروتوكول المستخدم لاختبار الاتصالية بين جهازين (ping)؟',opts:['HTTP','FTP','ICMP','SMTP'],ans:2,exp:'ICMP يُستخدم بأمر ping لاختبار الاتصالية والتحقق من وصول الحزم.'},
+];
+let quizScore=0,quizAnswered=0;
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=QUIZ.map((q,i)=>`
+    <div class="quiz-q" id="qq-${i}">
+      <p>${i+1}. ${q.q}</p>
+      ${q.opts.map((o,j)=>`<button class="quiz-opt" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      <div id="qfb-${i}" style="margin-top:6px"></div>
+    </div>`).join('');
+}
+function answerQuiz(qi,oi){
+  const q=QUIZ[qi];
+  const btns=document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(oi!==q.ans)btns[oi].classList.add('incorrect');
+  else quizScore++;
+  quizAnswered++;
+  document.getElementById('qfb-'+qi).innerHTML=`<div class="alert ${oi===q.ans?'alert-success':'alert-danger'}" style="font-size:.82rem">${oi===q.ans?'✅ صحيح!':'❌ غير صحيح.'} ${q.exp}</div>`;
+  document.getElementById('quiz-score').textContent='النتيجة: '+quizScore+' / '+QUIZ.length;
+  document.getElementById('quiz-prog').style.width=(quizAnswered/QUIZ.length*100)+'%';
+  if(quizAnswered===QUIZ.length){
+    const pct=Math.round(quizScore/QUIZ.length*100);
+    localStorage.setItem('ccna_lab01',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));
+    document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;
+    document.getElementById('quiz-container').insertAdjacentHTML('beforeend',`<div class="alert ${pct>=90?'alert-success':pct>=60?'alert-warn':'alert-danger'}" style="margin-top:20px;font-weight:700">🎓 انتهى الاختبار! نتيجتك: ${quizScore}/${QUIZ.length} (${pct}%) — ${pct>=90?'ممتاز 🏆':pct>=75?'جيد جداً ⭐':pct>=60?'جيد ✓':'يحتاج مراجعة 📖'}<br><a href="index.html" style="color:var(--accent);font-size:.85rem;display:inline-block;margin-top:8px">← العودة للمختبرات</a></div>`);
+  }
+}
+buildQuiz();
+function resetAll(){localStorage.removeItem('ccna_lab01');location.reload();}
+function saveScore(){if(quizAnswered>0){const pct=Math.round(quizScore/QUIZ.length*100);localStorage.setItem('ccna_lab01',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;}}
+(function(){const s=JSON.parse(localStorage.getItem('ccna_lab01')||'null');if(s)document.getElementById('stotal').textContent=s.score+'/'+s.total;})();
+</script>
+</body>
+</html>

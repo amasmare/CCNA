@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 07 — بروتوكول OSPF | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;--accent:#fb923c;--accent2:#7c2d12;--text:#f1f5f9;--text2:#94a3b8;--border:#2a1400;--success:#10b981;--error:#ef4444;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+.lab-header{background:linear-gradient(135deg,#431407 0%,#7c2d12 50%,#fb923c 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--accent)}
+.subtitle{color:var(--text2);font-size:.88rem;margin-bottom:18px;line-height:1.7}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.alert{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.88rem;line-height:1.6}
+.alert-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#34d399}
+.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.alert-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.score-badge{display:inline-block;background:rgba(251,146,60,.1);border:1px solid rgba(251,146,60,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.85rem;cursor:pointer;width:100%}
+select:focus{outline:none;border-color:var(--accent)}
+.quiz-q{margin-bottom:24px}
+.quiz-q p{font-weight:600;margin-bottom:12px;line-height:1.5}
+.quiz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;transition:all .2s;font-size:.88rem;text-align:right;width:100%;margin-bottom:8px;color:var(--text);display:block}
+.quiz-opt:hover{border-color:var(--accent)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399}
+.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.06);color:#f87171}
+.quiz-opt:disabled{cursor:default}
+.prog-wrap{background:var(--surface3);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.cli-box{background:#020810;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:.82rem;color:#34d399;line-height:1.8;overflow-x:auto;margin:12px 0}
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">📡</div>
+    <span>CCNA 200-301</span>
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html" style="color:var(--accent)">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+
+<div class="lab-header">
+  <div class="lab-badge">المختبر 07 من 10</div>
+  <h1>📡 بروتوكول OSPF</h1>
+  <p>م. عبدالله الأسمري · CCNA 200-301 · Wendell Odom Vol. 1</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 19: مفاهيم OSPF</span>
+    <span class="chapter-tag">الفصل 20: إعداد OSPFv2</span>
+    <span class="chapter-tag">الفصل 21: تحسين OSPF</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">الاختبار: <span id="stotal">0</span>/10</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">مفاهيم OSPF</button>
+  <button class="tab-btn" onclick="switchTab(1)">حساب تكلفة OSPF</button>
+  <button class="tab-btn" onclick="switchTab(2)">إعداد OSPF</button>
+  <button class="tab-btn" onclick="switchTab(3)">اختبار المعرفة</button>
+</div>
+
+<div class="container">
+
+<!-- تبويب 1: مفاهيم OSPF -->
+<div class="tab-content active">
+  <h2 style="color:var(--accent);margin-bottom:8px">مفاهيم OSPF الأساسية</h2>
+  <p class="subtitle">OSPF بروتوكول توجيه Link-State يبني خريطة كاملة للشبكة. طابق المصطلحات بتعريفاتها.</p>
+
+  <div class="card">
+    <h3>📚 مصطلحات OSPF — مطابقة</h3>
+    <div id="ospf-match-container"></div>
+    <button class="btn btn-primary" onclick="checkOspfMatch()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="om-feedback" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card">
+    <h3>📡 مراحل إنشاء علاقة الجوار (Adjacency)</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:8px">
+      <div style="background:var(--surface2);border:1px solid rgba(251,146,60,.3);border-radius:8px;padding:12px;text-align:center">
+        <div style="color:var(--accent);font-weight:700;font-size:.85rem;margin-bottom:4px">1. Down</div>
+        <div style="font-size:.72rem;color:var(--text2)">لا يوجد Hello مستقبَل بعد</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid rgba(251,146,60,.3);border-radius:8px;padding:12px;text-align:center">
+        <div style="color:var(--accent);font-weight:700;font-size:.85rem;margin-bottom:4px">2. Init</div>
+        <div style="font-size:.72rem;color:var(--text2)">تم استقبال Hello لكن Router ID غير موجود</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid rgba(251,146,60,.3);border-radius:8px;padding:12px;text-align:center">
+        <div style="color:var(--accent);font-weight:700;font-size:.85rem;margin-bottom:4px">3. 2-Way</div>
+        <div style="font-size:.72rem;color:var(--text2)">يرى كل منهما نفسه في Hello الآخر</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid rgba(251,146,60,.3);border-radius:8px;padding:12px;text-align:center">
+        <div style="color:var(--accent);font-weight:700;font-size:.85rem;margin-bottom:4px">4. ExStart</div>
+        <div style="font-size:.72rem;color:var(--text2)">تحديد Master/Slave لتبادل LSDB</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid rgba(251,146,60,.3);border-radius:8px;padding:12px;text-align:center">
+        <div style="color:#fbbf24;font-weight:700;font-size:.85rem;margin-bottom:4px">5. Exchange</div>
+        <div style="font-size:.72rem;color:var(--text2)">تبادل ملخصات LSA (DBD Packets)</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid rgba(251,146,60,.3);border-radius:8px;padding:12px;text-align:center">
+        <div style="color:#fbbf24;font-weight:700;font-size:.85rem;margin-bottom:4px">6. Loading</div>
+        <div style="font-size:.72rem;color:var(--text2)">طلب LSAs الناقصة وإرسالها</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:12px;text-align:center">
+        <div style="color:#34d399;font-weight:700;font-size:.85rem;margin-bottom:4px">7. Full ✓</div>
+        <div style="font-size:.72rem;color:var(--text2)">LSDB متزامنة تماماً — جاهز للتوجيه</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- تبويب 2: حساب تكلفة OSPF -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">حساب تكلفة OSPF (Cost)</h2>
+  <p class="subtitle">تكلفة OSPF = المرجع (100 Mbps) ÷ عرض النطاق. الراوتر يختار المسار ذا أقل تكلفة مجموعة.</p>
+
+  <div class="card">
+    <h3>📊 تكاليف المنافذ الافتراضية</h3>
+    <table>
+      <thead><tr><th>نوع المنفذ</th><th>عرض النطاق</th><th>تكلفة OSPF</th><th>الحساب</th></tr></thead>
+      <tbody>
+        <tr><td>Serial (T1)</td><td>1.544 Mbps</td><td style="color:#f87171;font-weight:700">64</td><td style="color:var(--text2);font-size:.8rem">100÷1.544 ≈ 64</td></tr>
+        <tr><td>Ethernet (10 Mbps)</td><td>10 Mbps</td><td style="color:#fbbf24;font-weight:700">10</td><td style="color:var(--text2);font-size:.8rem">100÷10 = 10</td></tr>
+        <tr><td>FastEthernet (100 Mbps)</td><td>100 Mbps</td><td style="color:var(--accent);font-weight:700">1</td><td style="color:var(--text2);font-size:.8rem">100÷100 = 1</td></tr>
+        <tr><td>GigabitEthernet (1 Gbps)</td><td>1000 Mbps</td><td style="color:#34d399;font-weight:700">1</td><td style="color:var(--text2);font-size:.8rem">100÷1000 &lt; 1 → يُقرّب لـ 1</td></tr>
+        <tr><td>10GigabitEthernet</td><td>10,000 Mbps</td><td style="color:#34d399;font-weight:700">1</td><td style="color:var(--text2);font-size:.8rem">تحتاج تغيير مرجع البنود</td></tr>
+      </tbody>
+    </table>
+    <div class="alert" style="background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);color:#fdba74;font-size:.82rem;margin-top:8px">
+      ⚠️ FastEthernet وGigabitEthernet لهما نفس التكلفة (1) بالمرجع الافتراضي. يُنصح بتغيير مرجع auto-cost reference-bandwidth لتمييزهما.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🔢 أسئلة حساب التكلفة</h3>
+    <div id="cost-quiz"></div>
+    <button class="btn btn-primary" onclick="checkCostQuiz()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="cost-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 3: إعداد OSPF -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">إعداد OSPF على Cisco IOS</h2>
+  <p class="subtitle">راجع الأوامر الصحيحة ثم أجب على الأسئلة.</p>
+
+  <div class="card">
+    <h3>🖥️ تسلسل إعداد OSPFv2</h3>
+    <div class="cli-box">
+      <div style="color:var(--text2)">! تفعيل OSPF</div>
+      <div><span style="color:#34d399">R1(config)#</span> <span style="color:var(--text)">router ospf 1</span>  <span style="color:var(--text2)">← Process ID (محلي فقط، لا يجب تطابقه)</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! الإعلان عن الشبكات</div>
+      <div><span style="color:#34d399">R1(config-router)#</span> <span style="color:var(--text)">network 192.168.1.0 0.0.0.255 area 0</span></div>
+      <div><span style="color:#34d399">R1(config-router)#</span> <span style="color:var(--text)">network 10.0.0.0 0.0.0.3 area 0</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! Router ID يدوي (اختياري)</div>
+      <div><span style="color:#34d399">R1(config-router)#</span> <span style="color:var(--text)">router-id 1.1.1.1</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! التحقق</div>
+      <div><span style="color:#34d399">R1#</span> <span style="color:var(--text)">show ip ospf neighbor</span>  <span style="color:var(--text2)">← عرض الجيران</span></div>
+      <div><span style="color:#34d399">R1#</span> <span style="color:var(--text)">show ip ospf database</span>  <span style="color:var(--text2)">← عرض LSDB</span></div>
+      <div><span style="color:#34d399">R1#</span> <span style="color:var(--text)">show ip route ospf</span>    <span style="color:var(--text2)">← مسارات OSPF في جدول التوجيه</span></div>
+    </div>
+    <div class="alert" style="background:rgba(251,146,60,.06);border:1px solid rgba(251,146,60,.2);color:#fdba74;font-size:.82rem">
+      💡 Wildcard Mask هو عكس قناع الشبكة: 255.255.255.0 → Wildcard = 0.0.0.255
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>✏️ أسئلة إعداد OSPF</h3>
+    <div id="ospf-cfg-container"></div>
+    <button class="btn btn-primary" onclick="checkOspfCfg()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="ospf-cfg-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 4: اختبار المعرفة -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">اختبار المعرفة — الفصول 19–21 (OSPF)</h2>
+  <p class="subtitle">10 أسئلة حول بروتوكول OSPF. تُحفظ نتيجتك تلقائيًا.</p>
+  <div class="score-badge" id="quiz-score">النتيجة: 0 / 10</div>
+  <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+
+// ---- مطابقة مصطلحات OSPF ----
+const OSPF_TERMS=[
+  {term:'Router ID',def:'عنوان IPv4 فريد يُعرّف كل راوتر في OSPF (أعلى IP على Loopback أو منفذ نشط)'},
+  {term:'LSA (Link State Advertisement)',def:'إعلان يحتوي معلومات عن روابط الراوتر يُرسَل لجميع OSPF Routers في المنطقة'},
+  {term:'LSDB (Link State Database)',def:'قاعدة بيانات الروابط — خريطة كاملة للشبكة يمتلكها كل راوتر في المنطقة'},
+  {term:'Area 0 (Backbone)',def:'المنطقة الجذر في OSPF — يجب أن تمر جميع المناطق الأخرى عبرها'},
+  {term:'DR (Designated Router)',def:'الراوتر المختار على الشبكة متعددة الوصول لتقليل تبادل LSAs'},
+  {term:'Wildcard Mask',def:'عكس قناع الشبكة — يُستخدم في أمر network لـ OSPF (0=يجب التطابق، 1=أي قيمة)'},
+];
+function buildOspfMatch(){
+  const shuffled=[...OSPF_TERMS].sort(()=>Math.random()-.5);
+  document.getElementById('ospf-match-container').innerHTML=OSPF_TERMS.map((t,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;align-items:start">
+      <div style="background:var(--surface2);border:1px solid rgba(251,146,60,.3);border-radius:8px;padding:10px;font-size:.85rem;font-weight:600;color:var(--accent)">${t.term}</div>
+      <select id="om-${i}" style="font-size:.78rem">
+        <option value="">-- اختر التعريف --</option>
+        ${shuffled.map((d,j)=>`<option value="${d.def}">${d.def.substring(0,60)}...</option>`).join('')}
+      </select>
+    </div>`).join('');
+  document.getElementById('om-feedback').innerHTML='';
+}
+function checkOspfMatch(){
+  let correct=0;
+  OSPF_TERMS.forEach((t,i)=>{
+    const val=document.getElementById('om-'+i).value;
+    if(val===t.def)correct++;
+  });
+  document.getElementById('om-feedback').innerHTML=`<div class="alert ${correct===OSPF_TERMS.length?'alert-success':'alert-warn'}">النتيجة: ${correct} / ${OSPF_TERMS.length}${correct===OSPF_TERMS.length?' — ممتاز! جميع المصطلحات صحيحة':''}</div>`;
+}
+buildOspfMatch();
+
+// ---- حساب التكلفة ----
+const COST_Q=[
+  {q:'ما تكلفة OSPF لرابط FastEthernet (100 Mbps) بالمرجع الافتراضي 100 Mbps؟',opts:['10','1','100','64'],ans:1,exp:'100÷100 = 1. FastEthernet له تكلفة 1 مع المرجع الافتراضي.'},
+  {q:'مسار يمر عبر: رابط GigabitEthernet (تكلفة 1) + رابط FastEthernet (تكلفة 1). ما التكلفة الإجمالية؟',opts:['1','2','10','11'],ans:1,exp:'OSPF يجمع تكاليف المنافذ الخارجة على طول المسار. 1+1=2. (لاحظ أن كليهما تكلفة 1 بالمرجع الافتراضي)'},
+  {q:'لتمييز GigabitEthernet (1 Gbps) عن FastEthernet (100 Mbps) في حساب OSPF Cost، ماذا تفعل؟',opts:['تغيير أولوية OSPF','تغيير المرجع: auto-cost reference-bandwidth 1000','إيقاف OSPF وإعادة تشغيله','لا يمكن التمييز'],ans:1,exp:'"auto-cost reference-bandwidth 1000" يُغيّر المرجع لـ 1000 Mbps → GigabitEthernet تكلفة 1، FastEthernet تكلفة 10.'},
+  {q:'ما الأمر لتغيير OSPF Cost على منفذ محدد يدوياً؟',opts:['ospf cost 50','ip ospf cost 50','bandwidth 50','set ospf-cost 50'],ans:1,exp:'"ip ospf cost [قيمة]" على مستوى المنفذ يُحدد التكلفة يدوياً ويتجاهل حساب Reference/Bandwidth.'},
+];
+function buildCostQuiz(){
+  document.getElementById('cost-quiz').innerHTML=COST_Q.map((q,i)=>`
+    <div style="margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <p style="font-weight:600;margin-bottom:10px">${i+1}. ${q.q}</p>
+      <select id="cq-${i}">
+        <option value="">-- اختر --</option>
+        ${q.opts.map((o,j)=>`<option value="${j}">${o}</option>`).join('')}
+      </select>
+      <div id="cqf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('cost-feedback').innerHTML='';
+}
+function checkCostQuiz(){
+  let correct=0;
+  COST_Q.forEach((q,i)=>{
+    const val=parseInt(document.getElementById('cq-'+i).value);
+    if(isNaN(val))return;
+    const ok=val===q.ans;
+    if(ok)correct++;
+    document.getElementById('cqf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+q.opts[q.ans]} — ${q.exp}</div>`;
+  });
+  document.getElementById('cost-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${COST_Q.length}</div>`;
+}
+buildCostQuiz();
+
+// ---- إعداد OSPF ----
+const OSPF_CFG=[
+  {q:'لتفعيل OSPF وإعلان شبكة 192.168.1.0/24 في Area 0، ما التسلسل الصحيح؟',
+   opts:['router ospf 1 → network 192.168.1.0 0.0.0.255 area 0','ospf enable → network 192.168.1.0/24 area 0','router ospf → ip ospf area 0 192.168.1.0','enable ospf → area 0 network 192.168.1.0 255.255.255.0'],ans:0,
+   exp:'router ospf [Process-ID] لتفعيل OSPF، ثم network [شبكة] [Wildcard] [area رقم].'},
+  {q:'ما أمر عرض حالة الجيران (Neighbors) في OSPF؟',
+   opts:['show ip ospf','show ip ospf neighbor','show ospf database','show ip neighbors'],ans:1,
+   exp:'"show ip ospf neighbor" يعرض الجيران مع حالتهم. الحالة "FULL" تعني التزامن الكامل للـ LSDB.'},
+  {q:'ما الفرق بين Process ID في OSPF وArea ID؟',
+   opts:['هما نفس الشيء','Process ID محلي لكل راوتر، Area ID يجب أن يتطابق بين الجيران','Area ID محلي، Process ID يجب التطابق','كلاهما يجب أن يتطابقا'],ans:1,
+   exp:'Process ID محلي فقط — لا يهم إذا اختلف بين الجيران. Area ID يجب أن يتطابق بين الجيران ليصبحا Neighbors.'},
+  {q:'ما الشروط الضرورية لنجاح علاقة OSPF Neighbor؟',
+   opts:['نفس Process ID ونفس Area','نفس Area، نفس Hello/Dead Timers، نفس Authentication','نفس Router ID','نفس Subnet Mask فقط'],ans:1,
+   exp:'شروط OSPF Adjacency: نفس Area، نفس Subnet، توافق Hello/Dead Timers، توافق Authentication، عدم تعارض Router IDs.'},
+];
+function buildOspfCfg(){
+  document.getElementById('ospf-cfg-container').innerHTML=OSPF_CFG.map((q,i)=>`
+    <div style="margin-bottom:14px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <p style="font-weight:600;margin-bottom:10px">${i+1}. ${q.q}</p>
+      <select id="oc-${i}" style="font-family:monospace">
+        <option value="">-- اختر الإجابة --</option>
+        ${q.opts.map((o,j)=>`<option value="${j}">${o}</option>`).join('')}
+      </select>
+      <div id="ocf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('ospf-cfg-feedback').innerHTML='';
+}
+function checkOspfCfg(){
+  let correct=0;
+  OSPF_CFG.forEach((q,i)=>{
+    const val=parseInt(document.getElementById('oc-'+i).value);
+    if(isNaN(val))return;
+    const ok=val===q.ans;
+    if(ok)correct++;
+    document.getElementById('ocf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+q.opts[q.ans]} — ${q.exp}</div>`;
+  });
+  document.getElementById('ospf-cfg-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${OSPF_CFG.length}</div>`;
+}
+buildOspfCfg();
+
+// ---- اختبار المعرفة ----
+const QUIZ=[
+  {q:'ما نوع خوارزمية OSPF لحساب أقصر مسار؟',opts:['Bellman-Ford','Dijkstra (SPF)','Distance Vector','Hybrid'],ans:1,exp:'OSPF يستخدم خوارزمية Dijkstra (Shortest Path First) لحساب أقصر مسار لكل وجهة بناءً على LSDB الكاملة.'},
+  {q:'ما قيمة Administrative Distance لـ OSPF؟',opts:['90','100','110','120'],ans:2,exp:'OSPF AD=110. أعلى من EIGRP (90) ولكن أقل من RIP (120). كلما قل AD كان البروتوكول أكثر موثوقية.'},
+  {q:'ما وظيفة DR في شبكة Ethernet متعددة الوصول؟',opts:['زيادة سرعة OSPF','تقليل عدد Adjacencies — كل راوتر يتجاور مع DR/BDR فقط بدلاً من الجميع','تشفير LSAs','تعيين Router IDs'],ans:1,exp:'بدون DR، n راوترات تحتاج n*(n-1)/2 adjacency. مع DR، كل راوتر يكوّن adjacency مع DR وBDR فقط.'},
+  {q:'ما المنطقة الإلزامية في OSPF متعدد المناطق؟',opts:['Area 1','Area 255','Area 0 (Backbone)','Area 100'],ans:2,exp:'Area 0 (Backbone Area) إلزامية — جميع المناطق الأخرى يجب أن تتصل بها مباشرةً أو عبر Virtual Link.'},
+  {q:'ما الأمر للتحقق من معلومات OSPF الكاملة لمنفذ محدد؟',opts:['show ip ospf','show ip ospf interface Gi0/0','show ospf neighbor','show ip route ospf'],ans:1,exp:'"show ip ospf interface [منفذ]" يعرض: Timer القلب، DR/BDR، تكلفة OSPF، Area، وعدد الجيران.'},
+  {q:'ما Hello Interval الافتراضي في OSPF على شبكة Ethernet؟',opts:['5 ثوانٍ','10 ثوانٍ','30 ثانية','40 ثانية'],ans:1,exp:'Hello Interval الافتراضي على Ethernet (Broadcast) = 10 ثوانٍ. Dead Interval = 4 × Hello = 40 ثانية.'},
+  {q:'إذا كان لدى الراوتر منفذ Loopback بعنوان 1.1.1.1، ما Router ID الافتراضي؟',opts:['أعلى IP على منفذ فيزيائي','1.1.1.1 (Loopback يُفضَّل)','أقل IP','آخر IP تم إعداده'],ans:1,exp:'OSPF يفضل Loopback IP كـ Router ID لأنه دائماً Up ولا يتأثر بعطل المنافذ الفيزيائية.'},
+  {q:'ما وظيفة أمر "passive-interface" في OSPF؟',opts:['إيقاف OSPF على الجهاز','منع إرسال Hello من منفذ مع الاستمرار في الإعلان عن شبكته','حذف المنفذ من OSPF تماماً','تفعيل Authentication'],ans:1,exp:'"passive-interface" يمنع إرسال Hello (لا جيران على هذا المنفذ) لكن OSPF يظل يُعلن عن شبكة المنفذ.'},
+  {q:'في OSPF، من يُنتخب أولاً: DR أم BDR؟',opts:['DR أولاً ثم BDR','BDR أولاً ثم DR','يُنتخبان في نفس الوقت','يعتمد على الإعداد'],ans:2,exp:'ينتخب OSPF DR أولاً (أعلى Priority ثم أعلى Router ID)، ثم يُنتخب BDR من بين الباقين بنفس المعيار.'},
+  {q:'ما نوع شبكة OSPF الذي لا يوجد فيه DR/BDR؟',opts:['Broadcast','Non-Broadcast','Point-to-Point','NBMA'],ans:2,exp:'Point-to-Point لا يحتاج DR/BDR لأنه يربط راوترين فقط. كل روابط Serial بالتعريف هي Point-to-Point.'},
+];
+let quizScore=0,quizAnswered=0;
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=QUIZ.map((q,i)=>`
+    <div class="quiz-q" id="qq-${i}">
+      <p>${i+1}. ${q.q}</p>
+      ${q.opts.map((o,j)=>`<button class="quiz-opt" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      <div id="qfb-${i}" style="margin-top:6px"></div>
+    </div>`).join('');
+}
+function answerQuiz(qi,oi){
+  const q=QUIZ[qi];
+  const btns=document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(oi!==q.ans)btns[oi].classList.add('incorrect');
+  else quizScore++;
+  quizAnswered++;
+  document.getElementById('qfb-'+qi).innerHTML=`<div class="alert ${oi===q.ans?'alert-success':'alert-danger'}" style="font-size:.82rem">${oi===q.ans?'✅ صحيح!':'❌ غير صحيح.'} ${q.exp}</div>`;
+  document.getElementById('quiz-score').textContent='النتيجة: '+quizScore+' / '+QUIZ.length;
+  document.getElementById('quiz-prog').style.width=(quizAnswered/QUIZ.length*100)+'%';
+  if(quizAnswered===QUIZ.length){
+    const pct=Math.round(quizScore/QUIZ.length*100);
+    localStorage.setItem('ccna_lab07',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));
+    document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;
+    document.getElementById('quiz-container').insertAdjacentHTML('beforeend',
+      `<div class="alert ${pct>=90?'alert-success':pct>=60?'alert-warn':'alert-danger'}" style="margin-top:20px;font-size:1rem;font-weight:700">
+        🎓 انتهى الاختبار! نتيجتك: ${quizScore}/${QUIZ.length} (${pct}%) — ${pct>=90?'ممتاز 🏆':pct>=75?'جيد جداً ⭐':pct>=60?'جيد ✓':'يحتاج مراجعة 📖'}
+        <br><a href="index.html" style="color:var(--accent);font-size:.85rem;display:inline-block;margin-top:8px">← العودة للمختبرات</a>
+      </div>`);
+  }
+}
+buildQuiz();
+function resetAll(){localStorage.removeItem('ccna_lab07');location.reload();}
+function saveScore(){if(quizAnswered>0){const pct=Math.round(quizScore/QUIZ.length*100);localStorage.setItem('ccna_lab07',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;}}
+(function(){const s=JSON.parse(localStorage.getItem('ccna_lab07')||'null');if(s)document.getElementById('stotal').textContent=s.score+'/'+s.total;})();
+</script>
+</body>
+</html>

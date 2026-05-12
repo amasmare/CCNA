@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 10 – المشروع التكاملي | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;
+  --accent:#a3e635;--accent2:#84cc16;--text:#f1f5f9;--text2:#94a3b8;
+  --border:#2a3a10;--success:#10b981;--error:#ef4444;--warning:#f59e0b;
+  --radius:12px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+
+.lab-header{background:linear-gradient(135deg,#4d7c0f 0%,#65a30d 40%,#84cc16 100%);padding:40px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.4);color:#fff;padding:5px 16px;border-radius:20px;font-size:.85rem;margin-bottom:14px;font-weight:700}
+.lab-header h1{font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:10px}
+.lab-header p{color:rgba(255,255,255,.9);font-size:1rem;max-width:600px;margin:0 auto}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.chapter-tag{background:rgba(255,255,255,.2);color:#fff;padding:4px 14px;border-radius:20px;font-size:.78rem;font-weight:600}
+
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent);display:flex;align-items:center;gap:8px}
+
+/* SCENARIO */
+.scenario-box{background:linear-gradient(135deg,#1a2a05,#0f1a02);border:2px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;position:relative}
+.scenario-box::before{content:'📋 السيناريو';position:absolute;top:-12px;right:16px;background:var(--surface);padding:2px 12px;font-size:.78rem;color:var(--text2);border:1px solid var(--border);border-radius:10px}
+.scenario-box p{font-size:.9rem;line-height:1.8;color:var(--text2)}
+.scenario-box strong{color:var(--text)}
+
+/* TOPOLOGY */
+.topology{background:#050d02;border:1px solid var(--border);border-radius:10px;padding:20px;font-family:monospace;font-size:.82rem;color:#86efac;line-height:1.8;direction:ltr;text-align:left;overflow-x:auto}
+
+/* STEPS */
+.steps{counter-reset:step}
+.step{counter-increment:step;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 16px 16px 20px;margin-bottom:12px;position:relative}
+.step::before{content:counter(step);position:absolute;right:-1px;top:50%;transform:translateY(-50%);background:var(--accent);color:#000;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+.step p{font-size:.88rem;line-height:1.6;margin-right:16px}
+
+/* QUESTION */
+.question{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px}
+.question p{font-size:.92rem;margin-bottom:12px;line-height:1.7}
+.options{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;font-size:.88rem;line-height:1.5}
+.opt:hover{border-color:var(--accent)}
+.opt input{margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+.opt.correct{border-color:var(--success);background:#062011}
+.opt.wrong{border-color:var(--error);background:#1f0707}
+
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:7px 12px;color:var(--text);font-size:.85rem;cursor:pointer;direction:rtl}
+select:focus{outline:none;border-color:var(--accent)}
+select.correct{border-color:var(--success);background:#062011}
+select.wrong{border-color:var(--error);background:#1f0707}
+input[type=text]{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:.88rem;font-family:monospace;direction:ltr}
+input[type=text]:focus{outline:none;border-color:var(--accent)}
+input[type=text].correct{border-color:var(--success);background:#062011}
+input[type=text].incorrect{border-color:var(--error);background:#1f0707}
+
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:hover td{background:rgba(163,230,53,.04)}
+.mono{font-family:monospace;direction:ltr;text-align:left;color:var(--accent)}
+
+.feedback{display:none;padding:10px 14px;border-radius:8px;font-size:.85rem;margin-top:10px}
+.feedback.show{display:block}
+.feedback.ok{background:#062011;border:1px solid var(--success);color:#6ee7b7}
+.feedback.bad{background:#1f0707;border:1px solid var(--error);color:#fca5a5}
+
+/* FINAL SCORE */
+.final-score-card{background:linear-gradient(135deg,#1a2a05,#0f1a02);border:2px solid var(--accent);border-radius:var(--radius);padding:32px;text-align:center;margin-top:20px}
+.final-score-card .big-num{font-size:4rem;font-weight:900;color:var(--accent);line-height:1}
+.final-score-card .grade-lbl{font-size:1.2rem;margin-top:8px;font-weight:700}
+.grade-A{color:#6ee7b7}
+.grade-B{color:#93c5fd}
+.grade-C{color:#fcd34d}
+.grade-D{color:#fca5a5}
+
+/* CHAPTER BADGE */
+.ch-badge{display:inline-block;background:var(--surface2);border:1px solid var(--border);padding:2px 10px;border-radius:10px;font-size:.72rem;color:var(--text2);margin-bottom:8px}
+
+/* PROGRESS GRID */
+.progress-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px}
+.progress-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+.progress-card .pc-label{font-size:.78rem;color:var(--text2);margin-bottom:6px}
+.progress-card .pc-score{font-size:1.2rem;font-weight:700;color:var(--accent)}
+
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">🏆</div>
+    CCNA 200-301 Labs
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html" style="color:var(--accent)">10 الشامل</a>
+  </div>
+</div>
+
+<div class="lab-header">
+  <div class="lab-badge">🏆 المختبر التكاملي — Lab 10</div>
+  <h1>المشروع التكاملي الشامل</h1>
+  <p>تصميم وتهيئة شبكة متكاملة تشمل جميع موضوعات CCNA 200-301 Vol. 1</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصول 1–3: الأساسيات</span>
+    <span class="chapter-tag">الفصول 4–10: السويتشنج</span>
+    <span class="chapter-tag">الفصول 11–18: الراوتنج</span>
+    <span class="chapter-tag">الفصول 19–21: OSPF</span>
+    <span class="chapter-tag">الفصول 22–25: IPv6</span>
+    <span class="chapter-tag">الفصول 26–29: WLAN</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">المجموع: <span id="stotal">0</span>/37</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+<div style="display:none"><span id="s1">0</span><span id="s2">0</span><span id="s3">0</span><span id="s4">0</span></div>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">🔌 المرحلة 1: تصميم الشبكة</button>
+  <button class="tab-btn" onclick="switchTab(1)">⚙️ المرحلة 2: التهيئة</button>
+  <button class="tab-btn" onclick="switchTab(2)">🔍 المرحلة 3: استكشاف الأخطاء</button>
+  <button class="tab-btn" onclick="switchTab(3)">🏆 الاختبار الشامل</button>
+</div>
+
+<!-- TAB 1: DESIGN -->
+<div class="tab-content active" id="tab0">
+<div class="container">
+
+  <div class="scenario-box">
+    <p>
+      تعمل لدى <strong>شركة التقنية العربية</strong> التي تمتلك مكتبين: المكتب الرئيسي في الرياض والفرع في جدة.
+      مطلوب منك تصميم شبكتها وتهيئتها بالكامل. تفاصيل المكتب الرئيسي:<br><br>
+      - <strong>50 موظف</strong> في قسم المبيعات (VLAN 10)<br>
+      - <strong>30 موظف</strong> في قسم التقنية (VLAN 20)<br>
+      - <strong>20 موظف</strong> في قسم الإدارة (VLAN 30)<br>
+      - خادم Wi-Fi للمحمول (VLAN 40)<br>
+      - الشبكة الرئيسية: <strong>192.168.0.0/22</strong>
+    </p>
+  </div>
+
+  <div class="topology">
+Internet
+    │
+[Router R1] ── FastEthernet 0/0 ── [Switch SW1]
+                                        │
+                    ┌───────────────────┼───────────────────┐
+                    │                   │                   │
+              [SW2-Sales]         [SW3-IT]           [SW4-Admin]
+              VLAN 10             VLAN 20             VLAN 30
+              50 hosts            30 hosts            20 hosts
+  </div>
+
+  <div class="card">
+    <h2>📐 المرحلة 1أ: تصميم الشبكات الفرعية</h2>
+    <div class="ch-badge">الفصول 11–14: Subnetting</div>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px">قسّم الشبكة <code style="color:var(--accent)">192.168.0.0/22</code> إلى شبكات فرعية مناسبة لكل قسم. اختر الـ CIDR الصحيح.</p>
+    <table>
+      <thead><tr><th>القسم</th><th>عدد الأجهزة</th><th>الشبكة الفرعية المقترحة</th><th>الـ CIDR المناسب</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>المبيعات (VLAN 10)</td><td>50</td>
+          <td><select id="sub1">
+            <option value="">— اختر —</option>
+            <option>192.168.0.0/24</option>
+            <option>192.168.0.0/25</option>
+            <option>192.168.0.0/26</option>
+            <option>192.168.0.0/27</option>
+          </select></td>
+          <td><select id="cidr1">
+            <option value="">— اختر —</option>
+            <option>/24 (254 host)</option>
+            <option>/25 (126 host)</option>
+            <option>/26 (62 host)</option>
+            <option>/27 (30 host)</option>
+          </select></td>
+        </tr>
+        <tr>
+          <td>التقنية (VLAN 20)</td><td>30</td>
+          <td><select id="sub2">
+            <option value="">— اختر —</option>
+            <option>192.168.1.0/24</option>
+            <option>192.168.1.0/25</option>
+            <option>192.168.1.0/26</option>
+            <option>192.168.1.0/27</option>
+          </select></td>
+          <td><select id="cidr2">
+            <option value="">— اختر —</option>
+            <option>/24 (254 host)</option>
+            <option>/25 (126 host)</option>
+            <option>/26 (62 host)</option>
+            <option>/27 (30 host)</option>
+          </select></td>
+        </tr>
+        <tr>
+          <td>الإدارة (VLAN 30)</td><td>20</td>
+          <td><select id="sub3">
+            <option value="">— اختر —</option>
+            <option>192.168.2.0/24</option>
+            <option>192.168.2.0/25</option>
+            <option>192.168.2.0/26</option>
+            <option>192.168.2.0/27</option>
+          </select></td>
+          <td><select id="cidr3">
+            <option value="">— اختر —</option>
+            <option>/24 (254 host)</option>
+            <option>/25 (126 host)</option>
+            <option>/26 (62 host)</option>
+            <option>/27 (30 host)</option>
+          </select></td>
+        </tr>
+        <tr>
+          <td>Wi-Fi (VLAN 40)</td><td>10</td>
+          <td><select id="sub4">
+            <option value="">— اختر —</option>
+            <option>192.168.3.0/24</option>
+            <option>192.168.3.0/25</option>
+            <option>192.168.3.0/28</option>
+            <option>192.168.3.0/27</option>
+          </select></td>
+          <td><select id="cidr4">
+            <option value="">— اختر —</option>
+            <option>/24 (254 host)</option>
+            <option>/25 (126 host)</option>
+            <option>/27 (30 host)</option>
+            <option>/28 (14 host)</option>
+          </select></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-primary" style="margin-top:16px" onclick="checkSubnets()">تحقق من التصميم</button>
+    <div class="feedback" id="fb-sub"></div>
+  </div>
+
+  <div class="card">
+    <h2>🌳 المرحلة 1ب: انتخاب Root Bridge</h2>
+    <div class="ch-badge">الفصول 8–10: STP</div>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px">لدينا 3 سويتشات في الشبكة. اختر الـ Root Bridge الصحيح بناءً على عناوين MAC وأولوية STP.</p>
+    <table>
+      <thead><tr><th>السويتش</th><th>الأولوية</th><th>عنوان MAC</th><th>Bridge ID</th></tr></thead>
+      <tbody>
+        <tr><td>SW1</td><td>32768</td><td class="mono">0000.0000.0001</td><td class="mono">32768.0000.0000.0001</td></tr>
+        <tr><td>SW2</td><td>4096</td><td class="mono">0000.0000.0002</td><td class="mono">4096.0000.0000.0002</td></tr>
+        <tr><td>SW3</td><td>32768</td><td class="mono">0000.0000.0003</td><td class="mono">32768.0000.0000.0003</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span style="font-size:.9rem">الـ Root Bridge هو: </span>
+      <select id="rootBridge">
+        <option value="">— اختر —</option>
+        <option>SW1 (أولوية 32768)</option>
+        <option>SW2 (أولوية 4096)</option>
+        <option>SW3 (أولوية 32768)</option>
+      </select>
+      <button class="btn btn-primary" onclick="checkRoot()">تحقق</button>
+    </div>
+    <div class="feedback" id="fb-root"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB 2: CONFIG -->
+<div class="tab-content" id="tab1">
+<div class="container">
+
+  <div class="card">
+    <h2>⚙️ المرحلة 2أ: تهيئة VLANs والـ Trunk</h2>
+    <div class="ch-badge">الفصل 7: VLANs</div>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:14px">أكمل أوامر تهيئة VLAN على السويتش SW1.</p>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <span style="font-family:monospace;font-size:.85rem;color:var(--text2)">SW1(config)#</span>
+        <input type="text" id="cmd1" placeholder="أمر إنشاء VLAN رقم 10" style="width:100%">
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <span style="font-family:monospace;font-size:.85rem;color:var(--text2)">SW1(config-vlan)#</span>
+        <input type="text" id="cmd2" placeholder="تسمية VLAN 10 باسم Sales" style="width:100%">
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <span style="font-family:monospace;font-size:.85rem;color:var(--text2)">SW1(config-if)#</span>
+        <input type="text" id="cmd3" placeholder="تحويل المنفذ Gi0/1 إلى Trunk" style="width:100%">
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <span style="font-family:monospace;font-size:.85rem;color:var(--text2)">SW1(config-if)#</span>
+        <input type="text" id="cmd4" placeholder="السماح لـ VLANs 10,20,30,40 على الـ Trunk" style="width:100%">
+      </div>
+    </div>
+    <button class="btn btn-primary" style="margin-top:14px" onclick="checkVlanCmds()">تحقق من الأوامر</button>
+    <div class="feedback" id="fb-vlan"></div>
+  </div>
+
+  <div class="card">
+    <h2>⚙️ المرحلة 2ب: تهيئة OSPF</h2>
+    <div class="ch-badge">الفصول 19–21: OSPF</div>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:14px">أكمل أوامر تهيئة OSPF على الراوتر R1.</p>
+    <table>
+      <thead><tr><th>المطلوب</th><th>الأمر الصحيح</th><th>إجابتك</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>تفعيل OSPF بـ Process ID 1</td>
+          <td class="mono" style="font-size:.8rem">router ospf 1</td>
+          <td><select id="ospf1">
+            <option value="">— اختر —</option>
+            <option>router ospf 1</option>
+            <option>enable ospf 1</option>
+            <option>ospf process 1</option>
+            <option>ip ospf 1 enable</option>
+          </select></td>
+        </tr>
+        <tr>
+          <td>إعلان شبكة VLAN 10 في Area 0</td>
+          <td class="mono" style="font-size:.8rem">network 192.168.0.0 0.0.0.255 area 0</td>
+          <td><select id="ospf2">
+            <option value="">— اختر —</option>
+            <option>network 192.168.0.0 0.0.0.255 area 0</option>
+            <option>network 192.168.0.0 255.255.255.0 area 0</option>
+            <option>advertise 192.168.0.0/24 area 0</option>
+            <option>ip ospf network 192.168.0.0 area 0</option>
+          </select></td>
+        </tr>
+        <tr>
+          <td>تعيين Router-ID</td>
+          <td class="mono" style="font-size:.8rem">router-id 1.1.1.1</td>
+          <td><select id="ospf3">
+            <option value="">— اختر —</option>
+            <option>router-id 1.1.1.1</option>
+            <option>ospf router-id 1.1.1.1</option>
+            <option>set router-id 1.1.1.1</option>
+            <option>ip ospf router-id 1.1.1.1</option>
+          </select></td>
+        </tr>
+        <tr>
+          <td>عرض جدول OSPF للجيران</td>
+          <td class="mono" style="font-size:.8rem">show ip ospf neighbor</td>
+          <td><select id="ospf4">
+            <option value="">— اختر —</option>
+            <option>show ip ospf neighbor</option>
+            <option>show ospf neighbors</option>
+            <option>display ospf neighbor</option>
+            <option>show ospf database neighbor</option>
+          </select></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-primary" style="margin-top:16px" onclick="checkOspf()">تحقق من أوامر OSPF</button>
+    <div class="feedback" id="fb-ospf"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB 3: TROUBLESHOOT -->
+<div class="tab-content" id="tab2">
+<div class="container">
+
+  <div class="card">
+    <h2>🔍 المرحلة 3: استكشاف الأخطاء وإصلاحها</h2>
+    <p style="font-size:.88rem;color:var(--text2);margin-bottom:16px">تم استلام تقارير بمشاكل في الشبكة. حدد السبب الصحيح لكل مشكلة واقترح الحل.</p>
+    <div id="troubleQ"></div>
+    <button class="btn btn-primary" style="margin-top:4px" onclick="checkTrouble()">تحقق من التشخيص</button>
+    <div class="feedback" id="fb-trouble"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- TAB 4: FINAL EXAM -->
+<div class="tab-content" id="tab3">
+<div class="container">
+
+  <div class="card">
+    <h2>🏆 الاختبار الشامل النهائي — 15 سؤال</h2>
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:20px">يغطي هذا الاختبار جميع موضوعات CCNA 200-301 Vol. 1 (الفصول 1–29)</p>
+    <div id="finalQuiz"></div>
+    <button class="btn btn-primary" style="margin-top:12px" onclick="gradeFinal()">إرسال الاختبار النهائي</button>
+    <div class="feedback" id="fb-final"></div>
+    <div id="finalResult"></div>
+  </div>
+
+  <div class="card" id="allLabsResult" style="display:none">
+    <h2>📊 نتائجك في جميع المختبرات</h2>
+    <div class="progress-grid" id="labScoresGrid"></div>
+    <div class="final-score-card" id="grandTotal"></div>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · الفصول 1–29 · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+const sc={t1:0,t2:0,t3:0,t4:0};
+function upd(){
+  document.getElementById('s1').textContent=sc.t1;
+  document.getElementById('s2').textContent=sc.t2;
+  document.getElementById('s3').textContent=sc.t3;
+  document.getElementById('s4').textContent=sc.t4;
+  document.getElementById('stotal').textContent=sc.t1+sc.t2+sc.t3+sc.t4;
+}
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+function showFb(id,ok,okMsg,badMsg){
+  const el=document.getElementById(id);
+  el.className='feedback show '+(ok?'ok':'bad');
+  el.textContent=ok?okMsg:badMsg;
+}
+
+// ═══ PHASE 1A – SUBNETS ══════════════════════════════════════════════════
+function checkSubnets(){
+  const correct=[
+    {sub:'192.168.0.0/26',cidr:'/26 (62 host)'},
+    {sub:'192.168.1.0/26',cidr:'/26 (62 host)'},
+    {sub:'192.168.2.0/27',cidr:'/27 (30 host)'},
+    {sub:'192.168.3.0/28',cidr:'/28 (14 host)'},
+  ];
+  let pts=0;
+  [1,2,3,4].forEach(i=>{
+    const s=document.getElementById('sub'+i);
+    const c=document.getElementById('cidr'+i);
+    const ok=s.value===correct[i-1].sub && c.value===correct[i-1].cidr;
+    s.className=ok?'correct':'wrong';
+    c.className=ok?'correct':'wrong';
+    if(ok) pts+=2;
+  });
+  sc.t1=pts;
+  // check root separately
+  showFb('fb-sub',pts===8,'ممتاز! صممت الشبكات الفرعية بشكل مثالي ('+pts+'/8).','حصلت على '+pts+'/8. تذكّر: اختر أصغر شبكة تستوعب عدد الأجهزة.');
+  upd();
+}
+
+function checkRoot(){
+  const val=document.getElementById('rootBridge').value;
+  const ok=val==='SW2 (أولوية 4096)';
+  showFb('fb-root',ok,'صحيح! SW2 هو Root Bridge لأنه يملك أقل Bridge ID (أولوية 4096 هي الأقل).','خطأ. Root Bridge هو السويتش بأقل Bridge ID. الأولوية 4096 لـ SW2 أقل من 32768.');
+}
+
+// ═══ PHASE 2A – VLAN CMDS ════════════════════════════════════════════════
+function checkVlanCmds(){
+  const answers=['vlan 10','name Sales','switchport mode trunk','switchport trunk allowed vlan 10,20,30,40'];
+  let pts=0;
+  [1,2,3,4].forEach(i=>{
+    const el=document.getElementById('cmd'+i);
+    const val=el.value.trim().toLowerCase().replace(/\s+/g,' ');
+    const ok=val===answers[i-1];
+    el.className=ok?'correct':'incorrect';
+    if(ok) pts++;
+  });
+  sc.t2=pts; // will be updated to pts+ospf when OSPF section checked
+  showFb('fb-vlan',pts===4,'ممتاز! أوامر VLAN صحيحة ('+pts+'/4).','حصلت على '+pts+'/4. راجع أوامر تهيئة VLAN والـ Trunk.');
+  upd();
+}
+
+function checkOspf(){
+  const correct=['router ospf 1','network 192.168.0.0 0.0.0.255 area 0','router-id 1.1.1.1','show ip ospf neighbor'];
+  let pts=0;
+  ['ospf1','ospf2','ospf3','ospf4'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.className=el.value===correct[i]?'correct':'wrong';
+    if(el.value===correct[i]) pts++;
+  });
+  const vlanScore=['cmd1','cmd2','cmd3','cmd4'].filter(id=>document.getElementById(id).classList.contains('correct')).length;
+  sc.t2=vlanScore+pts;
+  showFb('fb-ospf',pts===4,'ممتاز! أوامر OSPF صحيحة ('+pts+'/4).','حصلت على '+pts+'/4. راجع أوامر تهيئة OSPF.');
+  upd();
+}
+
+// ═══ PHASE 3 – TROUBLESHOOT ══════════════════════════════════════════════
+const troubleData = [
+  {
+    problem:'موظفو المبيعات (VLAN 10) لا يستطيعون الوصول إلى الإنترنت رغم أن جميع الكابلات موصولة بشكل صحيح.',
+    opts:['الكابل مكسور','VLAN 10 غير مُعلَن في OSPF','عنوان MAC خاطئ','خادم DHCP معطل'],
+    ans:1
+  },
+  {
+    problem:'الجهاز في VLAN 10 يستطيع الاتصال بـ VLAN 10 فقط وليس بـ VLAN 20 رغم أن الراوتر يعمل.',
+    opts:['مشكلة في الكابل','المنفذ المتصل بالراوتر Access وليس Trunk','مشكلة في عنوان IP','OSPF لا يعمل'],
+    ans:1
+  },
+  {
+    problem:'SW2 يُنتخب دائماً كـ Root Bridge رغم أن SW1 هو الأفضل للأداء.',
+    opts:['MAC address خاطئ','أولوية STP لـ SW2 أقل من SW1','كابل Trunk مكسور','VLAN غير مُهيَّأ'],
+    ans:1
+  },
+  {
+    problem:'أجهزة Wi-Fi لا تحصل على عنوان IP تلقائياً رغم تشغيل DHCP Server.',
+    opts:['خادم DHCP معطل','لم يتم تهيئة ip helper-address على واجهة VLAN 40','المنفذ غير موصول','عنوان MAC خاطئ'],
+    ans:1
+  },
+  {
+    problem:'لا يظهر جار OSPF في show ip ospf neighbor رغم صحة التهيئة.',
+    opts:['مشكلة في VLAN','Hello interval أو Dead interval غير متطابقين بين الراوترين','عنوان IP خاطئ','كابل Serial مكسور'],
+    ans:1
+  },
+  {
+    problem:'المنفذ Fa0/1 في SW1 محجوب (Blocking) بسبب STP رغم حاجتنا إليه.',
+    opts:['قم بتغيير نوع المنفذ إلى Trunk','قم بتعيين الأولوية ليصبح SW1 هو Root Bridge','افصل الكابل وأعد توصيله','قم بإيقاف تشغيل STP تماماً'],
+    ans:1
+  },
+];
+
+function buildTrouble(){
+  document.getElementById('troubleQ').innerHTML = troubleData.map((t,i)=>`
+    <div class="question" id="tq${i}">
+      <p><strong>مشكلة ${i+1}:</strong> ${t.problem}</p>
+      <div class="options">
+        ${t.opts.map((o,j)=>`<label class="opt" id="topt${i}_${j}">
+          <input type="radio" name="tq${i}" value="${j}"> ${o}
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+buildTrouble();
+
+function checkTrouble(){
+  let pts=0;
+  troubleData.forEach((t,i)=>{
+    const sel=document.querySelector(`input[name="tq${i}"]:checked`);
+    for(let j=0;j<t.opts.length;j++) document.getElementById(`topt${i}_${j}`).classList.remove('correct','wrong');
+    if(!sel) return;
+    const v=parseInt(sel.value);
+    document.getElementById(`topt${i}_${v}`).classList.add(v===t.ans?'correct':'wrong');
+    if(v===t.ans) pts++;
+    else document.getElementById(`topt${i}_${t.ans}`).classList.add('correct');
+  });
+  sc.t3=pts; upd();
+  showFb('fb-trouble',pts===6,'ممتاز! تشخيص ممتاز لجميع مشاكل الشبكة ('+pts+'/6).','حصلت على '+pts+'/6. راجع أسباب المشاكل الشائعة في شبكات Cisco.');
+}
+
+// ═══ FINAL QUIZ ══════════════════════════════════════════════════════════
+const finalQ = [
+  {q:'ما طبقة OSI المسؤولة عن تقسيم البيانات إلى Segments وإدارة التدفق والموثوقية؟',opts:['الطبقة 2 (Data Link)','الطبقة 3 (Network)','الطبقة 4 (Transport)','الطبقة 5 (Session)'],ans:2,ch:'Ch 1–3'},
+  {q:'ما نوع الإرسال الذي يقوم به السويتش عندما يستلم إطاراً بعنوان MAC غير موجود في جداوله؟',opts:['Unicast','Multicast','Flooding (Unknown Unicast)','Dropping'],ans:2,ch:'Ch 4–6'},
+  {q:'ما الأمر الذي يُحوّل منفذ السويتش إلى وضع الوصول (Access) ويعيّنه لـ VLAN 20؟',opts:['switchport vlan 20','switchport access vlan 20','vlan access 20','set vlan 20 access'],ans:1,ch:'Ch 7'},
+  {q:'في STP، أيٌّ من المنافذ التالية على السويتش غير الـ Root يُعيَّن دائماً بدور Designated Port؟',opts:['المنفذ الأبعد عن Root Bridge','المنفذ الأقرب تكلفةً من Root Bridge','المنفذ ذو الـ STP Cost الأعلى','المنفذ غير المتصل'],ans:1,ch:'Ch 8–10'},
+  {q:'الشبكة 172.16.0.0/12 — ما أول عنوان host صالح للاستخدام؟',opts:['172.16.0.0','172.16.0.1','172.0.0.1','172.16.255.254'],ans:1,ch:'Ch 11–14'},
+  {q:'في جدول توجيه Cisco IOS، ما رمز المسارات التي تعلمها الراوتر عبر OSPF؟',opts:['S','C','O','R'],ans:2,ch:'Ch 15–18'},
+  {q:'ما قيمة OSPF Cost للواجهة FastEthernet (100 Mbps) إذا كانت Reference Bandwidth تساوي 100 Mbps؟',opts:['1','10','100','1000'],ans:0,ch:'Ch 19–21'},
+  {q:'ما بادئة عناوين IPv6 Link-Local؟',opts:['FF00::/8','FC00::/7','FE80::/10','2000::/3'],ans:2,ch:'Ch 22–25'},
+  {q:'ما معيار Wi-Fi الذي يُعرف بـ Wi-Fi 5 ويعمل على تردد 5 GHz مع دعم MU-MIMO؟',opts:['802.11n','802.11ac','802.11ax','802.11g'],ans:1,ch:'Ch 26–29'},
+  {q:'ما بروتوكول الاتصال المستخدم بين Lightweight AP و WLC؟',opts:['MPLS','CAPWAP','EIGRP','GRE'],ans:1,ch:'Ch 26–29'},
+  {q:'ما الفرق بين Static Route و Dynamic Routing Protocol؟',opts:['Static أسرع دائماً','Static يُهيَّأ يدوياً بينما Dynamic يتعلم المسارات تلقائياً','Dynamic يُهيَّأ يدوياً','لا فرق بينهما'],ans:1,ch:'Ch 15–18'},
+  {q:'في IPv6، كيف يُشير المسؤول إلى جميع الراوترات على الشبكة المحلية؟',opts:['FF02::1','FF02::2','FE80::1','::1'],ans:1,ch:'Ch 22–25'},
+  {q:'ما الأمر الذي يعرض ملخصاً لحالة جميع الواجهات في Cisco IOS؟',opts:['show interfaces','show ip interface brief','display interfaces summary','show all interfaces'],ans:1,ch:'Ch 4–6'},
+  {q:'في OSPF، ما حالة الجوار التي تعني أن الراوترين تبادلا قواعد بيانات LSDB بالكامل؟',opts:['2-Way','ExStart','Loading','Full'],ans:3,ch:'Ch 19–21'},
+  {q:'ما بروتوكول أمان WLAN الأحدث الذي يستخدم SAE ويحمي من هجمات القاموس؟',opts:['WEP','WPA','WPA2','WPA3'],ans:3,ch:'Ch 26–29'},
+];
+
+function buildFinal(){
+  document.getElementById('finalQuiz').innerHTML = finalQ.map((q,i)=>`
+    <div class="question" id="fq${i}">
+      <p><span style="color:var(--text2);font-size:.78rem">${q.ch}</span><br>${i+1}. ${q.q}</p>
+      <div class="options">
+        ${q.opts.map((o,j)=>`<label class="opt" id="fopt${i}_${j}">
+          <input type="radio" name="fq${i}" value="${j}"> ${o}
+        </label>`).join('')}
+      </div>
+    </div>`).join('');
+}
+buildFinal();
+
+function gradeFinal(){
+  let pts=0;
+  finalQ.forEach((q,i)=>{
+    const sel=document.querySelector(`input[name="fq${i}"]:checked`);
+    for(let j=0;j<q.opts.length;j++) document.getElementById(`fopt${i}_${j}`).classList.remove('correct','wrong');
+    if(!sel) return;
+    const v=parseInt(sel.value);
+    document.getElementById(`fopt${i}_${v}`).classList.add(v===q.ans?'correct':'wrong');
+    if(v===q.ans) pts++;
+    else document.getElementById(`fopt${i}_${q.ans}`).classList.add('correct');
+  });
+  sc.t4=pts; upd();
+  const pct=Math.round(pts/15*100);
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':'D';
+  showFb('fb-final',pts>=12,'ممتاز! اجتزت الاختبار الشامل بتفوق ('+pts+'/15).','حصلت على '+pts+'/15. راجع نقاط ضعفك في المختبرات المحددة.');
+  showAllLabResults();
+}
+
+function showAllLabResults(){
+  const keys=['ccna_lab01','ccna_lab02','ccna_lab03','ccna_lab04','ccna_lab05','ccna_lab06','ccna_lab07','ccna_lab08','ccna_lab09','ccna_lab10'];
+  const names=['الأساسيات','Ethernet','VLANs','STP','Subnetting','IP Routing','OSPF','IPv6','WLAN','التكاملي'];
+  const maxes=[25,25,25,25,25,25,25,25,26,37];
+  let total=0,maxTotal=0;
+  const grid=document.getElementById('labScoresGrid');
+  grid.innerHTML=keys.map((k,i)=>{
+    const saved=localStorage.getItem(k);
+    const sc_val=saved?JSON.parse(saved).score:0;
+    const mx=maxes[i];
+    total+=sc_val; maxTotal+=mx;
+    const pct=Math.round(sc_val/mx*100);
+    return `<div class="progress-card">
+      <div class="pc-label">${names[i]}</div>
+      <div class="pc-score">${sc_val}/${mx}</div>
+      <div style="background:var(--surface3);border-radius:4px;height:6px;margin-top:6px">
+        <div style="width:${pct}%;height:100%;background:var(--accent);border-radius:4px"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const pct=Math.round(total/maxTotal*100);
+  const grade=pct>=90?'A':pct>=80?'B':pct>=70?'C':'D';
+  const msg=pct>=90?'أداء استثنائي! أنت جاهز لامتحان CCNA':pct>=80?'أداء ممتاز! مع بعض المراجعة ستكون جاهزاً':pct>=70?'جيد! ركّز على نقاط الضعف قبل الامتحان':'تحتاج مراجعة مكثفة قبل التقدم للامتحان';
+  document.getElementById('grandTotal').innerHTML=`
+    <div class="big-num">${total}/${maxTotal}</div>
+    <div class="grade-lbl grade-${grade}">درجة ${grade} — ${pct}%</div>
+    <p style="color:var(--text2);margin-top:12px;font-size:.9rem">${msg}</p>`;
+  document.getElementById('allLabsResult').style.display='block';
+}
+
+function saveScore(){
+  const total=sc.t1+sc.t2+sc.t3+sc.t4;
+  localStorage.setItem('ccna_lab10',JSON.stringify({score:total,max:37,date:new Date().toISOString()}));
+  alert('تم حفظ نتيجة المختبر التكاملي: '+total+'/37');
+}
+
+function resetAll(){
+  if(!confirm('هل تريد إعادة ضبط جميع الإجابات؟')) return;
+  sc.t1=sc.t2=sc.t3=sc.t4=0; upd();
+  ['sub1','sub2','sub3','sub4','cidr1','cidr2','cidr3','cidr4','rootBridge',
+   'ospf1','ospf2','ospf3','ospf4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value='';el.className='';}
+  });
+  ['cmd1','cmd2','cmd3','cmd4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.value='';el.className='';}
+  });
+  buildTrouble(); buildFinal();
+  document.querySelectorAll('.feedback').forEach(f=>f.className='feedback');
+  document.getElementById('finalResult').innerHTML='';
+  document.getElementById('allLabsResult').style.display='none';
+}
+</script>
+</body>
+</html>

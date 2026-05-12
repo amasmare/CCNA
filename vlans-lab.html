@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المختبر 03 — الشبكات الافتراضية VLANs | CCNA 200-301</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0e1a;--surface:#111827;--surface2:#1f2937;--surface3:#374151;--accent:#34d399;--accent2:#065f46;--text:#f1f5f9;--text2:#94a3b8;--border:#0f2a1e;--success:#10b981;--error:#ef4444;--radius:12px}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,Arial,sans-serif;min-height:100vh;direction:rtl}
+a{color:var(--accent);text-decoration:none}
+.topbar{background:#060d1a;border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem}
+.topbar-brand .logo{width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center}
+.topbar-links{display:flex;gap:16px;font-size:.85rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text2);transition:color .2s}
+.topbar-links a:hover{color:var(--accent)}
+.lab-header{background:linear-gradient(135deg,#022c22 0%,#065f46 50%,#34d399 100%);padding:32px 24px;text-align:center}
+.lab-badge{display:inline-block;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 14px;border-radius:20px;font-size:.8rem;margin-bottom:12px}
+.lab-header h1{font-size:2rem;font-weight:800;color:#fff;margin-bottom:8px}
+.lab-header p{color:rgba(255,255,255,.85);font-size:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.chapter-tag{background:rgba(255,255,255,.15);color:#fff;padding:3px 12px;border-radius:20px;font-size:.78rem}
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 24px;display:flex;align-items:center;justify-content:space-between}
+.back-link{color:var(--accent);font-size:.85rem;display:flex;align-items:center;gap:6px}
+.tabs-wrapper{background:var(--surface);border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+.tab-btn{padding:14px 20px;border:none;background:none;color:var(--text2);cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.container{max-width:960px;margin:0 auto;padding:24px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.card h2{font-size:1.1rem;margin-bottom:16px;color:var(--accent)}
+.card h3{font-size:.95rem;margin-bottom:12px;color:var(--accent)}
+.subtitle{color:var(--text2);font-size:.88rem;margin-bottom:18px;line-height:1.7}
+.btn{padding:9px 20px;border:none;border-radius:8px;font-size:.88rem;cursor:pointer;transition:all .2s;font-weight:600}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{background:var(--accent2);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.btn-sm{padding:5px 12px;font-size:.78rem}
+.alert{padding:12px 16px;border-radius:8px;margin:10px 0;font-size:.88rem;line-height:1.6}
+.alert-success{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);color:#34d399}
+.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);color:#fbbf24}
+.alert-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);color:#f87171}
+.score-badge{display:inline-block;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--accent);margin-bottom:16px}
+.score-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 14px;font-size:.8rem;color:var(--text2)}
+.score-chip span{color:var(--accent);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th{background:var(--surface2);padding:10px 12px;text-align:right;color:var(--text2);font-weight:600;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+select{background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.85rem;cursor:pointer;width:100%}
+select:focus{outline:none;border-color:var(--accent)}
+.quiz-q{margin-bottom:24px}
+.quiz-q p{font-weight:600;margin-bottom:12px;line-height:1.5}
+.quiz-opt{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 16px;cursor:pointer;transition:all .2s;font-size:.88rem;text-align:right;width:100%;margin-bottom:8px;color:var(--text);display:block}
+.quiz-opt:hover{border-color:var(--accent)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(16,185,129,.06);color:#34d399}
+.quiz-opt.incorrect{border-color:var(--error);background:rgba(239,68,68,.06);color:#f87171}
+.quiz-opt:disabled{cursor:default}
+.prog-wrap{background:var(--surface3);border-radius:20px;height:8px;margin:8px 0;overflow:hidden}
+.prog-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s}
+.cli-box{background:#020810;border:1px solid var(--border);border-radius:8px;padding:16px;font-family:monospace;font-size:.82rem;color:#34d399;line-height:1.8;overflow-x:auto}
+.vlan-sim{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:16px 0}
+.vlan-box{border:2px solid;border-radius:10px;padding:12px;text-align:center}
+.vlan-10{border-color:rgba(0,188,235,.4);background:rgba(0,188,235,.05)}
+.vlan-20{border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.05)}
+.vlan-30{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.05)}
+.vlan-title{font-weight:700;font-size:.85rem;margin-bottom:6px}
+.vlan-10 .vlan-title{color:#00bceb}
+.vlan-20 .vlan-title{color:#fbbf24}
+.vlan-30 .vlan-title{color:#f87171}
+.device-icon{font-size:1.4rem;margin-bottom:4px}
+.device-label{font-size:.72rem;color:var(--text2)}
+.correct-row td{background:rgba(16,185,129,.06)!important}
+.wrong-row td{background:rgba(239,68,68,.06)!important}
+@media(max-width:600px){.vlan-sim{grid-template-columns:1fr 1fr}}
+footer{background:#060d1a;border-top:2px solid var(--border);padding:20px 30px;text-align:center;margin-top:30px}
+footer p{color:var(--text2);font-size:.78rem;line-height:2}
+footer strong{color:#f59e0b}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">🏷️</div>
+    <span>CCNA 200-301</span>
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">الرئيسية</a>
+    <a href="network-fundamentals-lab.html">01 الأساسيات</a>
+    <a href="ethernet-switching-lab.html">02 Ethernet</a>
+    <a href="vlans-lab.html" style="color:var(--accent)">03 VLANs</a>
+    <a href="stp-lab.html">04 STP</a>
+    <a href="subnetting-lab.html">05 Subnetting</a>
+    <a href="ip-routing-lab.html">06 التوجيه</a>
+    <a href="ospf-lab.html">07 OSPF</a>
+    <a href="ipv6-lab.html">08 IPv6</a>
+    <a href="wireless-lab.html">09 Wireless</a>
+    <a href="capstone-lab.html">10 الشامل</a>
+  </div>
+</div>
+
+<div class="lab-header">
+  <div class="lab-badge">المختبر 03 من 10</div>
+  <h1>🏷️ الشبكات الافتراضية (VLANs)</h1>
+  <p>م. عبدالله الأسمري · CCNA 200-301 · Wendell Odom Vol. 1</p>
+  <div class="chapter-tags">
+    <span class="chapter-tag">الفصل 7: VLANs والـ Trunking</span>
+    <span class="chapter-tag">802.1Q Tagging</span>
+    <span class="chapter-tag">Inter-VLAN Routing</span>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <a href="index.html" class="back-link">→ العودة للمختبرات</a>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="score-chip">الاختبار: <span id="stotal">0</span>/10</span>
+    <button class="btn btn-ghost btn-sm" onclick="resetAll()">إعادة ضبط</button>
+    <button class="btn btn-primary btn-sm" onclick="saveScore()">حفظ</button>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+  <button class="tab-btn active" onclick="switchTab(0)">تصميم VLANs</button>
+  <button class="tab-btn" onclick="switchTab(1)">Trunk مقابل Access</button>
+  <button class="tab-btn" onclick="switchTab(2)">أوامر VLAN</button>
+  <button class="tab-btn" onclick="switchTab(3)">اختبار المعرفة</button>
+</div>
+
+<div class="container">
+
+<!-- تبويب 1: تصميم VLANs -->
+<div class="tab-content active">
+  <h2 style="color:var(--accent);margin-bottom:8px">تصميم وتقسيم VLANs</h2>
+  <p class="subtitle">لديك سويتش واحد بـ 12 منفذاً وثلاثة أقسام. عيّن كل منفذ للـ VLAN الصحيحة بناءً على القسم.</p>
+
+  <div class="card">
+    <h3>🏢 توزيع الأجهزة على الأقسام</h3>
+    <div class="vlan-sim">
+      <div class="vlan-box vlan-10">
+        <div class="vlan-title">VLAN 10 — المحاسبة</div>
+        <div class="device-icon">💻</div><div class="device-label">PC1 — Fa0/1</div>
+        <div class="device-icon">💻</div><div class="device-label">PC2 — Fa0/2</div>
+        <div class="device-icon">💻</div><div class="device-label">PC3 — Fa0/3</div>
+        <div class="device-icon">🖨️</div><div class="device-label">طابعة — Fa0/4</div>
+      </div>
+      <div class="vlan-box vlan-20">
+        <div class="vlan-title">VLAN 20 — المبيعات</div>
+        <div class="device-icon">💻</div><div class="device-label">PC4 — Fa0/5</div>
+        <div class="device-icon">💻</div><div class="device-label">PC5 — Fa0/6</div>
+        <div class="device-icon">💻</div><div class="device-label">PC6 — Fa0/7</div>
+        <div class="device-icon">📞</div><div class="device-label">هاتف — Fa0/8</div>
+      </div>
+      <div class="vlan-box vlan-30">
+        <div class="vlan-title">VLAN 30 — الإدارة IT</div>
+        <div class="device-icon">🖥️</div><div class="device-label">Server — Fa0/9</div>
+        <div class="device-icon">💻</div><div class="device-label">IT PC — Fa0/10</div>
+        <div class="device-icon">🌐</div><div class="device-label">Trunk — Fa0/11</div>
+        <div class="device-icon">🌐</div><div class="device-label">Trunk — Fa0/12</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚙️ تعيين المنافذ للـ VLANs</h3>
+    <table>
+      <thead><tr><th>المنفذ</th><th>الجهاز</th><th>VLAN المناسبة</th><th>النوع</th><th>الحالة</th></tr></thead>
+      <tbody id="port-tbody"></tbody>
+    </table>
+    <button class="btn btn-primary" onclick="checkPorts()" style="margin-top:12px">تحقق من الإجابات</button>
+    <button class="btn btn-ghost btn-sm" onclick="resetPorts()" style="margin-top:12px;margin-right:8px">إعادة تعيين</button>
+    <div id="port-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 2: Trunk مقابل Access -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">منافذ Trunk مقابل Access</h2>
+  <p class="subtitle">لكل سيناريو، حدّد هل المنفذ يجب أن يكون Trunk أم Access.</p>
+  <div class="score-badge" id="ta-score">النتيجة: 0 / 0</div>
+  <div id="ta-container"></div>
+  <button class="btn btn-primary" onclick="checkTA()" style="margin-top:4px">تحقق من الإجابات</button>
+  <button class="btn btn-ghost btn-sm" onclick="resetTA()" style="margin-top:4px;margin-right:8px">إعادة تعيين</button>
+  <div id="ta-feedback" style="margin-top:12px"></div>
+
+  <div class="card" style="margin-top:24px">
+    <h3>📋 الفرق بين Trunk وAccess</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px">
+        <div style="color:var(--accent);font-weight:700;margin-bottom:8px">منفذ Access</div>
+        <div style="font-size:.78rem;color:var(--text2);line-height:1.8">
+          • ينتمي لـ VLAN واحدة فقط<br>
+          • يتصل بالأجهزة النهائية (PC، طابعة، هاتف)<br>
+          • البيانات تمر بدون علامة 802.1Q<br>
+          • الأمر: <span style="color:var(--accent);font-family:monospace">switchport mode access</span>
+        </div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:16px">
+        <div style="color:#00bceb;font-weight:700;margin-bottom:8px">منفذ Trunk</div>
+        <div style="font-size:.78rem;color:var(--text2);line-height:1.8">
+          • يحمل بيانات عدة VLANs<br>
+          • يتصل بين سويتشات أو سويتش وراوتر<br>
+          • البيانات تُوسَم بـ 802.1Q Tag<br>
+          • الأمر: <span style="color:#00bceb;font-family:monospace">switchport mode trunk</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- تبويب 3: أوامر VLAN -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">أوامر إعداد VLANs في Cisco IOS</h2>
+  <p class="subtitle">راجع الأوامر الصحيحة لإنشاء VLANs وتعيين المنافذ ثم أكمل الفراغات.</p>
+
+  <div class="card">
+    <h3>🖥️ تسلسل إعداد VLAN كاملاً</h3>
+    <div class="cli-box">
+      <div><span style="color:var(--accent)">SW1#</span> <span style="color:var(--text)">configure terminal</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! إنشاء VLAN 10 وتسميتها</div>
+      <div><span style="color:var(--accent)">SW1(config)#</span> <span style="color:var(--text)">vlan 10</span></div>
+      <div><span style="color:var(--accent)">SW1(config-vlan)#</span> <span style="color:var(--text)">name Accounting</span></div>
+      <div><span style="color:var(--accent)">SW1(config-vlan)#</span> <span style="color:var(--text)">exit</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! تعيين منفذ Access للـ VLAN 10</div>
+      <div><span style="color:var(--accent)">SW1(config)#</span> <span style="color:var(--text)">interface FastEthernet0/1</span></div>
+      <div><span style="color:var(--accent)">SW1(config-if)#</span> <span style="color:var(--text)">switchport mode access</span></div>
+      <div><span style="color:var(--accent)">SW1(config-if)#</span> <span style="color:var(--text)">switchport access vlan 10</span></div>
+      <div><span style="color:var(--accent)">SW1(config-if)#</span> <span style="color:var(--text)">exit</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! إعداد منفذ Trunk</div>
+      <div><span style="color:var(--accent)">SW1(config)#</span> <span style="color:var(--text)">interface GigabitEthernet0/1</span></div>
+      <div><span style="color:var(--accent)">SW1(config-if)#</span> <span style="color:var(--text)">switchport mode trunk</span></div>
+      <div><span style="color:var(--accent)">SW1(config-if)#</span> <span style="color:var(--text)">switchport trunk allowed vlan 10,20,30</span></div>
+      <div style="margin-top:8px;color:var(--text2)">! التحقق</div>
+      <div><span style="color:var(--accent)">SW1#</span> <span style="color:var(--text)">show vlan brief</span></div>
+      <div><span style="color:var(--accent)">SW1#</span> <span style="color:var(--text)">show interfaces trunk</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>✏️ اختبار الأوامر — أكمل الفراغات</h3>
+    <div id="cmd-quiz-container"></div>
+    <button class="btn btn-primary" onclick="checkCmdQuiz()" style="margin-top:12px">تحقق من الإجابات</button>
+    <div id="cmd-quiz-feedback" style="margin-top:12px"></div>
+  </div>
+</div>
+
+<!-- تبويب 4: اختبار المعرفة -->
+<div class="tab-content">
+  <h2 style="color:var(--accent);margin-bottom:8px">اختبار المعرفة — الفصل 7 (VLANs)</h2>
+  <p class="subtitle">10 أسئلة حول VLANs والـ Trunking. تُحفظ نتيجتك تلقائيًا.</p>
+  <div class="score-badge" id="quiz-score">النتيجة: 0 / 10</div>
+  <div class="prog-wrap"><div class="prog-fill" id="quiz-prog" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+  <p>صُمِّمت بواسطة <strong>م. عبدالله الأسمري</strong> · مختبرات CCNA 200-301 التفاعلية · Wendell Odom Vol. 1</p>
+</footer>
+
+<script>
+function switchTab(i){
+  document.querySelectorAll('.tab-content').forEach((t,j)=>t.classList.toggle('active',i===j));
+  document.querySelectorAll('.tab-btn').forEach((b,j)=>b.classList.toggle('active',i===j));
+}
+
+// ---- تعيين المنافذ ----
+const PORTS=[
+  {port:'Fa0/1',device:'PC1 — قسم المحاسبة',ans:'VLAN 10',type:'Access'},
+  {port:'Fa0/2',device:'PC2 — قسم المحاسبة',ans:'VLAN 10',type:'Access'},
+  {port:'Fa0/5',device:'PC4 — قسم المبيعات',ans:'VLAN 20',type:'Access'},
+  {port:'Fa0/6',device:'PC5 — قسم المبيعات',ans:'VLAN 20',type:'Access'},
+  {port:'Fa0/9',device:'خادم IT',ans:'VLAN 30',type:'Access'},
+  {port:'Fa0/11',device:'وصلة لسويتش آخر',ans:'Trunk',type:'Trunk'},
+];
+const PORT_OPTS=['VLAN 10','VLAN 20','VLAN 30','Trunk'];
+function buildPorts(){
+  document.getElementById('port-tbody').innerHTML=PORTS.map((p,i)=>`<tr id="ptr-${i}">
+    <td style="font-family:monospace">${p.port}</td>
+    <td style="color:var(--text2)">${p.device}</td>
+    <td><select id="psel-${i}"><option value="">-- اختر --</option>${PORT_OPTS.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></td>
+    <td id="ptyp-${i}" style="font-size:.8rem;color:var(--text2)">${p.type}</td>
+    <td id="ptst-${i}"></td>
+  </tr>`).join('');
+  document.getElementById('port-feedback').innerHTML='';
+}
+function checkPorts(){
+  let correct=0;
+  PORTS.forEach((p,i)=>{
+    const sel=document.getElementById('psel-'+i).value;
+    const row=document.getElementById('ptr-'+i);
+    const st=document.getElementById('ptst-'+i);
+    if(!sel){st.innerHTML='';return;}
+    if(sel===p.ans){correct++;row.className='correct-row';st.innerHTML='<span style="color:#34d399">✓</span>';}
+    else{row.className='wrong-row';st.innerHTML='<span style="color:#f87171">✗ '+p.ans+'</span>';}
+  });
+  document.getElementById('port-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${PORTS.length}</div>`;
+}
+function resetPorts(){buildPorts();}
+buildPorts();
+
+// ---- Trunk مقابل Access ----
+const TA_Q=[
+  {q:'منفذ Fa0/1 يتصل بجهاز PC في قسم المحاسبة ويجب أن يكون في VLAN 10 فقط.',ans:'Access',opts:['Access','Trunk']},
+  {q:'منفذ Gi0/1 يربط بين سويتشين يحملان VLANs 10 و20 و30 معاً.',ans:'Trunk',opts:['Access','Trunk']},
+  {q:'منفذ Fa0/5 يتصل براوتر لإجراء Inter-VLAN Routing (Router-on-a-Stick).',ans:'Trunk',opts:['Access','Trunk']},
+  {q:'منفذ Fa0/8 يتصل بهاتف IP في قسم المبيعات (VLAN 20 فقط).',ans:'Access',opts:['Access','Trunk']},
+  {q:'منفذ يربط بين سويتش وWireless LAN Controller (WLC) يحمل عدة SSIDs كل منها VLAN مختلفة.',ans:'Trunk',opts:['Access','Trunk']},
+  {q:'منفذ Fa0/3 متصل بطابعة شبكية خاصة بقسم IT (VLAN 30).',ans:'Access',opts:['Access','Trunk']},
+];
+function buildTA(){
+  document.getElementById('ta-container').innerHTML=TA_Q.map((q,i)=>`
+    <div class="card" style="margin-bottom:12px">
+      <p style="font-weight:600;margin-bottom:10px">${i+1}. ${q.q}</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        ${q.opts.map(o=>`<label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:.88rem;color:var(--text2);transition:all .2s">
+          <input type="radio" name="ta-${i}" value="${o}" style="accent-color:var(--accent)"> ${o}
+        </label>`).join('')}
+      </div>
+      <div id="taf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+  document.getElementById('ta-feedback').innerHTML='';
+}
+function checkTA(){
+  let correct=0,answered=0;
+  TA_Q.forEach((q,i)=>{
+    const sel=document.querySelector(`input[name="ta-${i}"]:checked`);
+    if(!sel)return;
+    answered++;
+    const ok=sel.value===q.ans;
+    if(ok)correct++;
+    document.getElementById('taf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح! — '+q.ans+' هو النوع الصحيح':'❌ الصحيح: '+q.ans}</div>`;
+  });
+  document.getElementById('ta-score').textContent='النتيجة: '+correct+' / '+answered;
+  document.getElementById('ta-feedback').innerHTML=`<div class="alert alert-warn">أجبت على ${answered} سؤالاً. النتيجة: ${correct} / ${answered}</div>`;
+}
+function resetTA(){buildTA();}
+buildTA();
+
+// ---- اختبار الأوامر ----
+const CMD_Q=[
+  {q:'لإنشاء VLAN 20 وتسميتها "Sales"، ما تسلسل الأوامر الصحيح داخل Global Config؟',
+   opts:['vlan 20 ثم name Sales','interface vlan 20 ثم name Sales','create vlan 20 name Sales','set vlan 20 Sales'],ans:0,
+   exp:'الأمر "vlan 20" يدخل لوضع إعداد الـ VLAN، ثم "name Sales" يعطيها الاسم.'},
+  {q:'لعرض ملخص جميع VLANs ومنافذها، ما الأمر؟',
+   opts:['show interfaces trunk','show vlan brief','show vlan all','show ip vlan'],ans:1,
+   exp:'"show vlan brief" يعرض جدولاً بجميع VLANs وأسمائها وحالتها والمنافذ المعينة لها.'},
+  {q:'لإضافة VLAN 40 للمنافذ المسموح بها على Trunk موجود، ما الأمر الصحيح؟',
+   opts:['switchport trunk allowed vlan add 40','switchport trunk vlan 40','add vlan 40 to trunk','trunk vlan add 40'],ans:0,
+   exp:'الكلمة "add" مهمة — بدونها سيستبدل القائمة الكاملة بـ VLAN 40 فقط!'},
+  {q:'ما الأمر للتحقق من الـ VLANs المسموح بها على منفذ Trunk؟',
+   opts:['show vlan brief','show interfaces trunk','show trunk status','show switchport trunk'],ans:1,
+   exp:'"show interfaces trunk" يعرض تفاصيل منافذ Trunk شاملاً: الـ VLANs المسموح بها والنشطة والمعلقة.'},
+];
+function buildCmdQuiz(){
+  document.getElementById('cmd-quiz-container').innerHTML=CMD_Q.map((q,i)=>`
+    <div style="margin-bottom:16px;padding:16px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <p style="font-weight:600;margin-bottom:10px">${i+1}. ${q.q}</p>
+      <select id="cqs-${i}" style="font-family:monospace">
+        <option value="">-- اختر الأمر الصحيح --</option>
+        ${q.opts.map((o,j)=>`<option value="${j}">${o}</option>`).join('')}
+      </select>
+      <div id="cqf-${i}" style="margin-top:8px"></div>
+    </div>`).join('');
+}
+function checkCmdQuiz(){
+  let correct=0;
+  CMD_Q.forEach((q,i)=>{
+    const val=parseInt(document.getElementById('cqs-'+i).value);
+    if(isNaN(val))return;
+    const ok=val===q.ans;
+    if(ok)correct++;
+    document.getElementById('cqf-'+i).innerHTML=`<div class="alert ${ok?'alert-success':'alert-danger'}" style="font-size:.82rem">${ok?'✅ صحيح!':'❌ الصحيح: '+q.opts[q.ans]} — ${q.exp}</div>`;
+  });
+  document.getElementById('cmd-quiz-feedback').innerHTML=`<div class="alert alert-warn">النتيجة: ${correct} / ${CMD_Q.length}</div>`;
+}
+buildCmdQuiz();
+
+// ---- اختبار المعرفة ----
+const QUIZ=[
+  {q:'ما نطاق أرقام VLANs العادية في معيار 802.1Q؟',opts:['1–255','1–1005','1–4094','1–65535'],ans:1,exp:'VLANs العادية هي 1–1005. VLANs الممتدة هي 1006–4094 وتتطلب VTP Transparent Mode.'},
+  {q:'ما وظيفة بروتوكول 802.1Q في الـ Trunking؟',opts:['تشفير البيانات','إضافة علامة VLAN Tag للإطارات','تسريع نقل البيانات','توجيه الحزم بين VLANs'],ans:1,exp:'802.1Q يُضيف حقل 4 بايت (VLAN Tag) لإطار Ethernet لتحديد انتماء الإطار لـ VLAN معينة عبر الـ Trunk.'},
+  {q:'ما الـ VLAN التي تُستخدم للإدارة عن بُعد للسويتشات الجديدة كإعداد افتراضي؟',opts:['VLAN 0','VLAN 1','VLAN 100','VLAN 999'],ans:1,exp:'VLAN 1 هي الـ VLAN الافتراضية — جميع المنافذ عليها بداية. يُنصح بتغيير VLAN الإدارة لأسباب أمنية.'},
+  {q:'ما الأمر لتعيين منفذ Access للـ VLAN 20؟',opts:['vlan access 20','switchport access vlan 20','switchport vlan 20','port vlan 20'],ans:1,exp:'تسلسل الأوامر: "switchport mode access" ثم "switchport access vlan 20" على مستوى المنفذ.'},
+  {q:'ماذا يعني مصطلح "Inter-VLAN Routing"؟',opts:['التوجيه داخل نفس VLAN','التواصل بين أجهزة في VLANs مختلفة عبر راوتر','نقل الإطارات بين سويتشين','تشفير بيانات الـ VLAN'],ans:1,exp:'أجهزة في VLANs مختلفة لا تتواصل مباشرةً — تحتاج راوتر أو Layer 3 Switch لتوجيه الحزم بينهما.'},
+  {q:'في إعداد Router-on-a-Stick، ما نوع المنفذ المستخدم بين الراوتر والسويتش؟',opts:['Access Port','Trunk Port','Routed Port','Hybrid Port'],ans:1,exp:'Trunk Port يحمل بيانات جميع VLANs. الراوتر يُنشئ Sub-interfaces لكل VLAN ويوجّه بينهم.'},
+  {q:'ما الأمر لإنشاء VLAN 30 على السويتش؟',opts:['create vlan 30','vlan 30','add vlan 30','interface vlan 30'],ans:1,exp:'الأمر "vlan 30" في وضع Global Config يُنشئ الـ VLAN. يختلف عن "interface vlan 30" الذي يعدّ واجهة الـ SVI للإدارة.'},
+  {q:'ما الـ Native VLAN في Trunk وما وظيفتها؟',opts:['VLAN مشفرة','VLAN تمر بدون Tag 802.1Q عبر الـ Trunk','VLAN المحذوفة','VLAN الافتراضية للراوتر'],ans:1,exp:'Native VLAN تمر إطاراتها عبر الـ Trunk بدون إضافة 802.1Q Tag. الافتراضي هو VLAN 1 — يجب توحيدها على طرفي الـ Trunk.'},
+  {q:'ما الأمر لعرض معلومات الـ Trunk وVLANs المسموح بها؟',opts:['show vlan brief','show interfaces trunk','show vlan trunk','show trunk info'],ans:1,exp:'"show interfaces trunk" يعرض المنافذ العاملة كـ Trunk، والـ VLANs المسموح بها والنشطة.'},
+  {q:'ما الذي يحدث إذا اختلفت Native VLAN على طرفي Trunk؟',opts:['يعمل بشكل طبيعي','تنقطع الاتصالية وتظهر رسائل CDP خطأ','يتحول للعمل كـ Access','تُستخدم Native VLAN الأصغر رقماً'],ans:1,exp:'Native VLAN Mismatch يُسبب مشاكل اتصالية وثغرة أمنية. CDP يُظهر تحذيراً والـ STP يتأثر. يجب توحيدها.'},
+];
+let quizScore=0,quizAnswered=0;
+function buildQuiz(){
+  document.getElementById('quiz-container').innerHTML=QUIZ.map((q,i)=>`
+    <div class="quiz-q" id="qq-${i}">
+      <p>${i+1}. ${q.q}</p>
+      ${q.opts.map((o,j)=>`<button class="quiz-opt" onclick="answerQuiz(${i},${j})">${o}</button>`).join('')}
+      <div id="qfb-${i}" style="margin-top:6px"></div>
+    </div>`).join('');
+}
+function answerQuiz(qi,oi){
+  const q=QUIZ[qi];
+  const btns=document.querySelectorAll(`#qq-${qi} .quiz-opt`);
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  if(oi!==q.ans)btns[oi].classList.add('incorrect');
+  else quizScore++;
+  quizAnswered++;
+  document.getElementById('qfb-'+qi).innerHTML=`<div class="alert ${oi===q.ans?'alert-success':'alert-danger'}" style="font-size:.82rem">${oi===q.ans?'✅ صحيح!':'❌ غير صحيح.'} ${q.exp}</div>`;
+  document.getElementById('quiz-score').textContent='النتيجة: '+quizScore+' / '+QUIZ.length;
+  document.getElementById('quiz-prog').style.width=(quizAnswered/QUIZ.length*100)+'%';
+  if(quizAnswered===QUIZ.length){
+    const pct=Math.round(quizScore/QUIZ.length*100);
+    localStorage.setItem('ccna_lab03',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));
+    document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;
+    document.getElementById('quiz-container').insertAdjacentHTML('beforeend',
+      `<div class="alert ${pct>=90?'alert-success':pct>=60?'alert-warn':'alert-danger'}" style="margin-top:20px;font-size:1rem;font-weight:700">
+        🎓 انتهى الاختبار! نتيجتك: ${quizScore}/${QUIZ.length} (${pct}%) — ${pct>=90?'ممتاز 🏆':pct>=75?'جيد جداً ⭐':pct>=60?'جيد ✓':'يحتاج مراجعة 📖'}
+        <br><a href="index.html" style="color:var(--accent);font-size:.85rem;display:inline-block;margin-top:8px">← العودة للمختبرات</a>
+      </div>`);
+  }
+}
+buildQuiz();
+function resetAll(){localStorage.removeItem('ccna_lab03');location.reload();}
+function saveScore(){if(quizAnswered>0){const pct=Math.round(quizScore/QUIZ.length*100);localStorage.setItem('ccna_lab03',JSON.stringify({score:quizScore,total:QUIZ.length,pct:pct}));document.getElementById('stotal').textContent=quizScore+'/'+QUIZ.length;}}
+(function(){const s=JSON.parse(localStorage.getItem('ccna_lab03')||'null');if(s)document.getElementById('stotal').textContent=s.score+'/'+s.total;})();
+</script>
+</body>
+</html>
