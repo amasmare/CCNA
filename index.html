@@ -701,7 +701,8 @@ footer{text-align:center;padding:20px 20px;color:var(--muted);font-size:.8rem;li
     if(!raw)return;
     try{
       var d=JSON.parse(raw);
-      var pct=d.pct;
+      var max=d.total||d.max||1;
+      var pct=d.pct!==undefined?d.pct:Math.round(d.score/max*100);
       var grade,cls,fillCls;
       if(pct>=90){grade='A';cls='grade-A';fillCls='fill-A';}
       else if(pct>=75){grade='B';cls='grade-B';fillCls='fill-B';}
@@ -713,7 +714,7 @@ footer{text-align:center;padding:20px 20px;color:var(--muted);font-size:.8rem;li
       if(lp){
         lp.style.display='block';
         var ps=document.getElementById('ps-'+lab.key);
-        if(ps){ps.textContent=d.score+'/'+d.total+' ('+pct+'%)';ps.style.color=cls==='grade-A'||cls==='grade-B'?'#006633':cls==='grade-C'?'#7a6010':'#8b1a1a';}
+        if(ps){ps.textContent=d.score+'/'+max+' ('+pct+'%)';ps.style.color=cls==='grade-A'||cls==='grade-B'?'#006633':cls==='grade-C'?'#7a6010':'#8b1a1a';}
         var pf=document.getElementById('pf-'+lab.key);
         if(pf){pf.style.width=pct+'%';pf.className='lab-progress-fill '+fillCls;}
       }
@@ -784,21 +785,26 @@ function gradeInfo(pct){
   if(pct>=60)return{g:'C',cls:'grade-pill-C',bar:'#c9a227',label:'جيد'};
   return{g:'D',cls:'grade-pill-D',bar:'#8b1a1a',label:'يحتاج مراجعة'};
 }
+function normScore(d){
+  var mx=d.total||d.max||1;
+  var pct=d.pct!==undefined?d.pct:Math.round(d.score/mx*100);
+  return{score:d.score,max:mx,pct:pct};
+}
 function renderReport(data){
   var scores=data.scores||{};
   var completed=LAB_META.filter(function(l){return scores[l.key];}).length;
-  var donePcts=LAB_META.map(function(l){return scores[l.key]?scores[l.key].pct:0;}).filter(function(p){return p>0;});
+  var donePcts=LAB_META.map(function(l){return scores[l.key]?normScore(scores[l.key]).pct:0;}).filter(function(p){return p>0;});
   var avg=donePcts.length?Math.round(donePcts.reduce(function(a,b){return a+b;},0)/donePcts.length):0;
   var totalPts=LAB_META.reduce(function(a,l){return a+(scores[l.key]?scores[l.key].score:0);},0);
-  var totalMax=LAB_META.reduce(function(a,l){return a+(scores[l.key]?scores[l.key].total:0);},0);
+  var totalMax=LAB_META.reduce(function(a,l){var d=scores[l.key];return a+(d?(d.total||d.max||0):0);},0);
   var overallGi=avg>0?gradeInfo(avg):{g:'—',cls:'grade-pill-none',bar:'#6b8577',label:'لم يبدأ بعد'};
   var dist={A:0,B:0,C:0,D:0};
-  LAB_META.forEach(function(l){if(scores[l.key]){var gi=gradeInfo(scores[l.key].pct);if(dist[gi.g]!==undefined)dist[gi.g]++;}});
+  LAB_META.forEach(function(l){if(scores[l.key]){var gi=gradeInfo(normScore(scores[l.key]).pct);if(dist[gi.g]!==undefined)dist[gi.g]++;}});
   var labRows=LAB_META.map(function(l){
     var d=scores[l.key];
     if(!d)return '<div class="lab-row"><div class="lab-row-icon">'+l.icon+'</div><div class="lab-row-info"><div class="lab-row-name">المختبر '+l.num+' — '+l.name+'</div><div class="lab-row-chapter">'+l.chapter+'</div></div><div class="lab-row-bar"><div class="lab-row-bar-track"><div class="lab-row-bar-fill" style="width:0%"></div></div></div><div class="lab-row-score lab-row-notdone">لم يُكمل</div><div class="lab-row-grade"><span class="lab-grade-pill grade-pill-none">—</span></div></div>';
-    var gi=gradeInfo(d.pct);
-    return '<div class="lab-row"><div class="lab-row-icon">'+l.icon+'</div><div class="lab-row-info"><div class="lab-row-name">المختبر '+l.num+' — '+l.name+'</div><div class="lab-row-chapter">'+l.chapter+'</div></div><div class="lab-row-bar"><div class="lab-row-bar-track"><div class="lab-row-bar-fill" style="width:'+d.pct+'%;background:'+gi.bar+'"></div></div></div><div class="lab-row-score" style="color:'+gi.bar+'">'+d.score+'/'+d.total+'</div><div class="lab-row-grade"><span class="lab-grade-pill '+gi.cls+'">'+gi.g+'</span></div></div>';
+    var n=normScore(d);var gi=gradeInfo(n.pct);
+    return '<div class="lab-row"><div class="lab-row-icon">'+l.icon+'</div><div class="lab-row-info"><div class="lab-row-name">المختبر '+l.num+' — '+l.name+'</div><div class="lab-row-chapter">'+l.chapter+'</div></div><div class="lab-row-bar"><div class="lab-row-bar-track"><div class="lab-row-bar-fill" style="width:'+n.pct+'%;background:'+gi.bar+'"></div></div></div><div class="lab-row-score" style="color:'+gi.bar+'">'+n.score+'/'+n.max+'</div><div class="lab-row-grade"><span class="lab-grade-pill '+gi.cls+'">'+gi.g+'</span></div></div>';
   }).join('');
   var pctDone=(completed/10*100).toFixed(0);
   var html='<div class="report-header"><div class="report-logo">🌐</div><div class="report-header-info"><h1>تقرير أداء الطالب — مختبرات CCNA 200-301</h1><p>CCNA 200-301 Official Cert Guide Vol. 1 · Wendell Odom · م. عبدالله الأسمري · جامعة الملك عبدالعزيز</p></div></div>'
